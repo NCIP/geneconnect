@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE CommandFile SYSTEM "CommandFile.dtd">
+<CommandFile>
+	<!--DataSource name="ENTREZGENE" type="" siteurl="D:" 
+ 		username="anonymous" password="phataka@pathbox.wustl.edu">
+ 			<BaseDirectory dir="\Projects\EclipseWD\UniGeneParser" islocal="false">
+ 			<File name="Homo_sapiens.ags.gz"/>
+ 		</BaseDirectory>		
+ 	</DataSource-->
+	<DataSource name="UNIGENE" type="" siteurl="D:" 
+ 		username="anonymous" password="phataka@pathbox.wustl.edu">
+ 		<ExternalParser writeToDB="false" commandfile="ParserScripts\unigeneparser.bat"/>
+	 	<BaseDirectory dir="\WashU\code\UniGeneParser" islocal="true">
+ 			<File name="Hs.data.gz"/>
+ 		</BaseDirectory>		
+ 	</DataSource>
+ 	<DataSource name="REFSEQ" type="" siteurl="D:" 
+	 	username="anonymous" password="phataka@pathbox.wustl.edu">
+	 	<ExternalParser writeToDB="false" commandfile="ParserScripts\entreztorefseq.bat"/>
+		<BaseDirectory dir="\WashU\code\UniGeneParser" islocal="true">
+	 		<File name="gene2refseq.txt"/>
+	 	</BaseDirectory>		
+ 	</DataSource>
+	<DataSource name="UNIPROT_GENEBANK" type="" siteurl="D:" 
+	 	username="anonymous" password="phataka@pathbox.wustl.edu">
+	 	<ExternalParser writeToDB="false" commandfile="ParserScripts\uniprot2genbank.bat"/>
+		<BaseDirectory dir="\WashU\code\UniGeneParser" islocal="true">
+	 		<File name="uniprotkb2genebank.txt"/>
+	 	</BaseDirectory>		
+ 	</DataSource>
+	<DataSource name="UNIPROT_REFSEQ" type="" siteurl="D:" 
+	 	username="anonymous" password="phataka@pathbox.wustl.edu">
+	 	<ExternalParser writeToDB="false" commandfile="ParserScripts\uniprot2refseq.bat"/>
+		<BaseDirectory dir="\WashU\code\UniGeneParser" islocal="true">
+	 		<File name="uniprotkb2refseq.txt"/>
+	 	</BaseDirectory>		
+ 	</DataSource>
+</CommandFile>

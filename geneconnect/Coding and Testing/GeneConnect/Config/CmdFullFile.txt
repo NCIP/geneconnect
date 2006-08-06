@@ -1,0 +1,264 @@
+TYPE		FTP
+SITE_URL	ftp.godatabase.org
+USER_ID     	anonymous
+PASSWD     	phataka@pathbox.wustl.edu
+BASE_DIR  	/pub/godatabase/archive/latest/
+FILE		go_200512-termdb.rdf-xml.gz
+DATABASE        GO
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Danio_rerio/
+FILE     Dr.data.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR    /repository/UniGene/Macaca_mulatta/
+FILE     Mmu.data.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Homo_sapiens/
+FILE     Hs.data.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Mus_musculus/
+FILE     Mm.data.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Rattus_norvegicus/
+FILE     Rn.data.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Xenopus_laevis/
+FILE     Xl.data.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Bos_taurus/
+FILE     Bt.data.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Danio_rerio/
+FILE     	Dr.retired.lst.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR    /repository/UniGene/Macaca_mulatta/
+FILE     Mmu.retired.lst.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Homo_sapiens/
+FILE     Hs.retired.lst.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Mus_musculus/
+FILE     Mm.retired.lst.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Rattus_norvegicus/
+FILE     Rn.retired.lst.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Xenopus_laevis/
+FILE     Xl.retired.lst.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Bos_taurus/
+FILE     Bt.retired.lst.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Gallus_gallus/
+FILE     Gga.data.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     /repository/UniGene/Gallus_gallus/
+FILE     Gga.retired.lst.gz
+DATABASE     UNIGENE
+####
+TYPE	FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR     repository/UniSTS/
+FILE     UniSTS.sts
+FILE     UniSTS.aliases
+DATABASE     UNISTS
+####
+TYPE    FTP
+SITE_URL        ftp.ncbi.nih.gov
+USER_ID anonymous
+PASSWD  phataka@pathbox.wustl.edu
+BASE_DIR     /pub/HomoloGene/current
+FILE    homologene.xml.gz
+DATABASE     HOMOLOGENE
+####
+TYPE    FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD     phataka@pathbox.wustl.edu
+BASE_DIR    /gene/DATA/
+FILE    gene_history.gz
+DATABASE     ENTREZGENE
+####
+TYPE    FTP
+SITE_URL        ftp.ncbi.nih.gov
+USER_ID anonymous
+PASSWD  phataka@pathbox.wustl.edu
+BASE_DIR     /gene/DATA/ASN_BINARY/Mammalia/
+FILE    Bos_taurus.ags.gz
+DATABASE     ENTREZGENE
+####
+TYPE    FTP
+SITE_URL        ftp.ncbi.nih.gov
+USER_ID anonymous
+PASSWD  phataka@pathbox.wustl.edu
+BASE_DIR     /gene/DATA/ASN_BINARY/Mammalia/
+FILE    Canis_familiaris.ags.gz
+DATABASE     ENTREZGENE
+####
+TYPE    FTP
+SITE_URL        ftp.ncbi.nih.gov
+USER_ID anonymous
+PASSWD  phataka@pathbox.wustl.edu
+BASE_DIR     /gene/DATA/ASN_BINARY/Mammalia/
+FILE    Homo_sapiens.ags.gz
+DATABASE     ENTREZGENE
+####
+TYPE    FTP
+SITE_URL        ftp.ncbi.nih.gov
+USER_ID anonymous
+PASSWD  phataka@pathbox.wustl.edu
+BASE_DIR     /gene/DATA/ASN_BINARY/Mammalia/
+FILE    Mus_musculus.ags.gz
+DATABASE     ENTREZGENE
+####
+TYPE    FTP
+SITE_URL        ftp.ncbi.nih.gov
+USER_ID anonymous
+PASSWD  phataka@pathbox.wustl.edu
+BASE_DIR     /gene/DATA/ASN_BINARY/Mammalia/
+FILE    Pan_troglodytes.ags.gz
+DATABASE     ENTREZGENE
+####
+TYPE    FTP
+SITE_URL        ftp.ncbi.nih.gov
+USER_ID anonymous
+PASSWD  phataka@pathbox.wustl.edu
+BASE_DIR     /gene/DATA/ASN_BINARY/Mammalia/
+FILE    Rattus_norvegicus.ags.gz
+DATABASE     ENTREZGENE
+####
+TYPE    FTP
+SITE_URL        ftp.ncbi.nih.gov
+USER_ID anonymous
+PASSWD  phataka@pathbox.wustl.edu
+BASE_DIR     /gene/DATA/ASN_BINARY/Mammalia/
+FILE   Sus_scrofa.ags.gz
+DATABASE     ENTREZGENE
+####
+TYPE    FTP
+SITE_URL        ftp.ncbi.nih.gov
+USER_ID anonymous
+PASSWD  phataka@pathbox.wustl.edu
+BASE_DIR     /gene/DATA/ASN_BINARY/Invertebrates/
+FILE   All_Invertebrates.ags.gz
+DATABASE     ENTREZGENE
+####
+TYPE    FTP
+SITE_URL        ftp.ncbi.nih.gov
+USER_ID anonymous
+PASSWD  phataka@pathbox.wustl.edu
+BASE_DIR     /gene/DATA/ASN_BINARY/Non-mammalian_vertebrates/
+FILE   All_Non-mammalian_vertebrates.ags.gz
+DATABASE     ENTREZGENE
+####
+TYPE     FTP
+SITE_URL     ftp.ncbi.nih.gov
+USER_ID     anonymous
+PASSWD      anonymous
+BASE_DIR     /snp/organisms/human_9606/XML/
+FILE     ds_ch2.xml.gz
+FILE     ds_ch14.xml.gz
+FILE     ds_ch3.xml.gz
+FILE     ds_ch1.xml.gz
+FILE     ds_ch15.xml.gz
+FILE     ds_ch18.xml.gz
+FILE     ds_ch16.xml.gz
+FILE     ds_ch19.xml.gz
+FILE     ds_ch20.xml.gz
+FILE     ds_ch21.xml.gz
+FILE     ds_ch4.xml.gz
+FILE     ds_ch5.xml.gz
+FILE     ds_ch7.xml.gz
+FILE     ds_ch8.xml.gz
+FILE     ds_ch10.xml.gz
+FILE     ds_ch13.xml.gz
+FILE     ds_ch6.xml.gz
+FILE     ds_ch11.xml.gz
+FILE     ds_ch22.xml.gz
+FILE     ds_chX.xml.gz
+FILE     ds_chY.xml.gz
+FILE     ds_ch17.xml.gz
+FILE     ds_ch9.xml.gz
+FILE     ds_ch12.xml.gz
+DATABASE	DBSNP
+####

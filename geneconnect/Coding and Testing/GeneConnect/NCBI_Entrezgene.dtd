@@ -1,0 +1,32 @@
+<!-- NCBI_Entrezgene.dtd
+  This file is built from a series of basic modules.
+  The actual ELEMENT and ENTITY declarations are in the modules.
+  This file is used to put them together.
+-->
+
+<!ENTITY % NCBI_Entity_module PUBLIC "-//NCBI//NCBI Entity Module//EN" "NCBI_Entity.mod">
+%NCBI_Entity_module;
+
+<!ENTITY % NCBI_Entrezgene_module PUBLIC "-//NCBI//NCBI Entrezgene Module//EN" "NCBI_Entrezgene.mod">
+%NCBI_Entrezgene_module;
+
+<!ENTITY % NCBI_Gene_module PUBLIC "-//NCBI//NCBI Gene Module//EN" "NCBI_Gene.mod">
+%NCBI_Gene_module;
+
+<!ENTITY % NCBI_Protein_module PUBLIC "-//NCBI//NCBI Protein Module//EN" "NCBI_Protein.mod">
+%NCBI_Protein_module;
+
+<!ENTITY % NCBI_BioSource_module PUBLIC "-//NCBI//NCBI BioSource Module//EN" "NCBI_BioSource.mod">
+%NCBI_BioSource_module;
+
+<!ENTITY % NCBI_RNA_module PUBLIC "-//NCBI//NCBI RNA Module//EN" "NCBI_RNA.mod">
+%NCBI_RNA_module;
+
+<!ENTITY % NCBI_General_module PUBLIC "-//NCBI//NCBI General Module//EN" "NCBI_General.mod">
+%NCBI_General_module;
+
+<!ENTITY % NCBI_Seqloc_module PUBLIC "-//NCBI//NCBI Seqloc Module//EN" "NCBI_Seqloc.mod">
+%NCBI_Seqloc_module;
+
+<!ENTITY % NCBI_Pub_module PUBLIC "-//NCBI//NCBI Pub Module//EN" "NCBI_Pub.mod">
+%NCBI_Pub_module;

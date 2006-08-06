@@ -1,0 +1,59 @@
+<?xml version ="1.0"?>
+
+<!--Ant Script for create Build for GeneConnectServer-->
+
+<project name="GeneConnectServer" default="buildjar">
+
+	<!--define require dir and Properties -->
+	<property name="base.dir" value="."/>
+    <property name="src.dir" value="${base.dir}/src"/>
+    <property name="fesrc.dir" value="${base.dir}/caFEChanges"/>
+    <property name="target.dir" value="${base.dir}/bin"/>
+    <property name="lib.dir" value="${base.dir}/Lib"/>
+    <property name="build.dir" value="${base.dir}/Lib"/>
+    
+	<!--  Sets classpath for build  -->
+	<path id="classpath">		
+		<fileset dir="${lib.dir}">
+             <include name="**/*.jar"/>			
+        </fileset>
+	</path>
+	
+    <!--Build the complete project-->
+    <!--target name="build" 
+	depends="compile,generateHBM,copy-resources,buildjar,createExe">
+    </target-->
+
+	<!-- sub tasks -->
+	<target name="init">
+    	<!-- Create the time stamp -->
+	    <tstamp/>
+    	<!-- Create the build directory structure used by compile -->
+	    <mkdir dir="${target.dir}"/>
+		<!-- Extract existing FE server jar in the output folder -->
+		<unjar src="${lib.dir}/FEServer.jar" dest="${target.dir}"/>
+  	</target>
+	
+	
+    <!-- Compile all files, generated and hand-written -->
+    <target name="compile" depends="init">
+        <javac srcdir="${src.dir}:${fesrc.dir}" destdir="${target.dir}" fork="true" includes="**/*.*" includeAntRuntime="true">
+			<!--classpath refid="path"></classpath-->
+        	<classpath>
+        		<fileset dir="${lib.dir}">   		             
+        			<include name="**/*.jar"/>
+                </fileset>
+        	</classpath>
+        </javac>
+    </target>
+
+
+    <!-- Create the application JAR -->
+    <target name="buildjar" depends="compile" >
+        <jar taskname="buildJar" jarfile="${build.dir}/FEServer.jar">
+            <fileset dir="${target.dir}" includes="**/*"/>
+        </jar>
+    	<copy file="${build.dir}/FEServer.jar" todir="${base.dir}/lib"/>
+    </target>
+
+</project>

@@ -1,0 +1,742 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SQLSCRIPT>
+        <CREATEQUERY>
+                <TABLENAME>SYSTEM_TERMDATA</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        STD_TERMID VARCHAR(30) NOT NULL,
+                        STD_TERM VARCHAR(255) NOT NULL,
+                        PRIMARY KEY(STD_TERMID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>SYSTEM_TERMTREE</TABLENAME>
+                <COLUMNDATA>
+                        ( 
+                        STT_CHILD_TERMID VARCHAR(30) NOT NULL,
+                        STT_PARENT_TERMID VARCHAR(30) NOT NULL,
+                        STT_ISPARENT CHAR(1) NOT NULL,
+                        PRIMARY KEY(STT_CHILD_TERMID, STT_PARENT_TERMID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ENTREZGENE</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        EGE_GENEID INTEGER(12) NOT NULL, 
+                        EGE_LOCAL_TAXID INTEGER(12) NOT NULL, 
+                        EGE_SYMBOL VARCHAR(30),
+                        EGE_GENE_NAME VARCHAR(100),
+                        EGE_SUMMARY TEXT(4000),
+                        EGE_CHROMOSOME_MAP VARCHAR(30), 
+                        EGE_CHROMOSOME VARCHAR(30),
+                        PRIMARY KEY (EGE_GENEID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ENTREZ_UNIGENE</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        EUG_GENEID INTEGER(12) NOT NULL,
+                        EUG_LOCAL_TAXID INTEGER(12) NOT NULL,
+                        EUG_UGID VARCHAR(23),
+                        PRIMARY KEY (EUG_GENEID,EUG_UGID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ENTREZ_MAP</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        EMA_GENEID INTEGER(12) NOT NULL,
+                        EMA_LOCAL_TAXID INTEGER(12) NOT NULL,
+                        EMA_MAPID VARCHAR(30) NOT NULL,
+                        PRIMARY KEY (EMA_GENEID, EMA_MAPID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ENTREZ_STS</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        EST_GENEID        INTEGER(12) NOT NULL,
+                        EST_LOCAL_TAXID INTEGER(12),
+                        EST_STSID          INTEGER(10),
+                        PRIMARY KEY (EST_GENEID, EST_STSID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ENTREZ_GOID</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        EGO_GENEID INTEGER(12) NOT NULL,
+                        EGO_LOCAL_TAXID INTEGER(12) NOT NULL,
+                        EGO_GOID VARCHAR(30) NOT NULL,
+                        PRIMARY KEY (EGO_GENEID, EGO_GOID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ENTREZ_OMIM</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        EOM_GENEID INTEGER(12) NOT NULL,
+                        EOM_LOCAL_TAXID INTEGER(12) NOT NULL,
+                        EOM_OMIM INTEGER(8),
+                        PRIMARY KEY (EOM_GENEID, EOM_OMIM)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ENTREZ_PMIDS</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        EPI_GENEID INTEGER(12) NOT NULL,
+                        EPI_LOCAL_TAXID INTEGER(12) NOT NULL,
+                        EPI_PUBMEDID INTEGER(10) NOT NULL,
+                        PRIMARY KEY (EPI_GENEID, EPI_PUBMEDID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ENTREZ_GENENAMES</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        EGE_GENEID INTEGER(12) NOT NULL,
+                        EGE_LOCAL_TAXID INTEGER(12) NOT NULL,
+                        EGE_GENE_NAME VARCHAR(100) NOT NULL,
+                        PRIMARY KEY (EGE_GENEID, EGE_GENE_NAME)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ENTREZ_FLY</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        EFY_GENEID INTEGER(12) NOT NULL,
+                        EFY_LOCAL_TAXID INTEGER(12) NOT NULL,
+                        EFY_FLYID VARCHAR(100) NOT NULL,
+                        PRIMARY KEY (EFY_GENEID, EFY_FLYID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ENTREZ_PHENOTYPE</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        EPH_GENEID INTEGER(12) NOT NULL,
+                        EPH_LOCAL_TAXID INTEGER(12) NOT NULL,
+                        EPH_PHENOTYPE VARCHAR(255) NOT NULL,
+                        PRIMARY KEY (EPH_GENEID, EPH_PHENOTYPE)        
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>GENE_HISTORY</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        GHI_RETIRED_GENEID INTEGER(12) NOT NULL,
+                        GHI_NEW_GENEID INTEGER(12)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>UNIGENE</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        UGE_UGID VARCHAR(23) NOT NULL,
+                        UGE_LOCAL_TAXID INTEGER(12) NOT NULL,
+                        UGE_TITLE VARCHAR(500),
+                        UGE_GENE VARCHAR(20),
+                        UGE_CYTOBAND VARCHAR(20),
+                        UGE_GENEID INTEGER(12),
+                        UGE_CHROMOSOME VARCHAR(50),
+                        PRIMARY KEY (UGE_UGID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>UG_EXPRESS</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        UEX_UGID VARCHAR(23) NOT NULL,
+                        UEX_TISSUEID VARCHAR(30) NOT NULL,
+                        PRIMARY KEY (UEX_UGID, UEX_TISSUEID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>UG_SEQUENCE</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        USE_UGID VARCHAR(23) NOT NULL,
+                        USE_ACC_NO VARCHAR(30) NOT NULL,
+                        USE_NID VARCHAR(30),
+                        USE_PID VARCHAR(30),
+                        PRIMARY KEY (USE_UGID, USE_ACC_NO)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>UG_PROTSIM</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        UPR_UGID VARCHAR(23) NOT NULL,
+                        UPR_LOCAL_TAXID INTEGER(12),
+                        UPR_PROTGI VARCHAR(30),
+                        UPR_PROTID VARCHAR(30)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>UNIGENE_HISTORY</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        UGH_CURRENTUGID        VARCHAR(23) NOT NULL,
+                        UGH_PREVUGID        VARCHAR(30),
+                        UGH_ACC_N0        VARCHAR(30)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>UNISTS</TABLENAME>
+                <COLUMNDATA>
+                        ( 
+                        UST_STSID  INTEGER(10) NOT NULL,
+                        UST_NAME   VARCHAR(30),
+                        UST_LOCAL_TAXID INTEGER(12) NOT NULL,
+                        PRIMARY KEY (UST_STSID,UST_LOCAL_TAXID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>UNISTS_ACCESSION</TABLENAME>
+                <COLUMNDATA>
+                        ( 
+                        UST_STSID INTEGER(10) NOT NULL,
+                        UST_LOCAL_TAXID INTEGER(12) NOT NULL,
+                        UST_ACC_NO  VARCHAR(30) NOT NULL,
+                        PRIMARY KEY (UST_STSID,UST_LOCAL_TAXID, UST_ACC_NO)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>UNISTS_ALIAS</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        USA_STSID  INTEGER(10) NOT NULL,
+                        USA_ALIAS   VARCHAR(30)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>HOMOLOGENE_XML</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        HGE_HOMOLOGENEID        INTEGER(12)        NOT NULL,
+                        HGE_GENEID1        INTEGER(12)        NOT NULL,
+                        HGE_LOCAL_TAXID1        INTEGER(12)        NOT NULL,
+                        HGE_GENEID2        INTEGER(12)        NOT NULL,
+                        HGE_LOCAL_TAXID2        INTEGER(12)        NOT NULL,
+                        HGE_ALIGNMENT        FLOAT(6, 2)        NOT NULL,
+                        HGE_RECIPROCAL        CHARACTER(1)        NOT NULL        
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ORTHOLOG</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        OTH_ORTHOLOGID        INTEGER(10)        NOT NULL,
+                        OTH_GENEID        INTEGER(12)        NOT NULL
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ORTHOLOGSTARTGENE</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        OSL_ORTHOLOGID        INTEGER(10)        NOT NULL,
+                        OSL_GENEID        INTEGER(12)        NOT NULL,
+                        OSL_TRUEORTHOLOG        CHAR(1)        NOT NULL
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>HOMOLOGENE_TMP</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        HGT_GENEID1        INTEGER(12)        NOT NULL,
+                        HGT_LOCAL_TAXID1 INTEGER(12) NOT NULL,
+                        HGT_GENEID2        INTEGER(12)        NOT NULL,
+                        HGT_LOCAL_TAXID2 INTEGER(12)   NOT NULL,
+                        HGT_ALIGNMENT        FLOAT(6, 2)        NOT NULL,
+                        HGT_RECIPROCAL        CHAR(1)        NOT NULL
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>HOMOLOGENE</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        HGE_GENEID1        INTEGER(12)        NOT NULL,
+                        HGE_LOCAL_TAXID1 INTEGER(12)     NOT NULL,
+                        HGE_UGID1        VARCHAR(23),        
+                        HGE_GENEID2        INTEGER(12)        NOT NULL,
+                        HGE_LOCAL_TAXID2 INTEGER(12)   NOT NULL,
+                        HGE_UGID2        VARCHAR(23),        
+                        HGE_ALIGNMENT        FLOAT(6, 2)        NOT NULL,
+                        HGE_RECIPROCAL        CHAR(1)        NOT NULL
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+		<CREATEQUERY>
+				<TABLENAME>ENTREZ_GENENAMES_PUBMED</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        EGP_GENEID        INTEGER(12)        NOT NULL,
+                        EGP_LOCAL_TAXID INTEGER(12)     NOT NULL,
+                        EGP_GENE_NAME        VARCHAR(100) NOT NULL,
+						EGP_LASTUPDATED        DATE,
+						PRIMARY KEY (EGP_GENEID,EGP_GENE_NAME)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>GENE_PMIDS</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        GPI_GENEID        INTEGER(12)        NOT NULL,
+                        GPI_LOCAL_TAXID INTEGER(12) NOT NULL,
+						GPI_PMID        INTEGER(10)        NOT NULL,
+						GPI_SYMBOL VARCHAR(30),
+						GPI_ISUPDATED CHAR(1)  NOT NULL,
+                        PRIMARY KEY (GPI_GENEID,GPI_PMID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>GENE_PMID_WEIGHTS</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        GPW_FROMGENEID        INTEGER(12)        NOT NULL,
+                        GPW_TOGENEID        INTEGER(12)        NOT NULL,
+                        GPW_WEIGHT        INTEGER(12)        NOT NULL,
+                        GPW_FROMPUBCT        INTEGER(12)        NOT NULL,
+						GPW_TOPUBCT        INTEGER(12)        NOT NULL,
+						PRIMARY KEY(GPW_FROMGENEID,GPW_TOGENEID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CHIPTYPES</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        CTY_CHIPTYPEID        INTEGER(4)        NOT NULL,
+                        CTY_CHIPNAME        VARCHAR(200),
+                        CTY_SPECIES        VARCHAR(50),
+                        CTY_INPRODUCTION        CHAR(1),
+                        CTY_FACILITYID        INTEGER(4),
+                        PRIMARY KEY (CTY_CHIPTYPEID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CHIPINFORMATION</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        CIN_CHIPTYPEID        INTEGER(4) NOT NULL,
+                        CIN_PROBESET        VARCHAR(35) NOT NULL,
+                        CIN_ACC_NO        VARCHAR(30),
+                        CIN_UGID        VARCHAR(23),
+                        CIN_LOCAL_TAXID INTEGER(12),
+                        CIN_GENEID        INTEGER(12),
+                        CIN_CHIP_DESCRIPTION        TEXT(2048),
+                        PRIMARY KEY (CIN_CHIPTYPEID,CIN_PROBESET)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CHIPDESCRIPTION</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        CDE_CHIPTYPEID        INTEGER(4) NOT NULL,
+                        CDE_PROBESET        VARCHAR(35) NOT NULL,
+                        CDE_ACC_NO        VARCHAR(30),
+                        CDE_UGID        VARCHAR(23),
+                        CDE_LOCAL_TAXID INTEGER(12),
+                        CDE_GENEID        INTEGER(12),
+                        CDE_CHIP_DESCRIPTION        TEXT(2048),
+                        PRIMARY KEY (CDE_CHIPTYPEID,CDE_PROBESET)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CIVIEW1</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        CV1_CHIPTYPEID INTEGER UNSIGNED NOT NULL,
+                        CV1_PROBESET VARCHAR(35) NOT NULL,
+                        CV1_ACC_NO VARCHAR(30) ,
+                        CV1_UGID VARCHAR(23) ,
+                        CV1_LOCAL_TAXID INTEGER(12),
+                        CV1_GENEID INTEGER(12),
+                        CV1_CHIP_DESCRIPTION TEXT
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CIVIEW2</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        CV2_CHIPTYPEID INTEGER UNSIGNED NOT NULL,
+                        CV2_PROBESET VARCHAR(35) NOT NULL,
+                        CV2_ACC_NO VARCHAR(30) ,
+                        CV2_UGID VARCHAR(23) ,
+                        CV2_LOCAL_TAXID INTEGER(12),
+                        CV2_GENEID INTEGER(12),
+                        CV2_CHIP_DESCRIPTION TEXT
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CIVIEW3</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        CV3_CHIPTYPEID INTEGER UNSIGNED NOT NULL,
+                        CV3_PROBESET VARCHAR(35) NOT NULL,
+                        CV3_ACC_NO VARCHAR(30) ,
+                        CV3_UGID VARCHAR(23) ,
+                        CV3_LOCAL_TAXID INTEGER(12),
+                        CV3_GENEID INTEGER(12),
+                        CV3_CHIP_DESCRIPTION TEXT
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CIVIEW4</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        CV4_CHIPTYPEID INTEGER UNSIGNED NOT NULL,
+                        CV4_PROBESET VARCHAR(35) NOT NULL,
+                        CV4_ACC_NO VARCHAR(30) ,
+                        CV4_UGID VARCHAR(23) ,
+                        CV4_LOCAL_TAXID INTEGER(12),
+                        CV4_GENEID INTEGER(12),
+                        CV4_CHIP_DESCRIPTION TEXT
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>GENEINFO</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        GIN_CHIPTYPEID        INTEGER(4)        NOT NULL,
+                        GIN_PROBESET        VARCHAR(35)        NOT NULL,
+                        GIN_LOCAL_TAXID INTEGER(12),
+                        GIN_ACC_NO        VARCHAR(30),
+                        GIN_UGID        VARCHAR(23),
+                        GIN_TITLE        VARCHAR(500),
+                        GIN_GENE        VARCHAR(20),
+                        GIN_CYTOBAND        VARCHAR(20),
+                        GIN_CHROMOSOME        VARCHAR(50),
+                        GIN_GENEID        INTEGER(12),
+                        GIN_SYMBOL        VARCHAR(30),
+                        GIN_GENE_NAME        VARCHAR(100),
+                        GIN_SUMMARY        TEXT(4000),
+                        GIN_SUM_FUNC        TEXT(500),
+                        GIN_CHROMOSOME_MAP        VARCHAR(30),
+                        GIN_CHIP_DESCRIPTION        TEXT(2048)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>GENEINFO_SUMMARY</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        GIN_GENEID        INTEGER(12),
+                        GIN_UGID        VARCHAR(23),
+                        GIN_LOCAL_TAXID INTEGER(12),
+                        GIN_GOTERM        VARCHAR(255),
+                        GIN_GOID        VARCHAR(30),
+                        GIN_SYMBOL        VARCHAR(30),
+                        GIN_GENE_NAME        VARCHAR(100),
+                        GIN_SUMMARY        TEXT(4000),
+                        GIN_SUM_FUNC        TEXT(500),
+                        GIN_CHROMOSOME_MAP        VARCHAR(30),
+                        GIN_TITLE        VARCHAR(500),
+                        GIN_GENE        VARCHAR(20),
+                        GIN_CYTOBAND        VARCHAR(20),
+                        GIN_CHROMOSOME        VARCHAR(50)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>GENEINFO_MARRAY_SUMMARY</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        GIN_CHIPTYPEID        INTEGER(4)        NOT NULL,
+                        GIN_PROBESET        VARCHAR(35)        NOT NULL,
+                        GIN_LOCAL_TAXID INTEGER(12),
+                        GIN_GOTERM        VARCHAR(255),
+                        GIN_GOID        VARCHAR(30),
+                        GIN_ACC_NO        VARCHAR(30),
+                        GIN_UGID        VARCHAR(23),
+                        GIN_TITLE        VARCHAR(500),
+                        GIN_GENE        VARCHAR(20),
+                        GIN_CYTOBAND        VARCHAR(20),
+                        GIN_CHROMOSOME        VARCHAR(50),
+                        GIN_GENEID        INTEGER(12),
+                        GIN_SYMBOL        VARCHAR(30),
+                        GIN_GENE_NAME        VARCHAR(100),
+                        GIN_SUMMARY        TEXT(4000),
+                        GIN_SUM_FUNC        TEXT(500),
+                        GIN_CHROMOSOME_MAP        VARCHAR(30),
+                        GIN_CHIP_DESCRIPTION        TEXT(2048)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CHIPINFO_HOMOLO</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        CIH_CHIPTYPEID        INTEGER(4)        NOT NULL,
+                        CIH_PROBESET        VARCHAR(35)        NOT NULL,
+                        CIH_LOCAL_TAXID1 INTEGER(12),
+                        CIH_GENEID1        INTEGER(12),
+                        CIH_UGID1        VARCHAR(23),
+                        CIH_LOCAL_TAXID2 INTEGER(12),
+                        CIH_GENEID2        INTEGER(12),
+                        CIH_UGID2        VARCHAR(23)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CHIPINFO_TERM</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        CIT_CHIPTYPEID        INTEGER(4)        NOT NULL,
+                        CIT_PROBESET        VARCHAR(35)        NOT NULL,
+                        CIT_LOCAL_TAXID INTEGER(12)      NOT NULL,
+                        CIT_TERMID        VARCHAR(30)        NOT NULL,
+                        PRIMARY KEY (CIT_CHIPTYPEID,CIT_PROBESET,CIT_LOCAL_TAXID,CIT_TERMID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CHIPINFO_TERM_DUPLICATES</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        CTD_CHIPTYPEID        INTEGER(4)        NOT NULL,
+                        CTD_PROBESET        VARCHAR(35)        NOT NULL,
+                        CTD_LOCAL_TAXID INTEGER(12)     NOT NULL,
+                        CTD_TERMID        VARCHAR(30)        NOT NULL
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CHIPINFO_OMIM</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        CIO_CHIPTYPEID        INTEGER(4)        NOT NULL,
+                        CIO_PROBESET        VARCHAR(35)        NOT NULL,
+                        CIO_LOCAL_TAXID INTEGER(12)   ,
+                        CIO_OMIM        INTEGER
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>SERVER_STATUS</TABLENAME>
+                <COLUMNDATA>
+                        ( 
+                        SST_ID              INTEGER UNSIGNED NOT NULL,
+                        SST_EXECUTION_DATE  DATE ,
+                        SST_EXECUTION_MODE  CHAR(1),
+                        SST_MACHINENAME     VARCHAR(30),
+                        SST_PARSING_TIME    INTEGER UNSIGNED,
+                        SST_TOTAL_TIME      INTEGER UNSIGNED ,
+                        SST_ERROR_COUNT     INTEGER UNSIGNED ,
+                        SST_POSTWORK_ERROR_COUNT INTEGER UNSIGNED,
+                        PRIMARY KEY (SST_ID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>SERVER_FILE_STATUS</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        SFS_ID             INTEGER UNSIGNED ,
+                        SFS_MODIFY_DATE    DATE,
+                        SFS_FILENAME       VARCHAR(50),
+                        SFS_FILETYPE       VARCHAR(8),
+                        SFS_DATABASE       VARCHAR(10),
+                        SFS_PATH           VARCHAR(30),
+						REVISION_NUMBER    VARCHAR(30)
+                        )
+                </COLUMNDATA>
+		</CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>REVISION_HISTORY</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        RVH_LOCAL_TAXID    INTEGER(12) ,
+                        RVH_ENTREZ_VERSION		VARCHAR(30),
+                        RVH_UNIGENE_VERSION		VARCHAR(30),
+                        RVH_UNI_STS_VERSION     VARCHAR(30),
+                        RVH_GO_VERSION       	VARCHAR(30),
+						RVH_HML_VERSION         VARCHAR(30),
+						RVH_TAX_VERSION         VARCHAR(30),
+						RVH_DBSNP_VERSION    	VARCHAR(30),
+						PRIMARY KEY(RVH_LOCAL_TAXID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CHIPDATA_FILTER_FIELDS</TABLENAME>
+                <COLUMNDATA>
+                        (                        
+                        CDF_TABLE_NAME VARCHAR(300) NOT NULL, 
+                        CDF_FIELD VARCHAR(300) NOT NULL, 
+                        CDF_DISPLAY_NAME VARCHAR(300) NOT NULL, 
+                        CDF_ISAGGREGATE CHAR(3)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ORGANISM_TAXONOMYMAP</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        OTM_LOCAL_TAXID INTEGER(12),
+                        OTM_TAXID INTEGER(12),
+                        OTM_ORGNAME VARCHAR(100),
+                        PRIMARY KEY (OTM_LOCAL_TAXID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ORGANISM_TAXONOMYMAP_TMP</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        OTT_TAXID INTEGER(12),
+                        OTT_ORGNAME VARCHAR(100),
+                        PRIMARY KEY (OTT_TAXID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ORGANISM_TAXONOMY_HISTORY</TABLENAME>
+                <COLUMNDATA>
+                        (
+                        OTH_OLDTAXID INTEGER(12),
+                        OTH_NEWTAXID INTEGER(12),
+                        PRIMARY KEY (OTH_OLDTAXID,OTH_NEWTAXID)
+                        )
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>SNPTABLE</TABLENAME>
+                <COLUMNDATA>
+                        ( 
+                          SNP_SNPID     INTEGER(12)  NOT NULL, 
+						  SNP_LOCALTAXID  INTEGER(12) NOt NULL, 
+						  SNP_CLASS     VARCHAR(20)  NOT NULL, 
+						  SNP_SNPTYPE  VARCHAR(50) NOT NULL,
+						  SNP_OBSERVED  VARCHAR(20)  NOT NULL, 
+						  SNP_SEQ_5     VARCHAR(4000)  NOT NULL, 
+						  SNP_SEQ_3     VARCHAR(4000)  NOT NULL,
+						  SNP_MOLTYPE VARCHAR(50),
+						  SNP_HETTYPE	VARCHAR(100),
+						  SNP_HET       INTEGER(18), 
+						  SNP_HET_SE    INTEGER(18), 
+						  PRIMARY KEY ( SNP_SNPID )
+						) 
+
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>CONTIG_INFO</TABLENAME>
+                <COLUMNDATA>
+                        ( 
+                          CTI_SNPID    INTEGER(12) NOT NULL,
+						  CTI_CONTIGID	 VARCHAR(20) NOT NULL,
+						  CTI_COMPONENTTYPE VARCHAR(50),
+						  CTI_ACCESSION VARCHAR(50),
+						  CTI_NAME		VARCHAR(50),
+						  CTI_CHROMOSOME			 CHAR(2),
+						  CTI_START					 INTEGER(12) NOT NULL,
+						  CTI_END					 INTEGER(12) NOT NULL,
+						  CTI_ORIENT				 VARCHAR(10),
+						  CTI_GI					 INTEGER(12),
+						  PRIMARY KEY (CTI_SNPID,CTI_CONTIGID) 
+						)
+
+                </COLUMNDATA>
+        </CREATEQUERY>
+        
+        <CREATEQUERY>
+			<TABLENAME>CONTIG_MAPLOC</TABLENAME>
+		    	<COLUMNDATA>
+		               ( 
+		                 CML_ID INTEGER(12) NOT NULL PRIMARY KEY,
+						 CML_SNPID    INTEGER (12) NOT NULL,
+						 CML_CONTIGID	 VARCHAR(20) NOT NULL ,
+						 CML_ASNFROM  INTEGER(12) NOT NULL,
+						 CML_ASNTO  INTEGER(12) NOT NULL,
+						 CML_LOCTYPE		 VARCHAR(10),
+						 CML_ALNQUALITY		 INTEGER(18),
+						 CML_ORIENTATION	 VARCHAR(10),
+						 CML_PHYSMAPSTR		 INTEGER(12),
+						 CML_PHYSMAPINT		 INTEGER(12),
+						 CML_NOMISMATCHS		 INTEGER(12),
+						 CML_NODELETIONS		 INTEGER(12),
+						 CML_NOINSTERTIONS		 INTEGER(12)	 	 	   
+						)
+		                </COLUMNDATA>
+        </CREATEQUERY>
+        
+        <CREATEQUERY>
+                <TABLENAME>FXNSET_CONTIGMAP</TABLENAME>
+                <COLUMNDATA>
+                        ( 
+                         FCM_SNPID    INTEGER(12) NOT NULL,
+						 FCM_CONTIGID	 VARCHAR(20) NOT NULL ,
+						 FCM_ID INTEGER(12) NOT NULL ,
+						 FCM_GENEID		   INTEGER(12) NOT NULL,
+						 FCM_GENESYMBOL	   VARCHAR(30),
+						 FCM_MRNAACCESSION INTEGER(12),
+						 FCM_MRANAVERSION  INTEGER(10),
+						 FCM_PROTACCESION INTEGER(12),
+						 FCM_PROTVERSION INTEGER(10),
+						 FCM_FXNCLASS	 VARCHAR(20)  
+						)
+
+
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <CREATEQUERY>
+                <TABLENAME>ENTREZ_SNP</TABLENAME>
+                <COLUMNDATA>
+                        ( 
+                        ESN_SNPID      INTEGER(12)  NOT NULL , 
+                        ESN_GENEID    INTEGER(12)  NOT NULL, 
+                        ESN_SYMBOL     VARCHAR(30), 
+			PRIMARY KEY(ESN_SNPID,ESN_GENEID))                         
+                </COLUMNDATA>
+        </CREATEQUERY>
+        <INSERTQUERY>INSERT INTO SYSTEM_TERMDATA VALUES ('TISSUE_0','Tissue Expression')</INSERTQUERY>
+        <INSERTQUERY>INSERT INTO SYSTEM_TERMDATA VALUES ('MAP_0','Chromosome Map')</INSERTQUERY>
+        <INSERTQUERY>INSERT INTO SYSTEM_TERMDATA VALUES ('PATH_0', 'Pathways')</INSERTQUERY>
+        <INSERTQUERY>INSERT INTO SYSTEM_TERMTREE VALUES ('PATH_0', '0', '1')</INSERTQUERY>
+		<INSERTQUERY>INSERT INTO SYSTEM_TERMTREE VALUES ('MAP_0', '0', '1')</INSERTQUERY>
+		<INSERTQUERY>INSERT INTO SYSTEM_TERMTREE VALUES ('TISSUE_0', '0', '1')</INSERTQUERY>			
+		<INSERTQUERY>ALTER TABLE ORGANISM_TAXONOMYMAP ADD INDEX ID_ORGANISM_TAXONOMYMAP (OTM_TAXID)</INSERTQUERY>
+		<INSERTQUERY>CREATE INDEX IDX_GPI_GENEID ON GENE_PMIDS(GPI_GENEID)</INSERTQUERY>
+		<INSERTQUERY>CREATE INDEX IDX_GPI_TAXID ON GENE_PMIDS(GPI_LOCAL_TAXID)</INSERTQUERY>
+		<INSERTQUERY>CREATE INDEX IDX_GPI_ISUPD ON GENE_PMIDS(GPI_ISUPDATED)</INSERTQUERY>
+		<INSERTQUERY>CREATE INDEX IDX_GPI_GENEID_ISUPD ON GENE_PMIDS(GPI_GENEID,GPI_ISUPDATED)</INSERTQUERY>
+		
+</SQLSCRIPT>

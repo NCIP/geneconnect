@@ -1,0 +1,3 @@
+IsDBTypeProtein=T
+Organism=HUMAN,MOUSE,RAT
+UniprotPrimaryAccMappingFile=samplemap.txt
