@@ -77,7 +77,7 @@ public class EntrezParser extends Parser
 		super(fileName, filesParsed);
 		
 		Logger.log("Initialised EntrezParser Constructor with history:" + history, Logger.DEBUG);
-		//m_fileName = fileName;
+		m_fileName = (String)fileName.getFiles().firstElement();
 		try
 		{
 			this.initializeTables(history);
@@ -227,18 +227,18 @@ public class EntrezParser extends Parser
     	{
     		if (history == false)
     		{
-    			m_fileWriterHashTable.put(Variables.locusBaseTableName,new FileWriter(Variables.locusBaseTableName+"."+m_fileToParse));
-    			m_fileWriterHashTable.put(Variables.llGoidTableName,new FileWriter(Variables.llGoidTableName+"."+m_fileToParse));
-    			m_fileWriterHashTable.put(Variables.llOmimTableName,new FileWriter(Variables.llOmimTableName+"."+m_fileToParse));
-    			m_fileWriterHashTable.put(Variables.llPhenotypeTableName,new FileWriter(Variables.llPhenotypeTableName+"."+m_fileToParse));
-    			m_fileWriterHashTable.put(Variables.llPmidTableName,new FileWriter(Variables.llPmidTableName+"."+m_fileToParse));
-    			m_fileWriterHashTable.put(Variables.llUgTableName,new FileWriter(Variables.llUgTableName+"."+m_fileToParse));
-    			m_fileWriterHashTable.put(Variables.llGeneNamesTableName,new FileWriter(Variables.llGeneNamesTableName+"."+m_fileToParse));
-    			m_fileWriterHashTable.put(Variables.termTableName,new FileWriter(Variables.termTableName+"."+m_fileToParse));
-    			m_fileWriterHashTable.put(Variables.treeTableName,new FileWriter(Variables.treeTableName+"."+m_fileToParse));
-    			m_fileWriterHashTable.put(Variables.llMapTableName,new FileWriter(Variables.llMapTableName+"."+m_fileToParse));
-    			m_fileWriterHashTable.put(Variables.locusStsTableName,new FileWriter(Variables.locusStsTableName+"."+m_fileToParse));
-    			m_fileWriterHashTable.put(Variables.locusFlyTableName,new FileWriter(Variables.locusFlyTableName+"."+m_fileToParse));
+    			m_fileWriterHashTable.put(Variables.locusBaseTableName,new FileWriter(Variables.locusBaseTableName+"."+m_fileName));
+    			m_fileWriterHashTable.put(Variables.llGoidTableName,new FileWriter(Variables.llGoidTableName+"."+m_fileName));
+    			m_fileWriterHashTable.put(Variables.llOmimTableName,new FileWriter(Variables.llOmimTableName+"."+m_fileName));
+    			m_fileWriterHashTable.put(Variables.llPhenotypeTableName,new FileWriter(Variables.llPhenotypeTableName+"."+m_fileName));
+    			m_fileWriterHashTable.put(Variables.llPmidTableName,new FileWriter(Variables.llPmidTableName+"."+m_fileName));
+    			m_fileWriterHashTable.put(Variables.llUgTableName,new FileWriter(Variables.llUgTableName+"."+m_fileName));
+    			m_fileWriterHashTable.put(Variables.llGeneNamesTableName,new FileWriter(Variables.llGeneNamesTableName+"."+m_fileName));
+    			m_fileWriterHashTable.put(Variables.termTableName,new FileWriter(Variables.termTableName+"."+m_fileName));
+    			m_fileWriterHashTable.put(Variables.treeTableName,new FileWriter(Variables.treeTableName+"."+m_fileName));
+    			m_fileWriterHashTable.put(Variables.llMapTableName,new FileWriter(Variables.llMapTableName+"."+m_fileName));
+    			m_fileWriterHashTable.put(Variables.locusStsTableName,new FileWriter(Variables.locusStsTableName+"."+m_fileName));
+    			m_fileWriterHashTable.put(Variables.locusFlyTableName,new FileWriter(Variables.locusFlyTableName+"."+m_fileName));
     		}
     		else
     		{

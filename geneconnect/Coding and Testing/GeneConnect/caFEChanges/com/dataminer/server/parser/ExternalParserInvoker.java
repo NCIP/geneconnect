@@ -21,6 +21,7 @@ import com.dataminer.server.globals.Utility;
 import com.dataminer.server.globals.Variables;
 import com.dataminer.server.jobmanager.DPQueue;
 import com.dataminer.server.log.Logger;
+import com.dataminer.server.parser.Parser;
 
 /**
  * This class is used to invoke the external parsers which are plug-in to 

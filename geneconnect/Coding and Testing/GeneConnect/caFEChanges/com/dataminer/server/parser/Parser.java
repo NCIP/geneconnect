@@ -51,6 +51,7 @@ abstract public class Parser
 	protected StringTokenizer m_tokenizer;
 	/** File Info Object describing file or list of files in the same base directory to be parsed*/
 	protected FileInfo m_fileToParse;
+	protected String m_fileNameToParse;
 	/** DBManger instance */
 	protected DBManager m_dbManager;
 	/** File Separator for the underlying plateform */
@@ -76,6 +77,7 @@ abstract public class Parser
 	public Parser(FileInfo fileToParse,DPQueue filesParsed)
 	{       
 		m_fileToParse = fileToParse;
+		m_fileNameToParse=(String)fileToParse.getFiles().firstElement();
 		m_filesParsed = filesParsed;
 		m_dbManager = DBManager.getInstance();
 	}
@@ -87,17 +89,22 @@ abstract public class Parser
 	{
 		try 
 		{
+			if(!m_fileToParse.IsExternalParser())
+			{	
 			/** opens the first file in the list of files contained by file Info object*/
 			open(m_fileToParse);
-			Logger.log("File(s) : " + m_fileToParse.getFileNames() + " opened",Logger.INFO);
 			
+			Logger.log("File(s) : " + m_fileToParse.getFileNames() + " opened",Logger.INFO);
+			}
 			/** parse and load the records specific to the parsing class for the given data source */
 			parse(m_fileToParse);
-			
+			if(!m_fileToParse.IsExternalParser())
+			{
 			/** close the parsed file*/
 			close();
-			Logger.log("File(s) : " + m_fileToParse.getFileNames() + " closed",Logger.INFO);
 			
+			Logger.log("File(s) : " + m_fileToParse.getFileNames() + " closed",Logger.INFO);
+			}
 			/** For few source files the information related to source file build is present in the
 			 * file itself which will be parsed by that particular parser and will be loaded in 
 			 * m_RevisionHistory. Now if a particular file is not giving any such information then there will
@@ -220,7 +227,7 @@ abstract public class Parser
 		while(fileWriterEnumurator.hasMoreElements())
 		{
 			tableName = (String)fileWriterEnumurator.nextElement();
-			m_filesParsed.add(tableName + "." + m_fileToParse);
+			m_filesParsed.add(tableName + "." + m_fileNameToParse);
 			fwriter = (FileWriter)m_fileWriterHashTable.get(tableName);
 			if(fwriter != null)
 			{
