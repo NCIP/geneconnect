@@ -456,10 +456,10 @@ Before running GeneConnect Server make sure that you go through the check list i
 To run the server from command prompt, execute the below command from the base directory.
 
 Linux/Solaris:
-$ nohup ./update.sh &
+$ nohup ./updateLinux.sh &
 
 Windows:
-> update.bat 
+> updateWindows.bat 
 
 
 --------------------------------------------------------
