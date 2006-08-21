@@ -1,10 +1,9 @@
 #! /usr/bin/perl
 use strict;
 use warnings;
-#use lib '../../../common_perl/lib/perl5/site_perl/5.8.5/';
 
-#to indicate the type of annotation,here its direct
-use constant DIRECT => 'direct_annotation';
+#To indicate the annotation types
+use constant DIRECT => '1';
 use constant DELIMITER => '###';
 
 use FetchParams;
@@ -26,15 +25,24 @@ my $inputFile = ($configParams{BASEDIR}) . "\/" . ($configParams{INPUTFILE});
 # this parser.
 my $outputFile = $configParams{OUTPUTFILE};
 
-# get the delimiter to be used
-my $delimiter = $configParams{delimiter};
+
+
+if($inputFile =~/.*\.gz/)
+{
+
+
+     my @filename_ext = split (/\.gz/,$inputFile);
+     system("gunzip $inputFile");
+     $inputFile=$filename_ext[0];
+}
+else {}
 
 open(READ,"$inputFile")|| die "cannot find file!\n";
-open(WRITE1, ">../$outputFile");
+open(WRITE1, ">$configParams{BASEDIR}/$outputFile");
 
-print WRITE1 "uniprot_genbank.txt\n";
+print WRITE1 "$outputFile\n";
 
-open(WRITE,">../uniprot_genbank.txt");
+open(WRITE,">$configParams{BASEDIR}/uniprot_genbank.txt");
 print WRITE "LOAD DATA INFILE * APPEND INTO TABLE UNIPROT_GENBANKPROTEIN FIELDS TERMINATED BY '###' (UGE_UNIPROTKBID, UGE_GENBANKPROTEINID, UGE_LINKTYPE)" . "\n" . "BEGINDATA" . "\n";
 
 my $temp;

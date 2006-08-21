@@ -12,6 +12,9 @@
     <property name="lib.dir" value="${base.dir}/Lib"/>
     <property name="build.dir" value="${base.dir}/Lib"/>
     
+	<property file="${base.dir}/Config/server.properties"/>
+	<property file="${base.dir}/build.properties"/>
+		
 	<!--  Sets classpath for build  -->
 	<path id="classpath">		
 		<fileset dir="${lib.dir}">
@@ -55,5 +58,33 @@
         </jar>
     	<copy file="${build.dir}/FEServer.jar" todir="${base.dir}/lib"/>
     </target>
+	
+	<!-- Create a database schema and user -->
+	<!-- Confirm Admin user name and password in the server.properties before running the target-->
+	<!-- Also check the table space name, table space file name, user name and passwords 
+	in the script "GCOracleInit.sql" -->
+	<target name="createDataBaseSchemaAndUser">	
+	  <sql driver="${driverName}"
+	       url="${databaseURL}"
+	       userid="${databaseAdminLogin}" password="${databaseAdminPassword}" >
+	    <classpath>
+	      <pathelement path="${ORACLE_HOME}/jdbc/Lib/classes12.zip"/>      
+	    </classpath>
+	  	<transaction  src="${base.dir}/RunScripts/GCOracleInit.sql"/>
+	  </sql>
+	</target>
+		
+	<!-- Create a database tables -->
+	<!-- Confirm database user name and password in the server.properties before running the target-->
+	<target name="createTables">	
+	  <sql driver="${driverName}"
+	       url="${databaseURL}"
+	       userid="${databaseLogin}" password="${databasePassword}" >
+	    <classpath>
+	      <pathelement path="${ORACLE_HOME}/jdbc/Lib/classes12.zip"/>      
+	    </classpath>
+	    <transaction  src="${base.dir}/Scripts/GCSchemaCreation.sql"/>
+	  </sql>
+	</target>
 
 </project>

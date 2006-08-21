@@ -3,7 +3,7 @@ use strict;
 use warnings;
 
 #to indicate the type of annotation,here its direct
-use constant DIRECT => 'direct_annotation';
+use constant DIRECT => '1';
 use constant DELIMITER => '###';
 use FetchParams;
 use Config::Simple;
@@ -29,12 +29,23 @@ my $inputFile = ($configParams{BASEDIR}) . "\/" . ($configParams{INPUTFILE});
 # this parser.
 my $outputFile = $configParams{OUTPUTFILE};
 
-open(WRITE4, ">../$outputFile");
+open(WRITE4, ">$configParams{BASEDIR}/$outputFile");
 print WRITE4 "entrezgene_refseqmrna.txt\nrefseqmrna_refseqprotein.txt\n";
 
+if($inputFile =~/.*\.gz/)
+{
+
+
+     my @filename_ext = split (/\.gz/,$inputFile);
+     system("gunzip $inputFile");
+     $inputFile=$filename_ext[0];
+}
+else {}
+
+
 open(READ,"$inputFile") || die "cannot open filei!\n";
-open(WRITE,">../entrezgene_refseqmrna.txt");
-open(WRITE1,">../refseqmrna_refseqprotein.txt");
+open(WRITE,">$configParams{BASEDIR}/entrezgene_refseqmrna.txt");
+open(WRITE1,">$configParams{BASEDIR}/refseqmrna_refseqprotein.txt");
 
 print WRITE "LOAD DATA INFILE * APPEND INTO TABLE entrezgene_refseqmrna FIELDS TERMINATED BY '###' (ENR_GENEID, ENR_REFSEQMRNAID, ENR_LINKTYPE)" . "\n" . "BEGINDATA" . "\n";
 

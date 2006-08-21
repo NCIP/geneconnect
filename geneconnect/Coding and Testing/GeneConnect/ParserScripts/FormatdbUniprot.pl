@@ -8,7 +8,7 @@ use Bio::Seq;
 use Bio::SeqIO;
 use Bio::SeqIO::fasta;
 use FetchParams;
-
+use File::Copy;
 
 # GeneConnect server (Java) sends a properties file
 # Read this properties file and store it in a hash
@@ -26,9 +26,10 @@ my %configParams = %{FetchParams::getParams($configFile)};
 #The name of file and type of database to be parsed is obtained from the hash.
 
 my $inputFile = ($configParams{INPUTFILE});
+
 my @arrayofinputfile = @$inputFile;
 
-print @arrayofinputfile,"\n";
+
 
 #reading parameters specific for this parser from the parser specific properties file
 #and putting them in a hash
@@ -41,7 +42,9 @@ my %properties = %{FetchParams::getParams($propertiesfile)};
 
 my $isdbtypeprotein=($properties{IsDBTypeProtein});
 my $organism=($properties{Organism});
-my $uniaccmappingfile=($properties{UniprotPrimaryAccMappingFile});
+
+#my $uniaccmappingfile=($properties{UniprotPrimaryAccMappingFile});
+
 my @arrayfororganism = @$organism;
 
 #creating a hash of organism name and file name as key-value pair
@@ -65,36 +68,53 @@ foreach my $org (@arrayfororganism)
 #creating a hash from the uniprot name to primary accsn file
 #containing uniprot name and primary accsn as key value pair
 
-my %accessionmapping=();
-%accessionmapping = %{FetchParams::getParams($uniaccmappingfile)};
-
-print %accessionmapping,"\n";
-
+my @files_unzipped;
+my $inputfilepath;
 foreach my $file (@arrayofinputfile)
 {
-    my $inputfilepath = ($configParams{BASEDIR}) . "\/" . $file;
+
+if($file =~/.*\.gz/)
+	{
+	
+	my @filename_ext = split (/\.gz/,$file);
+	
+		system("gunzip $configParams{BASEDIR}/$file");
+		$inputfilepath = ($configParams{BASEDIR}) . "\/" . $filename_ext[0];
+    				
+	}
+else
+        {
+		$inputfilepath = ($configParams{BASEDIR}) . "\/" . $file;
+    	
+    	}
+    	
+    	
     my $Seq_in = Bio::SeqIO ->new(-format => 'Fasta', -file => $inputfilepath);
     while(my $query = $Seq_in->next_seq())
     {
          
          my $accession=$query->display_id;
+         
+         
          my $sequence=$query->seq;
          my @organism_acc=split(/_/,$accession);
-         my $orgformacession=$organism_acc[1];         
+         my $orgformacession=$organism_acc[1];
+         my $desc = $query-> desc;
+        
+	#Taking the primary accession from the description line in to $primary_accn[1]      
+         my @acc= split(/\)/,$desc);
+         my @primary_accn = split(/\(/,$acc[0]);
+         
          #if organism name exists in the orgnameandfile hash containing organism name and their fasta file names 
          if (exists  $orgnameandfile{ $orgformacession })
          {
-             #if exists the uniprot name in accessionmaaping hash (which is always true)        
-             if (exists  $accessionmapping{ $accession })
-             { 
-                  #variable to hold the primary accesion number corresponding to the uniprot name
-                  $tempo=$accessionmapping{ $accession };
+             
+                  
                   
                   #printing the primary accesion number and sequence in organism specific fasta files
-                  print $orgformacession ">$tempo\n$sequence\n";
+                  print $orgformacession ">$primary_accn[1]\n$sequence\n";
              
-             }
-              
+            
                
             
         }#if 
@@ -110,7 +130,10 @@ foreach my $fasta (@arrayoffastafiles)
 	#formatdb the fasta input files
 
 	system("formatdb -i $fasta -p $isdbtypeprotein");
+	move("$fasta\.pin","$configParams{BASEDIR}");
+	move("$fasta\.phr","$configParams{BASEDIR}");
+	move("$fasta\.psq","$configParams{BASEDIR}");
+
 	
 }
-
 

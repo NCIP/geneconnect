@@ -73,7 +73,7 @@ public class UniGeneParser
 	public HashMap hmOrganismLocalId = new HashMap();
 	public HashMap hmTaxidLocalId = new HashMap();
 	public HashMap hmOrgAbbreviationName = new HashMap();
-	
+	private static String DIRECT_ANNOTATION="1";
 	
 	/**
 	 * Constructor method
@@ -158,7 +158,7 @@ public class UniGeneParser
 		{
 			record.append(ugRecord[0].toString()+Constants.columnSeparator);
 			record.append(ugEntrezRecords.get(i)+Constants.columnSeparator);
-			record.append("direct_annotation"+"\n");
+			record.append(DIRECT_ANNOTATION+"\n");
 			
 		}
 		return record.toString();

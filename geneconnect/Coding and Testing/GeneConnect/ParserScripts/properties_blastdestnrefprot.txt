@@ -1,0 +1,3 @@
+IsDBTypeProtein=T
+DBName=Human_Refseqprotein
+
