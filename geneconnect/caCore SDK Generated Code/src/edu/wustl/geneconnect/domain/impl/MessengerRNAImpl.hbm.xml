@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.wustl.geneconnect.domain.impl">
+  <class name="MessengerRNAImpl" table="MRNA" lazy="true">
+    <cache usage="read-write" />
+    <id name="id" type="java.lang.Long" column="MRNA_ID">
+      <generator class="assigned" />
+    </id>
+    <property name="ensemblTranscriptId" type="java.lang.String" column="ENSEMBL_TRANSCRIPT_ID" />
+    <property name="genbankAccession" type="java.lang.String" column="GENBANK_MRNA_ACCESSION" />
+    <property name="refseqId" type="java.lang.String" column="REFSEQ_MRNA_ID" />
+    <set name="genomicIdentifierSetCollection" lazy="true" inverse="true">
+      <cache usage="read-write" />
+      <key column="MRNA_ID" />
+      <one-to-many class="edu.wustl.geneconnect.domain.impl.GenomicIdentifierSetImpl" />
+    </set>
+    <set name="proteinCollection" table="MRNA_PROTEIN" lazy="true">
+      <cache usage="read-write" />
+      <key column="MRNA_ID" />
+      <many-to-many class="edu.wustl.geneconnect.domain.impl.ProteinImpl" column="PROTEIN_ID" />
+    </set>
+    <set name="geneCollection" table="GENE_MRNA" lazy="true">
+      <cache usage="read-write" />
+      <key column="MRNA_ID" />
+      <many-to-many class="edu.wustl.geneconnect.domain.impl.GeneImpl" column="GENE_ID" />
+    </set>
+  </class>
+</hibernate-mapping>
+

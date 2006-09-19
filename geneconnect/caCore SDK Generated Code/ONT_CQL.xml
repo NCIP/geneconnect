@@ -1,0 +1,46 @@
+<CQLQuery xmlns="http://CQL.caBIG/1/gov.nih.nci.cagrid.CQLQuery">
+	<Target name="edu.wustl.geneconnect.domain.GenomicIdentifierSet">
+		<Group logicRelation="AND">    
+			<!--consensusIdentifierDataCollection-->
+			<Association roleName="consensusIdentifierDataCollection"  name="edu.wustl.geneconnect.domain.ConsensusIdentifierData">
+				<Attribute name="frequency" predicate="EQUAL" value="0.2"/>
+				<Association roleName="genomicIdentifier"  		name="edu.wustl.geneconnect.domain.GenomicIdentifier">
+					<Attribute name="dataSource" predicate="EQUAL" value="RefSeqProtein"/>
+				</Association>
+			</Association>
+			
+			<!--orderOfNodeTraversalCollection-->
+
+			<Association roleName="orderOfNodeTraversalCollection"  name="edu.wustl.geneconnect.domain.OrderOfNodeTraversal">
+					<Group logicRelation="AND">
+						<Association roleName="sourceDataSource"  name="edu.wustl.geneconnect.domain.DataSource">
+							<Attribute name="dataSourceName" predicate="EQUAL" value="EnsemblGene"/>
+						</Association>
+						<Association roleName="linkType"  name="edu.wustl.geneconnect.domain.LinkType">
+							<Attribute name="linkType" predicate="EQUAL" value="DIRECT"/>
+						</Association>
+						<Association roleName="childOrderOfNodeTraversal"  name="edu.wustl.geneconnect.domain.OrderOfNodeTraversal">
+							<Group logicRelation="AND">
+								<Association roleName="sourceDataSource"  name="edu.wustl.geneconnect.domain.DataSource">
+									<Attribute name="dataSourceName" predicate="EQUAL" value="EnsemblTranscript"/>
+								</Association>
+								<Association roleName="linkType"  name="edu.wustl.geneconnect.domain.LinkType">
+									<Attribute name="linkType" predicate="EQUAL" value="DIRECT"/>
+								</Association>
+								<Association roleName="childOrderOfNodeTraversal"  name="edu.wustl.geneconnect.domain.OrderOfNodeTraversal">
+									<Group logicRelation="AND">
+										<Association roleName="sourceDataSource"  name="edu.wustl.geneconnect.domain.DataSource">
+											<Attribute name="dataSourceName" predicate="EQUAL" value="RefSeqmRNA"/>
+										</Association>
+										<Association roleName="linkType"  name="edu.wustl.geneconnect.domain.LinkType">
+											<Attribute name="linkType" predicate="EQUAL" value="DIRECT"/>
+										</Association>
+									</Group>
+								</Association>
+							</Group>
+					</Association>
+				</Group>
+		</Association>
+</Group>
+</Target>
+</CQLQuery>

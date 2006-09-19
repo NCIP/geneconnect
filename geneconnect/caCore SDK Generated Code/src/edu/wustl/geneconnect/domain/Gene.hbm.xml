@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.wustl.geneconnect.domain">
+  <class name="Gene" table="GENE" lazy="true" polymorphism="explicit">
+    <cache usage="read-write" />
+    <id name="id" type="java.lang.Long" column="GENE_ID">
+      <generator class="assigned" />
+    </id>
+    <property name="ensemblGeneId" type="java.lang.String" column="ENSEMBL_GENE_ID" />
+    <property name="entrezGeneId" type="java.lang.Long" column="ENTREZ_GENE_ID" />
+    <property name="unigeneClusterId" type="java.lang.String" column="UNIGENE_CLUSTER_ID" />
+    <set name="genomicIdentifierSetCollection" lazy="true" inverse="true">
+      <cache usage="read-write" />
+      <key column="GENE_ID" />
+      <one-to-many class="edu.wustl.geneconnect.domain.GenomicIdentifierSet" />
+    </set>
+    <set name="messengerRNACollection" table="GENE_MRNA" lazy="true">
+      <cache usage="read-write" />
+      <key column="GENE_ID" />
+      <many-to-many class="edu.wustl.geneconnect.domain.MessengerRNA" column="MRNA_ID" />
+    </set>
+    <set name="proteinCollection" table="PROTEIN_GENE" lazy="true">
+      <cache usage="read-write" />
+      <key column="GENE_ID" />
+      <many-to-many class="edu.wustl.geneconnect.domain.Protein" column="PROTEIN_ID" />
+    </set>
+  </class>
+</hibernate-mapping>
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="edu.wustl.geneconnect.domain.impl">
+  <class name="ConsensusIdentifierDataImpl" table="CONSENSUS_DATA" lazy="false">
+    <cache usage="read-write" />
+    <id name="id" type="java.lang.Long" column="CONSENSUS_ID">
+      <generator class="assigned" />
+    </id>
+    <property name="frequency" type="java.lang.Float" column="FREQUENCY" />
+    <!--many-to-one name="genomicIdentifierSet" class="edu.wustl.geneconnect.domain.impl.GenomicIdentifierSetImpl" column="SOLUTION_ID" lazy="false" /-->
+    <many-to-one name="genomicIdentifier" class="edu.wustl.geneconnect.domain.impl.GenomicIdentifierImpl" column="GENOMIC_ID" unique="true" lazy="false" />
+    <!--many-to-one name="genomicIdentifierSolution" class="edu.wustl.geneconnect.impl.GenomicIdentifierSolutionImpl" column="SOLUTION_ID" lazy="true" /-->
+  </class>
+</hibernate-mapping>
+
