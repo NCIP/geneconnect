@@ -8,7 +8,7 @@ use Bio::Seq;
 use Bio::SeqIO;
 use Bio::SeqIO::fasta;
 use FetchParams;
-
+use File::Copy;
 
 # GeneConnect server (Java) sends a config file
 # Read this config file and store it in a hash
@@ -58,6 +58,18 @@ foreach my $org (@arrayfororganism)
     open($org,">>genbank_protein_" .$org1. ".fasta");
 }
 
+if($file =~/.*\.gz/)
+		{
+		
+		my @filename_ext = split (/\.gz/,$file);
+		
+			system("gunzip $file");
+			$file = $filename_ext[0];
+		}
+else
+	        {
+			    	
+    		}
 
     my $Seq_in = Bio::SeqIO ->new(-format => 'Fasta', -file => $file);
     while(my $query = $Seq_in->next_seq())
@@ -86,7 +98,9 @@ foreach my $org (@arrayfororganism)
 
      }#while next seq
 
-
-
-
-
+foreach my $org (@arrayfororganism)
+ {
+ 	my @species = split(/\s/,$org);
+ 	my $filename = "genbank_protein_" . "$species[0]_$species[1]" . ".fasta" ;
+ 	move("$filename","$configParams{BASEDIR}");
+ }
