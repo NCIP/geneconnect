@@ -72,6 +72,7 @@ else
     		}
 
     my $Seq_in = Bio::SeqIO ->new(-format => 'Fasta', -file => $file);
+print "file = $file\n";
     while(my $query = $Seq_in->next_seq())
     {
 
@@ -82,20 +83,27 @@ else
          my @foraccn = split(/\|/,$accession);
          my @primary_accn =split(/\./,$foraccn[3]);
 
-       
+ 
          my @fororg = split(/\[/,$desc);
+         if (defined @fororg1)
+         {
          my @fororg1 = split(/\]/,$fororg[1]);
+         
+         #print "$fororg1[0]\n";
          my $org_name=$fororg1[0];         
-
-          
+	 }
+         else
+         {
+ 		next;
+         }  
+        
          #if organism name exists in the orgnameandfile hash containing organism name and their fasta file names
-         if (exists  $orgnameandfile{ $org_name })
+         if (exists  $orgnameandfile{ $org_name } )
          {
                   #printing the primary accesion number and sequence in organism specific fasta files
                   print $org_name ">$primary_accn[0]\n$sequence\n";
 
          }###if
-
      }#while next seq
 
 foreach my $org (@arrayfororganism)
