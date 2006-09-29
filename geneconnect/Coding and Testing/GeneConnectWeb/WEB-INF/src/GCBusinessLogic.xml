@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<business-logics>
+    <business-logic>
+		<business-action>SimpleSearchBizLogic</business-action>
+		<instance-type>edu.wustl.geneconnect.bizlogic.SimpleSearchBizLogic</instance-type>
+    </business-logic>
+</business-logics>  
+
