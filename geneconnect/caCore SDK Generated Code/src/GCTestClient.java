@@ -62,35 +62,57 @@ public class GCTestClient
 	 * return result from that search as a list of objects of the same class
 	 *  
 	 *  Query in this Method:
-	 *  Search on Gene where ensemblGeneId='ENS2' and get associated MessengerRNA 
-	 *  and print GenbankAccession.
-	 *   
+	 *  Search on Gene where ensemblGeneId='ENS2' AND unigene,ensemblPeptide as output 
+	 *  Print Set ID,Confidenscore and associated Gene,mRNA values with this Set 
+	 *  
 	 */
 	static void querySimple() throws Exception
 	{
 
 		/**
-		 * Create a DetachedCriteria for Gene with ensemblGeneId=ENS2
+		 * Create Detached for GenomicIdentifierSet Object and add restriction on confidence score
+		 * 
 		 */
-		DetachedCriteria geneCriteria = DetachedCriteria.forClass(Gene.class);
+		DetachedCriteria genomicIdSetCriteria = DetachedCriteria
+				.forClass(GenomicIdentifierSet.class);
+		
+
+		/**
+		 * Create Criteria for search on ensemblGeneId = ENS2 AND unigeneAsOutput = true
+		 * AND ensemblPeptideAsOutput=true
+		 */
+
+		DetachedCriteria geneCriteria = genomicIdSetCriteria.createCriteria("gene");
 		geneCriteria.add(Restrictions.eq("ensemblGeneId", "ENS2"));
 
-		List resultList = appService.query(geneCriteria, Gene.class.getName());
+		geneCriteria.add(Restrictions.eq("unigeneAsOutput", new Boolean(true)));
 
-		for (Iterator iter1 = resultList.iterator(); iter1.hasNext();)
+		DetachedCriteria proteinCriteria = genomicIdSetCriteria.createCriteria("protein");
+		proteinCriteria.add(Restrictions.eq("ensemblPeptideAsOutput", new Boolean(true)));
+		/**
+		 * Execute the Query
+		 */
+		List resultList = appService.query(genomicIdSetCriteria,
+				"edu.wustl.geneconnect.domain.GenomicIdentifierSet");
+		System.out.println("Result Size: " + resultList.size());
+		for (Iterator iter = resultList.iterator(); iter.hasNext();)
 		{
-			/** get Gene Object form resultList*/
-			Gene gene = (Gene) iter1.next();
-			System.out.println("EnsemblGeneId : " + gene.getEnsemblGeneId());
-			/** get associated mRNAColelction from Gene*/
-			Collection coll = gene.getMessengerRNACollection();
-			for (Iterator iter = coll.iterator(); iter.hasNext();)
-			{
-				MessengerRNA mrna = (MessengerRNA) iter.next();
 
-				/** Print value of GenbankAccession attribute of MessengerRNA object */
-				System.out.println("GenbankAccession : " + mrna.getGenbankAccession());
-			}
+			GenomicIdentifierSet gset = (GenomicIdentifierSet) iter.next();
+			/**Print Set Id and Confidence Score*/
+			System.out.println("\nSet Id: " + gset.getId() + "  Confidence Score: "
+					+ gset.getConfidenceScore() + "\n");
+			Gene gene = gset.getGene();
+			MessengerRNA mrna = gset.getMessengerRNA();
+			Protein protein = gset.getProtein();
+
+			System.out.println("Ensembl Gene ID | UniGene cluster ID | Ensembl Peptide ID");
+			System.out
+					.println(gene.getEnsemblGeneId() + "           | " + gene.getUnigeneClusterId()
+							+ "            | " + protein.getEnsemblPeptideId());
+
+			System.out
+					.println("-----------------------------------------------------------------------------------");
 		}
 
 	}
@@ -102,7 +124,7 @@ public class GCTestClient
 	 * Traverse the model to get data from the other classes.
 	 *  
 	 *  Query in this method:
-	 *  Search on Protein where ensemblGeneId='ENS2' AND unigene,ensemblPeptide as output 
+	 *  Search on Gene where ensemblGeneId='ENS2' AND unigene,ensemblPeptide as output 
 	 *  AND confidenceScore > 0.2
 	 *  Print Set ID,Confidenscore and associated Gene,mRNA values with this Set 
 	 *  
@@ -116,7 +138,7 @@ public class GCTestClient
 		 */
 		DetachedCriteria genomicIdSetCriteria = DetachedCriteria
 				.forClass(GenomicIdentifierSet.class);
-		genomicIdSetCriteria.add(Restrictions.gt("confidenceScore", new Float("0.1")));
+		genomicIdSetCriteria.add(Restrictions.gt("confidenceScore", new Float("0.2")));
 
 		/**
 		 * Create Criteria for search on ensemblGeneId = ENS2 AND unigeneAsOutput = true
