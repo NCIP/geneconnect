@@ -11,6 +11,13 @@
     <property name="refseqId" type="java.lang.String" column="REFSEQ_PROTEIN_ID" />
     <property name="uniprotkbPrimaryAccession" type="java.lang.String" column="UNIPROTKB_ACCESSION" />
     <property name="genbankAccession" type="java.lang.String" column="GENEBANK_PROTEIN_ACCESSION" />
+    
+    <property name="ensemblPeptideAsOutput" formula="(select 1 from dual)"/>
+	<property name="genbankProteinAsOutput" formula="(select 1 from dual)"/>
+	<property name="refseqProteinAsOutput" formula="(select 1 from dual)"/>
+	<property name="uniprotkbAsOutput" formula="(select 1 from dual)"/>
+
+    
     <set name="genomicIdentifierSetCollection" lazy="true" inverse="true">
       <cache usage="read-write" />
       <key column="PROTEIN_ID" />

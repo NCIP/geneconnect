@@ -1,7 +1,6 @@
 
 package edu.wustl.geneconnect.domain;
 
-
 /**
  * <!-- LICENSE_TEXT_START -->
  * <!-- LICENSE_TEXT_END -->
@@ -27,7 +26,7 @@ public class EntrezGene extends GeneGenomicIdentifier implements java.io.Seriali
 	{
 		this.genomicIdentifier = genomicIdentifier;
 	}
-	
+
 	public boolean equals(Object obj)
 	{
 		boolean eq = false;

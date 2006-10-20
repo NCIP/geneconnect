@@ -1,3 +1,4 @@
+
 package gov.nih.nci.system.applicationservice.impl;
 
 import gov.nih.nci.common.net.Request;
@@ -70,7 +71,8 @@ public class ApplicationServiceBusinessImpl
 	private static Logger log = Logger.getLogger(ApplicationServiceBusinessImpl.class.getName());
 
 	private boolean caseSensitivityFlag = false; // by default it is case
-													// insensitive
+
+	// insensitive
 
 	/**
 	 * Creates a new ApplicationService instance with the HTTP server address
@@ -157,9 +159,13 @@ public class ApplicationServiceBusinessImpl
 	{
 		if (i > maxRecordsCount)
 		{
-			log.error("Illegal Value for RecordsCount: RECORDSPERQUERY cannot be greater than MAXRECORDSPERQUERY. RECORDSPERQUERY = " + i + " MAXRECORDSPERQUERY = " + maxRecordsCount);
+			log
+					.error("Illegal Value for RecordsCount: RECORDSPERQUERY cannot be greater than MAXRECORDSPERQUERY. RECORDSPERQUERY = "
+							+ i + " MAXRECORDSPERQUERY = " + maxRecordsCount);
 
-			throw new Exception("Illegal Value for RecordsCount: RECORDSPERQUERY cannot be greater than MAXRECORDSPERQUERY. RECORDSPERQUERY = " + i + " MAXRECORDSPERQUERY = " + maxRecordsCount);
+			throw new Exception(
+					"Illegal Value for RecordsCount: RECORDSPERQUERY cannot be greater than MAXRECORDSPERQUERY. RECORDSPERQUERY = "
+							+ i + " MAXRECORDSPERQUERY = " + maxRecordsCount);
 
 		}
 		else
@@ -173,7 +179,8 @@ public class ApplicationServiceBusinessImpl
 		{
 			Properties _properties = new Properties();
 
-			_properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream("CORESystem.properties"));
+			_properties.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(
+					"CORESystem.properties"));
 
 			String rsPerQuery = (String) _properties.getProperty("RECORDSPERQUERY");
 			String maxRsPerQuery = (String) _properties.getProperty("MAXRECORDSPERQUERY");
@@ -217,7 +224,7 @@ public class ApplicationServiceBusinessImpl
 	 */
 	public int getQueryRowCount(Object criteria, String targetClassName) throws Exception
 	{
-		System.out.println("GOt Result 3");	
+		System.out.println("GOt Result 3");
 		Integer count = null;
 		Response response = new Response();
 		Request request = new Request(criteria);
@@ -230,7 +237,8 @@ public class ApplicationServiceBusinessImpl
 			{
 				try
 				{
-					InterfaceProxy client = (InterfaceProxy) Class.forName(gov.nih.nci.common.util.Constant.DELEGATE_NAME).newInstance();
+					InterfaceProxy client = (InterfaceProxy) Class.forName(
+							gov.nih.nci.common.util.Constant.DELEGATE_NAME).newInstance();
 					response = (Response) client.query(request);
 					count = (Integer) response.getRowCount();
 
@@ -238,12 +246,14 @@ public class ApplicationServiceBusinessImpl
 				catch (LinkageError le)
 				{
 					log.error("LinkageError: " + le.getMessage());
-					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE \n" + le.getMessage());
+					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE \n"
+							+ le.getMessage());
 				}
 				catch (ClassNotFoundException cnfe)
 				{
 					log.error("ClassNotFoundException: " + cnfe.getMessage());
-					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE\n" + cnfe.getMessage());
+					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE\n"
+							+ cnfe.getMessage());
 				}
 
 			}
@@ -260,7 +270,8 @@ public class ApplicationServiceBusinessImpl
 				catch (Exception e)
 				{
 					log.error("Exception: " + e.getMessage());
-					throw new Exception("Having problem When used as REMOTE TYPE \n" + e.getMessage());
+					throw new Exception("Having problem When used as REMOTE TYPE \n"
+							+ e.getMessage());
 				}
 			}
 		}
@@ -326,11 +337,15 @@ public class ApplicationServiceBusinessImpl
 		int localRecordsCount = recordsCount;
 		if (ClientInfoThreadVariable.isClientRequest())
 			localRecordsCount = ClientInfoThreadVariable.getRecordsCount();
-		
+
 		if ((maxRecordsCount > 0) && (localRecordsCount > maxRecordsCount))
 		{
-			log.error("Illegal Value for RecordsCount: RECORDSPERQUERY cannot be greater than MAXRECORDSPERQUERY. RECORDSPERQUERY = " + localRecordsCount + " MAXRECORDSPERQUERY = " + maxRecordsCount);
-			throw new Exception("Illegal Value for RecordsCount: RECORDSPERQUERY cannot be greater than MAXRECORDSPERQUERY. RECORDSPERQUERY = " + localRecordsCount + " MAXRECORDSPERQUERY = " + maxRecordsCount);
+			log
+					.error("Illegal Value for RecordsCount: RECORDSPERQUERY cannot be greater than MAXRECORDSPERQUERY. RECORDSPERQUERY = "
+							+ localRecordsCount + " MAXRECORDSPERQUERY = " + maxRecordsCount);
+			throw new Exception(
+					"Illegal Value for RecordsCount: RECORDSPERQUERY cannot be greater than MAXRECORDSPERQUERY. RECORDSPERQUERY = "
+							+ localRecordsCount + " MAXRECORDSPERQUERY = " + maxRecordsCount);
 		}
 		else if (localRecordsCount <= 0)
 		{
@@ -348,7 +363,8 @@ public class ApplicationServiceBusinessImpl
 			{
 				try
 				{
-					InterfaceProxy client = (InterfaceProxy) Class.forName(gov.nih.nci.common.util.Constant.DELEGATE_NAME).newInstance();
+					InterfaceProxy client = (InterfaceProxy) Class.forName(
+							gov.nih.nci.common.util.Constant.DELEGATE_NAME).newInstance();
 					// BaseDelegate client =
 					// (BaseDelegate)Class.forName(gov.nih.nci.common.util.Constant.DELEGATE_NAME).newInstance();
 					response = (Response) client.query(request);
@@ -357,13 +373,19 @@ public class ApplicationServiceBusinessImpl
 				}
 				catch (LinkageError le)
 				{
-					log.error("LinkageError: Having problem in instantiating Delegate as LOCAL TYPE \n" + le.getMessage());
-					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE \n" + le.getMessage());
+					log
+							.error("LinkageError: Having problem in instantiating Delegate as LOCAL TYPE \n"
+									+ le.getMessage());
+					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE \n"
+							+ le.getMessage());
 				}
 				catch (ClassNotFoundException cnfe)
 				{
-					log.error("ClassNotFoundException: Having problem in instantiating Delegate as LOCAL TYPE\n" + cnfe.getMessage());
-					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE\n" + cnfe.getMessage());
+					log
+							.error("ClassNotFoundException: Having problem in instantiating Delegate as LOCAL TYPE\n"
+									+ cnfe.getMessage());
+					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE\n"
+							+ cnfe.getMessage());
 				}
 			}
 			else
@@ -374,7 +396,7 @@ public class ApplicationServiceBusinessImpl
 					HTTPClient client = new HTTPClient(httpAddress);
 					response = (Response) client.query(request);
 					results = (List) response.getResponse();
-					
+
 				}
 				catch (Exception e)
 				{
@@ -389,7 +411,19 @@ public class ApplicationServiceBusinessImpl
 			log.error("Exception \n" + ex.getMessage());
 			throw new Exception("Exception " + ex.getMessage());
 		}
-
+		/**
+		 * @author sachin_lale
+		 * 
+		 * Commented out the following code where the resultList is typecasted to ListProxy.
+		 * In the ListProxy class the size of the result is calculated through querying again to the system with 
+		 * count(*).   
+		 * In GeneConnect the result list (output of the system) is processed based on user query on frequnecy/confidence 
+		 * i.e. removing of GenomicIdentifierSet object from teh result list if it not satified the condition.
+		 * Thus calculating the list size through query will be invalid.
+		 * After change this method returns the java.util.List results instead of  
+		 * gov.nih.nci.common.util.ListProxy resultList.
+		 * 
+		 */
 		//resultList.clear();
 		// Set the value for ListProxy
 		if (results != null)
@@ -398,14 +432,14 @@ public class ApplicationServiceBusinessImpl
 			// + results.size());
 			//resultList.addAll(results);
 		}
-//		ListProxy myProxy = (ListProxy) resultList;
-//		myProxy.setOriginalStart(firstRow);
-//		myProxy.setMaxRecordsPerQuery(localRecordsCount);
-//		myProxy.setOriginalCriteria(criteria);
-//		myProxy.setServerAddress(httpAddress);
-//		myProxy.setTargetClassName(targetClassName);
+		//		ListProxy myProxy = (ListProxy) resultList;
+		//		myProxy.setOriginalStart(firstRow);
+		//		myProxy.setMaxRecordsPerQuery(localRecordsCount);
+		//		myProxy.setOriginalCriteria(criteria);
+		//		myProxy.setServerAddress(httpAddress);
+		//		myProxy.setTargetClassName(targetClassName);
 		return results;
-//		return resultList;
+		//		return resultList;
 
 	}
 
@@ -417,7 +451,8 @@ public class ApplicationServiceBusinessImpl
 	 * @return List
 	 * @throws Exception
 	 */
-	public List query(Object criteria, int firstRow, int resultsPerQuery, String targetClassName) throws Exception
+	public List query(Object criteria, int firstRow, int resultsPerQuery, String targetClassName)
+			throws Exception
 	{
 		// List myList = new ListProxy();
 		List results = null;
@@ -436,8 +471,12 @@ public class ApplicationServiceBusinessImpl
 		}
 		if ((maxRecordsCount > 0) && (resultsPerQuery > maxRecordsCount))
 		{
-			log.error("Illegal Value for RecordsCount: RECORDSPERQUERY cannot be greater than MAXRECORDSPERQUERY. RECORDSPERQUERY = " + resultsPerQuery + " MAXRECORDSPERQUERY = " + maxRecordsCount);
-			throw new Exception("Illegal Value for RecordsCount: RECORDSPERQUERY cannot be greater than MAXRECORDSPERQUERY. RECORDSPERQUERY = " + resultsPerQuery + " MAXRECORDSPERQUERY = " + maxRecordsCount);
+			log
+					.error("Illegal Value for RecordsCount: RECORDSPERQUERY cannot be greater than MAXRECORDSPERQUERY. RECORDSPERQUERY = "
+							+ resultsPerQuery + " MAXRECORDSPERQUERY = " + maxRecordsCount);
+			throw new Exception(
+					"Illegal Value for RecordsCount: RECORDSPERQUERY cannot be greater than MAXRECORDSPERQUERY. RECORDSPERQUERY = "
+							+ resultsPerQuery + " MAXRECORDSPERQUERY = " + maxRecordsCount);
 		}
 		request.setDomainObjectName(targetClassName);
 		try
@@ -446,20 +485,26 @@ public class ApplicationServiceBusinessImpl
 			{
 				try
 				{
-					InterfaceProxy client = (InterfaceProxy) Class.forName(gov.nih.nci.common.util.Constant.DELEGATE_NAME).newInstance();
+					InterfaceProxy client = (InterfaceProxy) Class.forName(
+							gov.nih.nci.common.util.Constant.DELEGATE_NAME).newInstance();
 					response = (Response) client.query(request);
 					results = (List) response.getResponse();
 
 				}
 				catch (LinkageError le)
 				{
-					log.error("LinkageError: Having problem in instantiating Delegate as LOCAL TYPE \n" + le.getMessage());
-					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE \n" + le.getMessage());
+					log
+							.error("LinkageError: Having problem in instantiating Delegate as LOCAL TYPE \n"
+									+ le.getMessage());
+					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE \n"
+							+ le.getMessage());
 				}
 				catch (ClassNotFoundException cnfe)
 				{
-					log.error("Having problem in instantiating Delegate as LOCAL TYPE\n" + cnfe.getMessage());
-					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE\n" + cnfe.getMessage());
+					log.error("Having problem in instantiating Delegate as LOCAL TYPE\n"
+							+ cnfe.getMessage());
+					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE\n"
+							+ cnfe.getMessage());
 				}
 
 			}
@@ -507,20 +552,26 @@ public class ApplicationServiceBusinessImpl
 			{
 				try
 				{
-					InterfaceProxy client = (InterfaceProxy) Class.forName(gov.nih.nci.common.util.Constant.DELEGATE_NAME).newInstance();
+					InterfaceProxy client = (InterfaceProxy) Class.forName(
+							gov.nih.nci.common.util.Constant.DELEGATE_NAME).newInstance();
 					response = (Response) client.query(request);
 					results = (List) response.getResponse();
 
 				}
 				catch (LinkageError le)
 				{
-					log.error("LinkageError: Having problem in instantiating Delegate as LOCAL TYPE \n" + le.getMessage());
-					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE \n" + le.getMessage());
+					log
+							.error("LinkageError: Having problem in instantiating Delegate as LOCAL TYPE \n"
+									+ le.getMessage());
+					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE \n"
+							+ le.getMessage());
 				}
 				catch (ClassNotFoundException cnfe)
 				{
-					log.error("Having problem in instantiating Delegate as LOCAL TYPE\n" + cnfe.getMessage());
-					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE\n" + cnfe.getMessage());
+					log.error("Having problem in instantiating Delegate as LOCAL TYPE\n"
+							+ cnfe.getMessage());
+					throw new Exception("Having problem in instantiating Delegate as LOCAL TYPE\n"
+							+ cnfe.getMessage());
 				}
 			}
 			else
@@ -613,7 +664,8 @@ public class ApplicationServiceBusinessImpl
 	 *             Throws ClassNotFoundException
 	 */
 
-	private Collection getAssociation(Object criterionClassObj, String searchClassName) throws Exception
+	private Collection getAssociation(Object criterionClassObj, String searchClassName)
+			throws Exception
 	{
 		// Use reflection to find the method in critionClassObject and then get
 		// the result
@@ -621,19 +673,21 @@ public class ApplicationServiceBusinessImpl
 		// Method[] objMethods = objKlass.getDeclaredMethods();
 		Method[] objMethods = objKlass.getMethods();
 
-		String searchBeanName = searchClassName.substring(searchClassName.lastIndexOf(".") + 1, searchClassName.indexOf("Impl"));
+		String searchBeanName = searchClassName.substring(searchClassName.lastIndexOf(".") + 1,
+				searchClassName.indexOf("Impl"));
 		for (int i = 0; i < objMethods.length; i++)
 		{
 			String methodName = objMethods[i].getName();
 
 			// if (methodName.indexOf(searchBeanName) != -1)
 			String associationName = methodName.substring(3);
-			if (associationName.equals(searchBeanName) || associationName.equals(searchBeanName + "Collection"))
+			if (associationName.equals(searchBeanName)
+					|| associationName.equals(searchBeanName + "Collection"))
 			{
 				// if the methodName matches the searchBeanName, the method
 				// definitely return Collection or Object type
 				Class returnType = objMethods[i].getReturnType();
-				Object returnObject = objMethods[i].invoke(criterionClassObj, new Object[] {});
+				Object returnObject = objMethods[i].invoke(criterionClassObj, new Object[]{});
 				if (returnObject == null)
 				{
 					return null;
@@ -758,7 +812,8 @@ public class ApplicationServiceBusinessImpl
 		String target, source;
 
 		List newObjList = new ArrayList();
-		log.debug("ApplicationService.createNestedCriteria(): objList class name = " + objList.get(0).getClass().getName());
+		log.debug("ApplicationService.createNestedCriteria(): objList class name = "
+				+ objList.get(0).getClass().getName());
 		if ((objList.get(0)).getClass().getName().indexOf(".impl.") > 0)
 		{
 			for (Iterator iter = objList.iterator(); iter.hasNext();)
@@ -789,14 +844,18 @@ public class ApplicationServiceBusinessImpl
 			criteria = new NestedCriteria();
 			criteria.setSourceObjectName(sourceName);
 			criteria.setTargetObjectName(targetName);
-			log.debug("ApplicationService.createNestedCriteria(): sourceName = " + sourceName + " | targetName = " + targetName);
+			log.debug("ApplicationService.createNestedCriteria(): sourceName = " + sourceName
+					+ " | targetName = " + targetName);
 			if (!targetName.equals(sourceName) && !noInheritent(sourceName, targetName))
 			{
-				String roleName = searchUtil.getRoleName(Class.forName(sourceName), Class.forName(targetName).newInstance());
+				String roleName = searchUtil.getRoleName(Class.forName(sourceName), Class.forName(
+						targetName).newInstance());
 				if (roleName == null)
 				{
-					log.error("No association found from " + sourceName + " to " + targetName + ", please double check your query path.");
-					throw new Exception("No association found from " + sourceName + " to " + targetName + ", please double check your query path.");
+					log.error("No association found from " + sourceName + " to " + targetName
+							+ ", please double check your query path.");
+					throw new Exception("No association found from " + sourceName + " to "
+							+ targetName + ", please double check your query path.");
 				}
 				criteria.setRoleName(roleName);
 			}
@@ -820,7 +879,8 @@ public class ApplicationServiceBusinessImpl
 		if (criteria != null)
 		{
 			if (ClientInfoThreadVariable.isClientRequest())
-				criteria.setSearchCaseSensitivity(ClientInfoThreadVariable.getSearchCaseSensitivity());
+				criteria.setSearchCaseSensitivity(ClientInfoThreadVariable
+						.getSearchCaseSensitivity());
 			else
 				criteria.setSearchCaseSensitivity(caseSensitivityFlag);
 		}
@@ -836,8 +896,10 @@ public class ApplicationServiceBusinessImpl
 		}
 		catch (ClassNotFoundException e)
 		{
-			log.error("ERROR: Class " + name + " does not exist.  Please check the package and class name.");
-			throw new Exception("ERROR: Class " + name + " does not exist.  Please check the package and class name.");
+			log.error("ERROR: Class " + name
+					+ " does not exist.  Please check the package and class name.");
+			throw new Exception("ERROR: Class " + name
+					+ " does not exist.  Please check the package and class name.");
 		}
 
 		// assume it is already a full qualified name if the name contains
@@ -848,7 +910,8 @@ public class ApplicationServiceBusinessImpl
 		}
 		else
 		{
-			String full = name.substring(0, name.lastIndexOf(".")) + ".impl." + name.substring(name.lastIndexOf(".") + 1) + "Impl";
+			String full = name.substring(0, name.lastIndexOf(".")) + ".impl."
+					+ name.substring(name.lastIndexOf(".") + 1) + "Impl";
 			return full;
 		}
 	}
@@ -862,7 +925,8 @@ public class ApplicationServiceBusinessImpl
 	{
 		try
 		{
-			if (Class.forName(sourceName).getSuperclass().getName().equals(targetName) || Class.forName(targetName).getSuperclass().getName().equals(sourceName))
+			if (Class.forName(sourceName).getSuperclass().getName().equals(targetName)
+					|| Class.forName(targetName).getSuperclass().getName().equals(sourceName))
 				return true;
 			return false;
 		}
@@ -922,15 +986,19 @@ public class ApplicationServiceBusinessImpl
 				if (fieldName.equals("serialVersionUID"))
 					continue;
 
-				String getterMethodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-				String setterMethodName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+				String getterMethodName = "get" + fieldName.substring(0, 1).toUpperCase()
+						+ fieldName.substring(1);
+				String setterMethodName = "set" + fieldName.substring(0, 1).toUpperCase()
+						+ fieldName.substring(1);
 				// orig's getter method
 				Method getterMethod = objKlass.getMethod(getterMethodName);
 				// new object setter method
-				Method setterMethod = newObject.getClass().getMethod(setterMethodName, new Class[] { getterMethod.getReturnType() });
+				Method setterMethod = newObject.getClass().getMethod(setterMethodName,
+						new Class[]{getterMethod.getReturnType()});
 
-//				if (field.getType().getName().indexOf("gov.nih.nci") > -1)
-				if (!field.getType().isPrimitive() && !field.getType().getName().startsWith("java."))
+				//				if (field.getType().getName().indexOf("gov.nih.nci") > -1)
+				if (!field.getType().isPrimitive()
+						&& !field.getType().getName().startsWith("java."))
 				{
 					fieldValue = field.get(obj);
 					if (fieldValue != null)
@@ -966,7 +1034,7 @@ public class ApplicationServiceBusinessImpl
 				// System.out.println("ApplicationService.copyValue(): field
 				// name = " + fieldName + " | fieldValue = " + fieldValue);
 
-				setterMethod.invoke(newObject, new Object[] { fieldValue });
+				setterMethod.invoke(newObject, new Object[]{fieldValue});
 			}
 			// the superclass
 			objKlass = objKlass.getSuperclass();
@@ -999,9 +1067,12 @@ public class ApplicationServiceBusinessImpl
 				log.debug("ApplicationService.copyValue: objKlass.getName = " + objKlass.getName());
 				String resultObjName = objKlass.getName();
 				log.debug("ApplicationService.convertToImpl(): resultObjName = " + resultObjName);
-				String newImplObjName = resultObjName.substring(0, resultObjName.lastIndexOf(".")) + ".impl." + resultObjName.substring(resultObjName.lastIndexOf(".") + 1) + "Impl";
+				String newImplObjName = resultObjName.substring(0, resultObjName.lastIndexOf("."))
+						+ ".impl." + resultObjName.substring(resultObjName.lastIndexOf(".") + 1)
+						+ "Impl";
 				Class newObjClass = Class.forName(newImplObjName);
-				log.debug("ApplicationService.copyValue(): new object name = " + newObjClass.getName());
+				log.debug("ApplicationService.copyValue(): new object name = "
+						+ newObjClass.getName());
 
 				Object newObject = newObjClass.newInstance();
 
@@ -1032,16 +1103,19 @@ public class ApplicationServiceBusinessImpl
 				if (fieldName.equals("serialVersionUID"))
 					continue;
 
-				String getterMethodName = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-				String setterMethodName = "set" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
+				String getterMethodName = "get" + fieldName.substring(0, 1).toUpperCase()
+						+ fieldName.substring(1);
+				String setterMethodName = "set" + fieldName.substring(0, 1).toUpperCase()
+						+ fieldName.substring(1);
 				// orig's getter method
 				Method getterMethod = objKlass.getMethod(getterMethodName);
 				// new object setter method
-				Method setterMethod = newObject.getClass().getMethod(setterMethodName, new Class[] { getterMethod.getReturnType() });
+				Method setterMethod = newObject.getClass().getMethod(setterMethodName,
+						new Class[]{getterMethod.getReturnType()});
 
 				fieldValue = field.get(obj);
 
-				setterMethod.invoke(newObject, new Object[] { fieldValue });
+				setterMethod.invoke(newObject, new Object[]{fieldValue});
 			}
 			// the superclass
 			objKlass = objKlass.getSuperclass();
@@ -1081,7 +1155,7 @@ public class ApplicationServiceBusinessImpl
 }
 
 // $Log: not supported by cvs2svn $
-// Revision 1.1  2006/09/19 07:21:38  sachin_lale
+// Revision 1.4  2006/10/20 06:49:34  sachin_lale
 // *** empty log message ***
 //
 // Revision 1.4  2006/02/06 21:18:42  modik

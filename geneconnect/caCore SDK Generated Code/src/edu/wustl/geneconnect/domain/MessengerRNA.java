@@ -66,6 +66,40 @@ public class MessengerRNA implements java.io.Serializable
 		this.refseqId = refseqId;
 	}
 
+	private java.lang.Boolean ensemblTranscriptAsOutput;
+	private java.lang.Boolean genbankmRNAAsOutput;
+	private java.lang.Boolean refseqmRNAAsOutput;
+
+	public java.lang.Boolean getEnsemblTranscriptAsOutput()
+	{
+		return ensemblTranscriptAsOutput;
+	}
+
+	public void setEnsemblTranscriptAsOutput(java.lang.Boolean ensemblTranscriptAsOutput)
+	{
+		this.ensemblTranscriptAsOutput = ensemblTranscriptAsOutput;
+	}
+
+	public java.lang.Boolean getGenbankmRNAAsOutput()
+	{
+		return genbankmRNAAsOutput;
+	}
+
+	public void setGenbankmRNAAsOutput(java.lang.Boolean genbankmRNAAsOutput)
+	{
+		this.genbankmRNAAsOutput = genbankmRNAAsOutput;
+	}
+
+	public java.lang.Boolean getRefseqmRNAAsOutput()
+	{
+		return refseqmRNAAsOutput;
+	}
+
+	public void setRefseqmRNAAsOutput(java.lang.Boolean refseqmRNAAsOutput)
+	{
+		this.refseqmRNAAsOutput = refseqmRNAAsOutput;
+	}
+
 	private java.util.Collection genomicIdentifierSetCollection = new java.util.HashSet();
 
 	public java.util.Collection getGenomicIdentifierSetCollection()

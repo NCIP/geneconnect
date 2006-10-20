@@ -78,6 +78,51 @@ public class Protein implements java.io.Serializable
 		this.genbankAccession = genbankAccession;
 	}
 
+	private java.lang.Boolean ensemblPeptideAsOutput;
+	private java.lang.Boolean genbankProteinAsOutput;
+	private java.lang.Boolean refseqProteinAsOutput;
+	private java.lang.Boolean uniprotkbAsOutput;
+
+	public java.lang.Boolean getEnsemblPeptideAsOutput()
+	{
+		return ensemblPeptideAsOutput;
+	}
+
+	public void setEnsemblPeptideAsOutput(java.lang.Boolean ensemblPeptideAsOutput)
+	{
+		this.ensemblPeptideAsOutput = ensemblPeptideAsOutput;
+	}
+
+	public java.lang.Boolean getGenbankProteinAsOutput()
+	{
+		return genbankProteinAsOutput;
+	}
+
+	public void setGenbankProteinAsOutput(java.lang.Boolean genbankProteinAsOutput)
+	{
+		this.genbankProteinAsOutput = genbankProteinAsOutput;
+	}
+
+	public java.lang.Boolean getRefseqProteinAsOutput()
+	{
+		return refseqProteinAsOutput;
+	}
+
+	public void setRefseqProteinAsOutput(java.lang.Boolean refseqProteinAsOutput)
+	{
+		this.refseqProteinAsOutput = refseqProteinAsOutput;
+	}
+
+	public java.lang.Boolean getUniprotkbAsOutput()
+	{
+		return uniprotkbAsOutput;
+	}
+
+	public void setUniprotkbAsOutput(java.lang.Boolean uniprotkbAsOutput)
+	{
+		this.uniprotkbAsOutput = uniprotkbAsOutput;
+	}
+
 	private java.util.Collection genomicIdentifierSetCollection = new java.util.HashSet();
 
 	public java.util.Collection getGenomicIdentifierSetCollection()

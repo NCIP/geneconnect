@@ -26,7 +26,7 @@ public class EnsemblGene extends GeneGenomicIdentifier implements java.io.Serial
 	{
 		this.genomicIdentifier = genomicIdentifier;
 	}
-	
+
 	public boolean equals(Object obj)
 	{
 		boolean eq = false;

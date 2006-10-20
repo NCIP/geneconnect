@@ -1,7 +1,6 @@
 
 package edu.wustl.geneconnect.domain;
 
-
 /**
  * <!-- LICENSE_TEXT_START -->
  * <!-- LICENSE_TEXT_END -->
@@ -15,7 +14,7 @@ public class mRNAGenomicIdentifier extends GenomicIdentifier implements java.io.
 {
 
 	private static final long serialVersionUID = 1234567890L;
-	
+
 	protected java.lang.String genomicIdentifier;
 
 	public java.lang.String getGenomicIdentifier()
@@ -27,6 +26,7 @@ public class mRNAGenomicIdentifier extends GenomicIdentifier implements java.io.
 	{
 		this.genomicIdentifier = genomicIdentifier;
 	}
+
 	public boolean equals(Object obj)
 	{
 		boolean eq = false;

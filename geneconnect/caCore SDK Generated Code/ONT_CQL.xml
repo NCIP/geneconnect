@@ -3,9 +3,9 @@
 		<Group logicRelation="AND">    
 			<!--consensusIdentifierDataCollection-->
 			<Association roleName="consensusIdentifierDataCollection"  name="edu.wustl.geneconnect.domain.ConsensusIdentifierData">
-				<Attribute name="frequency" predicate="EQUAL" value="0.2"/>
+				<Attribute name="frequency" predicate="EQUAL_TO" value="0.2"/>
 				<Association roleName="genomicIdentifier"  		name="edu.wustl.geneconnect.domain.GenomicIdentifier">
-					<Attribute name="dataSource" predicate="EQUAL" value="RefSeqProtein"/>
+					<Attribute name="dataSource" predicate="EQUAL_TO" value="RefSeqProtein"/>
 				</Association>
 			</Association>
 			
@@ -14,26 +14,26 @@
 			<Association roleName="orderOfNodeTraversalCollection"  name="edu.wustl.geneconnect.domain.OrderOfNodeTraversal">
 					<Group logicRelation="AND">
 						<Association roleName="sourceDataSource"  name="edu.wustl.geneconnect.domain.DataSource">
-							<Attribute name="dataSourceName" predicate="EQUAL" value="EnsemblGene"/>
+							<Attribute name="dataSourceName" predicate="EQUAL_TO" value="EnsemblGene"/>
 						</Association>
 						<Association roleName="linkType"  name="edu.wustl.geneconnect.domain.LinkType">
-							<Attribute name="linkType" predicate="EQUAL" value="DIRECT"/>
+							<Attribute name="linkType" predicate="EQUAL_TO" value="DIRECT"/>
 						</Association>
 						<Association roleName="childOrderOfNodeTraversal"  name="edu.wustl.geneconnect.domain.OrderOfNodeTraversal">
 							<Group logicRelation="AND">
 								<Association roleName="sourceDataSource"  name="edu.wustl.geneconnect.domain.DataSource">
-									<Attribute name="dataSourceName" predicate="EQUAL" value="EnsemblTranscript"/>
+									<Attribute name="dataSourceName" predicate="EQUAL_TO" value="EnsemblTranscript"/>
 								</Association>
 								<Association roleName="linkType"  name="edu.wustl.geneconnect.domain.LinkType">
-									<Attribute name="linkType" predicate="EQUAL" value="DIRECT"/>
+									<Attribute name="linkType" predicate="EQUAL_TO" value="DIRECT"/>
 								</Association>
 								<Association roleName="childOrderOfNodeTraversal"  name="edu.wustl.geneconnect.domain.OrderOfNodeTraversal">
 									<Group logicRelation="AND">
 										<Association roleName="sourceDataSource"  name="edu.wustl.geneconnect.domain.DataSource">
-											<Attribute name="dataSourceName" predicate="EQUAL" value="RefSeqmRNA"/>
+											<Attribute name="dataSourceName" predicate="EQUAL_TO" value="RefSeqmRNA"/>
 										</Association>
 										<Association roleName="linkType"  name="edu.wustl.geneconnect.domain.LinkType">
-											<Attribute name="linkType" predicate="EQUAL" value="DIRECT"/>
+											<Attribute name="linkType" predicate="EQUAL_TO" value="DIRECT"/>
 										</Association>
 									</Group>
 								</Association>

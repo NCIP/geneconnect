@@ -10,6 +10,11 @@
     <property name="ensemblGeneId" type="java.lang.String" column="ENSEMBL_GENE_ID" />
     <property name="entrezGeneId" type="java.lang.Long" column="ENTREZ_GENE_ID" />
     <property name="unigeneClusterId" type="java.lang.String" column="UNIGENE_CLUSTER_ID" />
+
+	<property name="ensemblGeneAsOutput" formula="(select 1 from dual)"/>
+	<property name="entrezGeneAsOutput" formula="(select 1 from dual)"/>
+	<property name="unigeneAsOutput" formula="(select 1 from dual)"/>
+
     <set name="genomicIdentifierSetCollection" lazy="true" inverse="true">
       <cache usage="read-write" />
       <key column="GENE_ID" />

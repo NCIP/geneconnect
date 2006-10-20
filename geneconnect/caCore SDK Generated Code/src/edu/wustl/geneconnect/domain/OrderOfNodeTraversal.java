@@ -22,7 +22,7 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 	private static final long serialVersionUID = 1234567890L;
 
 	private java.lang.Long id;
-	
+
 	public java.lang.Long getId()
 	{
 		return id;
@@ -37,7 +37,7 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 	 * Added to search a next path id. 
 	 */
 	private java.lang.Long childPathId;
-	
+
 	public java.lang.Long getChildPathId()
 	{
 		return childPathId;
@@ -47,12 +47,12 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 	{
 		this.childPathId = childPathId;
 	}
-	
+
 	/**
 	 * Added to search a prev path id. 
 	 */
 	private java.lang.Long parentPathid;
-	
+
 	public java.lang.Long getParentPathid()
 	{
 		return parentPathid;
@@ -104,7 +104,6 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 		this.genomicIdentifierSetCollection = genomicIdentifierSetCollection;
 	}
 
-	
 	private edu.wustl.geneconnect.domain.DataSource sourceDataSource;
 
 	public edu.wustl.geneconnect.domain.DataSource getSourceDataSource()
@@ -176,7 +175,7 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 
 		ApplicationService applicationService = ApplicationServiceProvider.getApplicationService();
 		edu.wustl.geneconnect.domain.OrderOfNodeTraversal thisIdSet = new edu.wustl.geneconnect.domain.OrderOfNodeTraversal();
-		
+
 		// Changed to search a path id which eqauls to next_path_id
 		// instead of (as genarated by caCore )searching a path id which eqauls to path_id
 		if (this.getChildPathId() == null)

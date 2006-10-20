@@ -1,7 +1,6 @@
 
 package edu.wustl.geneconnect.domain;
 
-
 /**
  * <!-- LICENSE_TEXT_START -->
  * <!-- LICENSE_TEXT_END -->
@@ -28,7 +27,7 @@ public class ProteinGenomicIdentifier extends GenomicIdentifier implements java.
 	{
 		this.genomicIdentifier = genomicIdentifier;
 	}
-	
+
 	public boolean equals(Object obj)
 	{
 		boolean eq = false;

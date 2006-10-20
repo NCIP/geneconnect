@@ -10,6 +10,11 @@
     <property name="ensemblTranscriptId" type="java.lang.String" column="ENSEMBL_TRANSCRIPT_ID" />
     <property name="genbankAccession" type="java.lang.String" column="GENBANK_MRNA_ACCESSION" />
     <property name="refseqId" type="java.lang.String" column="REFSEQ_MRNA_ID" />
+    
+    <property name="ensemblTranscriptAsOutput" formula="(select 1 from dual)"/>
+	<property name="genbankmRNAAsOutput" formula="(select 1 from dual)"/>
+	<property name="refseqmRNAAsOutput" formula="(select 1 from dual)"/>
+    
     <set name="genomicIdentifierSetCollection" lazy="true" inverse="true">
       <cache usage="read-write" />
       <key column="MRNA_ID" />

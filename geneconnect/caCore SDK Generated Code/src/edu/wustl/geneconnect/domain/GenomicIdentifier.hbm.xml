@@ -19,13 +19,13 @@
  
     <subclass name="edu.wustl.geneconnect.domain.ProteinGenomicIdentifier" dynamic-update="false" dynamic-insert="false" discriminator-value="Protein" >
       <property name="genomicIdentifier" type="java.lang.String" column="GENOMIC_IDENTIFIER" />
-      <subclass name="edu.wustl.geneconnect.domain.EnsemblPeptide" dynamic-update="false" dynamic-insert="false" discriminator-value="EnsemblPeptide" />
+      <subclass name="edu.wustl.geneconnect.domain.EnsemblPeptide" dynamic-update="false" dynamic-insert="false" discriminator-value="Ensembl Peptide" />
         
      
-      <subclass name="edu.wustl.geneconnect.domain.GenBankProtein" dynamic-update="false" dynamic-insert="false" discriminator-value="GenBankProtein" />
+      <subclass name="edu.wustl.geneconnect.domain.GenBankProtein" dynamic-update="false" dynamic-insert="false" discriminator-value="GenBank Protein" />
         
      
-      <subclass name="edu.wustl.geneconnect.domain.RefSeqProtein" dynamic-update="false" dynamic-insert="false" discriminator-value="RefSeqProtein" />
+      <subclass name="edu.wustl.geneconnect.domain.RefSeqProtein" dynamic-update="false" dynamic-insert="false" discriminator-value="RefSeq Protein" />
         
      
       <subclass name="edu.wustl.geneconnect.domain.UniProtKB" dynamic-update="false" dynamic-insert="false" discriminator-value="UniProtKB" />
@@ -34,11 +34,11 @@
    
     <subclass name="edu.wustl.geneconnect.domain.GeneGenomicIdentifier" dynamic-update="false" dynamic-insert="false" discriminator-value="Gene" >
      
-      <subclass name="edu.wustl.geneconnect.domain.EntrezGene" dynamic-update="false" dynamic-insert="false" discriminator-value="EntrezGene">
+      <subclass name="edu.wustl.geneconnect.domain.EntrezGene" dynamic-update="false" dynamic-insert="false" discriminator-value="Entrez Gene">
          <property name="genomicIdentifier" type="java.lang.Long" column="ENTZ_GENOMIC_IDENTIFIER" />
        </subclass>  
      
-      <subclass name="edu.wustl.geneconnect.domain.EnsemblGene" dynamic-update="false" dynamic-insert="false" discriminator-value="EnsemblGene">
+      <subclass name="edu.wustl.geneconnect.domain.EnsemblGene" dynamic-update="false" dynamic-insert="false" discriminator-value="Ensembl Gene">
          <property name="genomicIdentifier" type="java.lang.String" column="GENOMIC_IDENTIFIER" />
        </subclass>  
         
@@ -52,13 +52,13 @@
    
     <subclass name="edu.wustl.geneconnect.domain.mRNAGenomicIdentifier" dynamic-update="false" dynamic-insert="false" discriminator-value="MRNA" >
       <property name="genomicIdentifier" type="java.lang.String" column="GENOMIC_IDENTIFIER" />
-      <subclass name="edu.wustl.geneconnect.domain.EnsemblTranscript" dynamic-update="false" dynamic-insert="false" discriminator-value="EnsemblTranscript" />
+      <subclass name="edu.wustl.geneconnect.domain.EnsemblTranscript" dynamic-update="false" dynamic-insert="false" discriminator-value="Ensembl Transcript" />
         
      
-      <subclass name="edu.wustl.geneconnect.domain.RefSeqmRNA" dynamic-update="false" dynamic-insert="false" discriminator-value="RefSeqmRNA" />
+      <subclass name="edu.wustl.geneconnect.domain.RefSeqmRNA" dynamic-update="false" dynamic-insert="false" discriminator-value="RefSeq mRNA" />
         
      
-      <subclass name="edu.wustl.geneconnect.domain.GenBankmRNA" dynamic-update="false" dynamic-insert="false" discriminator-value="GenBankmRNA" />
+      <subclass name="edu.wustl.geneconnect.domain.GenBankmRNA" dynamic-update="false" dynamic-insert="false" discriminator-value="GenBank mRNA" />
         
       </subclass>
     
