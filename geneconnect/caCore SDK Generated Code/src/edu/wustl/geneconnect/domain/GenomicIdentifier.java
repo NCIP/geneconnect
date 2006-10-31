@@ -56,8 +56,8 @@ public class GenomicIdentifier implements java.io.Serializable
 	protected java.lang.String dataSource;
 
 	/**
-	 * The attribute daatSource is added as discriminator value to determine the class representing which of the  
-	 * data source.
+	 * The attribute dataSource is added as discriminator value to determine the GenomicIdentifier class representing 
+	 * the data source.
 	 * This attribute is used for querying on frequency. 
 	 * @return java.lang.String
 	 */
