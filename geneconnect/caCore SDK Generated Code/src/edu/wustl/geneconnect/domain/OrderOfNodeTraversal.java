@@ -37,7 +37,12 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 	 * Added to search a next path id. 
 	 */
 	private java.lang.Long childPathId;
-
+	
+	/**
+	 * The method is added to get the next node in the linked list of OrderOfNodeTraversal.
+	 * This method is used in getChildOrderOfNodeTraversal().    
+	 * @return Long
+	 */
 	public java.lang.Long getChildPathId()
 	{
 		return childPathId;
@@ -52,7 +57,12 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 	 * Added to search a prev path id. 
 	 */
 	private java.lang.Long parentPathid;
-
+	
+	/**
+	 * The method is added to get the previous node in the linked list of OrderOfNodeTraversal.
+	 * This method is used in getParentOrderOfNodeTraversal().    
+	 * @return Long
+	 */
 	public java.lang.Long getParentPathid()
 	{
 		return parentPathid;
@@ -169,7 +179,12 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 	}
 
 	private edu.wustl.geneconnect.domain.OrderOfNodeTraversal childOrderOfNodeTraversal;
-
+	/**
+	 * The implementation is modified to get a next node in the ONT list.
+	 * Modified to search a id which eqauls to childPathId
+	 * instead of (as genarated by caCore )searching a id which eqauls to id
+	 * @return OrderOfNodeTraversal
+	 */
 	public edu.wustl.geneconnect.domain.OrderOfNodeTraversal getChildOrderOfNodeTraversal()
 	{
 
@@ -216,7 +231,13 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 	}
 
 	private edu.wustl.geneconnect.domain.OrderOfNodeTraversal parentOrderOfNodeTraversal;
-
+	
+	/**
+	 * The implementation is modified to get a previous  node in the ONT list.
+	 * Modified to search a id which eqauls to parentPathid
+	 * instead of (as genarated by caCore )searching a id which eqauls to id
+	 * @return OrderOfNodeTraversal
+	 */
 	public edu.wustl.geneconnect.domain.OrderOfNodeTraversal getParentOrderOfNodeTraversal()
 	{
 
