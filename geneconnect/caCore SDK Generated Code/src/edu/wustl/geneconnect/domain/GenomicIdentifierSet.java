@@ -175,6 +175,7 @@ public class GenomicIdentifierSet implements java.io.Serializable
 			System.out.println("GenomicIdentifierSet:getGene throws exception ... ...");
 			ex.printStackTrace();
 		}
+
 		return gene;
 
 	}
@@ -208,7 +209,7 @@ public class GenomicIdentifierSet implements java.io.Serializable
 	}
 
 	private edu.wustl.geneconnect.GenomicIdentifierSolution genomicIdentifierSolution;
-	
+
 	public edu.wustl.geneconnect.GenomicIdentifierSolution getGenomicIdentifierSolution()
 	{
 		return genomicIdentifierSolution;

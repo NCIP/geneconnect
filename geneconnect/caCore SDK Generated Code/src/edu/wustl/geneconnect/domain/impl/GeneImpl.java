@@ -1,7 +1,7 @@
 
 package edu.wustl.geneconnect.domain.impl;
 
-import edu.wustl.geneconnect.domain.*;
+import edu.wustl.geneconnect.domain.Gene;
 
 /**
  * <!-- LICENSE_TEXT_START -->

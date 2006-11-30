@@ -1,457 +1,337 @@
 <?xml version ="1.0"?>
+<!--Ant Script for create Build for caTISSUE Core-->
 
-<!--Ant Script for GeneConnectServer-->
-
-<project name="GeneConnectServer" default="buildjar">
-
-	<!--define require dir and Properties -->
+<project name="GeneConnectWeb Application deployer" default="deploy_app">
+	
+	<!--define require dir and Properties -->	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
-		<classpath>
-			<pathelement location="./Lib/ant-contrib.jar"/>
-		</classpath>
+	<classpath>
+	    <pathelement location="./lib/ant-contrib.jar"/>
+	  </classpath>
 	</taskdef>
 
-	<!--define require dir and Properties -->
+	<property file="build.properties"/>
+	
 	<property name="base.dir" value="."/>
 	<property name="web.dir" value="."/>
-	<property name="src.dir" value="${base.dir}/src"/>
-	<property name="fesrc.dir" value="${base.dir}/caFEChanges"/>
-	<property name="websrc.dir" value="${web.dir}/WEB-INF/src"/>
+	<property name="websrc.dir" value="${base.dir}/WEB-INF/src"/>
+	<property name="temp.dir" value="./temp"/>
+	<property name="app.temp.dir" value="./temp/geneconnect" />
+	<!--property name="app.cacore.temp.dir" value="./temp/geneconnectcaCore" /-->
+	<property name="lib.dir" value="${base.dir}/WEB-INF/lib"/>
 	<property name="output.dir" value="${base.dir}/bin"/>
-	<property name="lib.dir" value="${base.dir}/WEB-INF/Lib"/>
-	<property name="build.dir" value="${base.dir}/Lib"/>
-	<property name="logs.dir" value="${base.dir}/Logs"/>
-	<property name="tomcat.dir" value="D:/Tomcat/webapps"/>
+	
+	<property name="app.war.name" value="geneconnect.war"/>
+	<property name="app.cacore.war.name" value="geneconnectcaCore.war"/>
 		
-	<property file="${base.dir}/Config/server.properties"/>
-	<property file="${base.dir}/build.properties"/>
+    <property name="mysql.sql.dir" value="${base.dir}/SQL/MySql"/>
+	<property name="oracle.sql.dir" value="${base.dir}/SQL/Oracle"/>
+	<property name="common.sql.dir" value="${base.dir}/SQL/Common"/>
+	<property name="oracle.dialect.string" value="net.sf.hibernate.dialect.Oracle9Dialect"/>
+	<property name="mysql.dialect.string" value="net.sf.hibernate.dialect.MySQLDialect"/>
 	
+	<property name="oracle.dialect.h3.string" value="org.hibernate.dialect.Oracle9Dialect"/>
+	<property name="mysql.dialect.h3.string" value="org.hibernate.dialect.MySQLDialect"/>
 	
-	<!-- Clean ups all temporary and log files -->
-	<target name="clean">
-		<echo message="Deleting all temporary files in the output folder..." />
-		<delete includeemptydirs="true">
-			<fileset dir="${output.dir}">
-				<include name="**/*" />
-			</fileset>
-		</delete>
-
-		<echo message="Deleting all log files in the Logs folder..." />
-		<delete includeemptydirs="true">
-			<fileset dir="${logs.dir}">
-				<include name="**/*" />
-			</fileset>
-		</delete>
-	</target>
-
-	<!-- Intizalization tasks-->
-	<target name="init">
-		<!-- Create the time stamp -->
-		<tstamp/>
-		<!-- Create the build directory structure used by compile -->
-		<mkdir dir="${output.dir}"/>
-		<mkdir dir="${output.dir}/classes"/>
-		<mkdir dir="${output.dir}/classes/jar"/>
-		<mkdir dir="${output.dir}/classes/war"/>
-		<mkdir dir="${output.dir}/jar"/>
-		<mkdir dir="${output.dir}/war"/>
-		<!-- Extract existing FE server jar in the output folder -->
-		<!--unjar src="${lib.dir}/FEServer.jar" dest="${output.dir}/classes/jar"/-->
-	</target>
-
-
-	<!-- Compile all files, generated and hand-written -->
-	<target name="compile" depends="init">
-		<javac srcdir="${websrc.dir}" destdir="${output.dir}/classes/war" fork="true" includes="**/*.*" includeAntRuntime="true">
-			<classpath>
-				<fileset dir="${lib.dir}">
-					<include name="**/*.jar" />
-				</fileset>
-				<fileset dir="${web.dir}/WEB-INF/lib">
-					<include name="**/*.jar" />
-				</fileset>
-			</classpath>
-		</javac>
-	</target>
-
-
-	<!-- Create the application JAR -->
-	<target name="buildjar" depends="compile" >
-		<jar taskname="buildJar" jarfile="${output.dir}/jar/GeneConnectServer.jar">
-			<fileset dir="${output.dir}/classes/jar" includes="**/*"/>
-		</jar>
-		<copy file="${output.dir}/jar/GeneConnectServer.jar" todir="${base.dir}/lib"/>
-	</target>
-
-	<!-- Creates the WAR (Web Application Archive) file of the application -->
-	<target name="build_war" depends="init, compile">
-		<delete file="${output.dir}/war/geneconnect.war"/>
-		<copy file="${web.dir}/WEB-INF/src/GCBusinessLogic.xml" todir="${output.dir}/classes/war"/>
-		<copy file="${web.dir}/WEB-INF/src/ApplicationResources.properties" todir="${output.dir}/classes/war"/>
-		<war destfile="geneconnect.war" webxml="${web.dir}/WEB-INF/web.xml">
-			<classes dir="${output.dir}/classes/war">
-			</classes>
-			<lib dir="${web.dir}/WEB-INF/lib">
-			</lib>
-			<webinf dir="${web.dir}/WEB-INF">
-				<exclude name="classes/**" />
-				<exclude name="src/**" />
-				<exclude name="geneconnectcaCore.war" />
-			</webinf>
-
-			<fileset dir="${web.dir}">
-				<include name="css/**"/>
-				<include name="images/**"/>
-				<include name="scripts/**"/>
-				<include name="pages/**"/>
-				<include name="extra_lib/**"/>
-				<include name="jss/**"/>
-				<include name="runtime/**"/>	
-					
-			</fileset>
-		</war>
-		<copy file="geneconnect.war" todir="${output.dir}/war"/>
-		<delete file="geneconnect.war"/>
-	</target>
+	<property name="oracle.driver.string" value="oracle.jdbc.driver.OracleDriver"/>
+	<property name="mysql.driver.string" value="org.gjt.mm.mysql.Driver"/>
 	
-
-	<!-- Deploys the application -->
-	<!-- 1. Checks config file parameters -->
-	<!-- 2. Replace config params in run scripts -->
-	<!-- 3. Creates table space and user -->
-	<!-- 4. Creates database schema -->
-	<target name="deploy" depends="checkConfigFiles,replaceConfigParameters,
-		createDataBaseSpaceAndUser,createTables,copyRunScripts,SendMail">
-		<echo message="Deploying GeneConnect Server..."/>
-	</target>
-
-
-
-	<!-- Checks server.properties and build.properties files for mandatory and correct property values -->
-	<!-- More checks needs to be added over here-->
-	<target name="checkConfigFiles">
-		<echo message="Checking server.properties and build.properties files for mandatory and correct
-			property values..."/>
+	<property name="mysql.lib" value="mysql-connector-java-3.0.16-ga-bin.jar"/>
+	<property name="oracle.lib" value="oracleDriver.jar"/>
+	
+	<!-- Check for required properties -->
+	<target name="assert">
+		<if>
+			<equals arg1="" arg2="${geneconnect.cacore.url}"/>
+			<then>
+				<fail message="The property 'geneconnect.cacore.url' can not be empty"/>
+			</then>
+		</if>
+		<if>
+			<equals arg1="" arg2="${tomcat.home.dir}"/>
+			<then>
+				<fail message="The property 'tomcat.home.dir' can not be empty"/>
+			</then>
+		</if>
 		<if>
 			<or>
-				<equals arg1="oracle" arg2="${databaseType}"/>
-				<equals arg1="Oracle" arg2="${databaseType}"/>
+				<equals arg1="mysql" arg2="${database.type}"/>
+				<equals arg1="oracle" arg2="${database.type}"/>	
 			</or>
 			<then/>
 			<else>
-				<fail message="The value of property 'database.type' in 'server.properties' should be Oracle."/>
-			</else>
+				<fail message="The value of property 'database.type' must be mysql or oracle"/>
+			</else>	
 		</if>
-
 		<if>
-			<equals arg1="" arg2="${databaseLogin}}"/>
+			<equals arg1="" arg2="${database.host}"/>
 			<then>
-				<fail message="The property 'databaseLogin' in 'server.properties' should not be empty."/>
+				<fail message="The property 'database.host' can not be empty"/>
 			</then>
 		</if>
-
 		<if>
-			<equals arg1="" arg2="${databaseAdminLogin}}"/>
+			<equals arg1="" arg2="${database.port}"/>
 			<then>
-				<fail message="The property 'databaseAdminLogin' in 'server.properties' should not be empty"/>
+				<fail message="The property 'database.port' can not be empty. Default port for MySQL:3306 and for Oracle: 1521"/>
 			</then>
 		</if>
-
 		<if>
-			<equals arg1="" arg2="${databaseConnect}"/>
+			<equals arg1="" arg2="${database.name}"/>
 			<then>
-				<fail message="The property 'databaseConnect' in 'server.properties' should not be empty"/>
+				<fail message="The property 'database.name' can not be empty"/>
 			</then>
 		</if>
-
 		<if>
-			<equals arg1="" arg2="${databaseURL}}"/>
+			<equals arg1="" arg2="${database.username}"/>
 			<then>
-				<fail message="The property 'databaseURL' in 'server.properties' should not be empty"/>
+				<fail message="The property 'database.username' can not be empty"/>
 			</then>
-		</if>
+		</if>			
+	</target>
+	<!-- Clean ups all temporary and log files -->
+		<target name="clean">
+			<echo message="Deleting all temporary files in the output folder..." />
+			<delete includeemptydirs="true">
+				<fileset dir="${output.dir}">
+					<include name="**/*" />
+				</fileset>
+			</delete>
+		</target>
 
-		<if>
-			<equals arg1="" arg2="${driverName}"/>
-			<then>
-				<fail message="The property 'driverName' in 'server.properties' should not be empty"/>
-			</then>
-		</if>
+		<!-- Intizalization tasks-->
+		<target name="init_compile">
+			<!-- Create the time stamp -->
+			<tstamp/>
+			<!-- Create the build directory structure used by compile -->
+			<mkdir dir="${output.dir}"/>
+			<mkdir dir="${output.dir}/classes"/>
+			<mkdir dir="${output.dir}/classes/jar"/>
+			<mkdir dir="${output.dir}/classes/war"/>
+			<mkdir dir="${output.dir}/jar"/>
+			<mkdir dir="${output.dir}/war"/>
+			<!-- Extract existing FE server jar in the output folder -->
+			<!--unjar src="${lib.dir}/FEServer.jar" dest="${output.dir}/classes/jar"/-->
+		</target>
+	<!--Extrct WAR and copy Configuration files to temp directory--> 
+	<target name="init_deploy">
+		<echo message="Initializing installation..."/>
+		<mkdir dir="${temp.dir}" />
+		<mkdir dir="${app.temp.dir}" />
+		<!--mkdir dir="${app.cacore.temp.dir}" /-->
+		<unwar src="${base.dir}/${app.war.name}" dest="./temp/geneconnect"/>
+		<!--unwar src="${base.dir}/${app.cacore.war.name}" dest="${app.cacore.temp.dir}"/-->
+		
+		<!--copy todir="${temp.dir}/catissuecore-properties" overwrite="true">
+			<fileset dir="${base.dir}/catissuecore-properties"/>
+		</copy>
+		
+		<copy file="catissuecore-ds.xml" todir="${temp.dir}" overwrite="true"/>
+		
+		<copy file="${csm.dir}/WEB-INF/classes/DAOConfig.xml" todir="${temp.dir}"/-->
+		<!--Kapil V 1.0.1 Changes-->
+		<!--copy file="login-config.xml" todir="${temp.dir}" overwrite="true"/>
+		<copy file="properties-service.xml" todir="${temp.dir}" overwrite="true"/-->
+		
+		<!--copy file="log4j.xml" todir="${temp.dir}" overwrite="true"/-->
+ 	</target>
+	
+	<!--Modify Configuration such as Session Timeout, Admin details and JBoss server port-->
+	<target name="configure_war">
+		<echo message="Modifying GeneConnect Configuration File..."/>
+		<replace file="${app.temp.dir}/WEB-INF/classes/ApplicationResources.properties"> 
+			<replacefilter token="@@tomcat.server.name@@" value= "${tomcat.server.name}"/>
+			<replacefilter token="@@tomcat.server.port@@" value= "${tomcat.server.port}"/>
+			
+			<replacefilter token="@@database.type@@" value= "${database.type}"/>
+			<replacefilter token="@@database.host@@" value= "${database.host}"/>
+			<replacefilter token="@@database.port@@" value= "${database.port}"/>
+			<replacefilter token="@@database.name@@" value= "${database.name}"/>
+			<replacefilter token="@@database.username@@" value= "${database.username}"/>
+			<replacefilter token="@@database.password@@" value= "${database.password}"/>
+			<replacefilter token="@@tomcat.server.name@@" value= "${tomcat.server.name}"/>
+			<replacefilter token="@@tomcat.server.port@@" value= "${tomcat.server.port}"/>
+			<replacefilter token="@@geneconnect.cacore.url@@" value= "${geneconnect.cacore.url}"/>
+			
+		</replace>
+		<!--replace file="${app.cacore.temp.dir}/WEB-INF/classes/hibernate.properties"> 
+			<replacefilter token="hibernate.connection.username @@database.username@@" 
+				value= "hibernate.connection.username ${database.username}"/>
+			<replacefilter token="hibernate.connection.password @@database.password@@" 
+				value= "hibernate.connection.password ${database.password}"/>
+			<replacefilter token="hibernate.connection.url jdbc:oracle:thin:@@@database.host@@:1521:@@database.name@@" 
+				value= "hibernate.connection.url jdbc:oracle:thin:@${database.host}:${database.port}:${database.name}"/>
+		</replace>
+		<replace file="${app.cacore.temp.dir}/WEB-INF/classes/ehcache.xml"> 
+					<replacefilter token="@@tomcat.home.dir@@/cache/cache" 
+						value= "${tomcat.home.dir}/cache/cache"/>
+		</replace-->
+		<!--replace file="${temp.dir}/catissuecore/WEB-INF/web.xml"> 
+			<replacefilter token="&lt;session-timeout>10&lt;/session-timeout>" 
+			  	value="&lt;session-timeout>${session.timeout}&lt;/session-timeout>"/>
+		</replace>
+		
+		<replace file="${temp.dir}/catissuecore/WEB-INF/classes/remoteService.xml"> 
+			<replacefilter token="@@server.port@@" value="${jboss.server.port}"/>
+		</replace-->
+	</target>
+	<!-- Compile all files, generated and hand-written -->
+		<target name="compile" depends="init_compile">
+			<javac srcdir="${websrc.dir}" destdir="${output.dir}/classes/war" fork="true" includes="**/*.*" includeAntRuntime="true">
+				<classpath>
+					<fileset dir="${lib.dir}">
+						<include name="**/*.jar" />
+					</fileset>
+					<fileset dir="${web.dir}/WEB-INF/lib">
+						<include name="**/*.jar" />
+					</fileset>
+					<fileset dir="${base.dir}/graph">
+						<include name="**/*.jar" />
+					</fileset>
+				</classpath>
+			</javac>
+		</target>
+	<!-- Creates the WAR (Web Application Archive) file of the application -->
+		<target name="build_war" depends="init_compile, compile">
+			<delete file="${output.dir}/war/geneconnect.war"/>
+			<copy file="${web.dir}/WEB-INF/src/GCBusinessLogic.xml" todir="${output.dir}/classes/war"/>
+			<copy file="${web.dir}/WEB-INF/src/ApplicationResources.properties" todir="${output.dir}/classes/war"/>
+			<war destfile="geneconnect.war" webxml="${web.dir}/WEB-INF/web.xml">
+				<classes dir="${output.dir}/classes/war">
+				</classes>
+				<lib dir="${web.dir}/WEB-INF/lib">
+				</lib>
+				<webinf dir="${web.dir}/WEB-INF">
+					<exclude name="classes/**" />
+					<exclude name="src/**" />
+					<exclude name="geneconnectcaCore.war" />
+					<exclude name="geneconnect.war" />
+				</webinf>
+				<fileset dir="${web.dir}">
+					<include name="css/**"/>
+					<include name="images/**"/>
+					<include name="scripts/**"/>
+					<include name="pages/**"/>
+					<include name="extra_lib/**"/>
+					<include name="jss/**"/>
+					<include name="runtime/**"/>
+					<include name="graph/**"/>
+				</fileset>
+			</war>
+			<copy file="geneconnect.war" todir="${output.dir}/war"/>
+		</target>
 
-		<if>
-			<equals arg1="" arg2="${commandFileName}"/>
-			<then>
-				<fail message="The property 'commandFileName' in 'server.properties' should not be empty"/>
-			</then>
-		</if>
+	<!--Buid New WAR File-->
+	<target name="build_war_after_config">
+		<echo message="Creating New Web Application Archieve File..."/>
+		<delete file="${temp.dir}/${app.war.name}"/>
+		<war destfile="${temp.dir}/${app.war.name}" webxml="${app.temp.dir}/WEB-INF/web.xml">
+					<fileset dir="${app.temp.dir}"/>
+		</war>
+		<!--delete file="${temp.dir}/${app.cacore.war.name}"/>
+		<war destfile="${temp.dir}/${app.cacore.war.name}" webxml="${app.cacore.temp.dir}/WEB-INF/web.xml">
+			<fileset dir="${app.cacore.temp.dir}"/>
+		</war-->
+	</target>
+	
+	<!--Copy WAR and Configuration Files to JBOSS Directory-->
+	<target name="copy_files">
+		<echo message="Copying GeneConnect Application Components..."/>
+		<delete dir="${tomcat.home.dir}/webapps/geneconnect" />
+		<!--delete dir="${tomcat.home.dir}/webapps/geneconnectcaCore" /-->
+		<delete file="${tomcat.home.dir}/webapps/geneconnect.war" />
+		<!--delete file="${tomcat.home.dir}/webapps/geneconnectcaCore.war" /-->
+		<copy todir="${tomcat.home.dir}/webapps" overwrite="true">
+  			<fileset dir="${temp.dir}">
+  				<include name="${app.war.name}"/>
+  				<!--include name="${app.cacore.war.name}"/-->
+   			</fileset>
+  		</copy>
+  	</target>
+	<!--Changes for v 1.0.1 - Start-->
+	<target name="config_jboss_files">
+		<copy todir="${jboss.home.dir}/server/default/conf" overwrite="true">
+  			<fileset dir="${temp.dir}">
+  				<include name="login-config.xml"/>
+  				<include name="log4j.xml"/>
+   			</fileset>
+  		</copy>
 
-		<if>
-			<equals arg1="" arg2="${GC_HOME}"/>
-			<then>
-				<fail message="The property 'GC_HOME' in 'build.properties' should not be empty"/>
-			</then>
-		</if>
+		<replace dir="${temp.dir}"> 
+	  		<include name="properties-service.xml"/>
+			<replacefilter token="@@app-security-file@@" 
+				  	value="${jboss.home.dir}/server/default/catissuecore-properties/ApplicationSecurityConfig.xml"/>
+		<replacefilter token="@@app-properties-file@@" 
+				  	value="${jboss.home.dir}/server/default/catissuecore-properties/caTissueCore_Properties.xml"/>
 
-		<if>
-			<equals arg1="" arg2="${JAVA_HOME}}"/>
-			<then>
-				<fail message="The property 'JAVA_HOME' in 'build.properties' should not be empty"/>
-			</then>
-		</if>
+		</replace>
 
-		<if>
-			<equals arg1="" arg2="${ORACLE_HOME}"/>
-			<then>
-				<fail message="The property 'ORACLE_HOME' in 'build.properties' should not be empty"/>
-			</then>
-		</if>
 
-		<if>
-			<equals arg1="" arg2="${PERL_HOME}"/>
-			<then>
-				<fail message="The property 'PERL_HOME' in 'build.properties' should not be empty"/>
-			</then>
-		</if>
-
-		<if>
-			<equals arg1="" arg2="${BLAST_HOME}"/>
-			<then>
-				<fail message="The property 'BLAST_HOME' in 'build.properties' should not be empty"/>
-			</then>
-		</if>
+		<copy todir="${jboss.home.dir}/server/default/deploy" overwrite="true">
+  			<fileset dir="${temp.dir}">
+  				<include name="properties-service.xml"/>
+   			</fileset>
+  		</copy>
+		<delete file="${jboss.home.dir}/server/default/lib/hibernate2.jar"/>
+	</target>
+	
+	<target name="deploy_app">
+		<antcall target="assert"/>
+		<delete dir="${temp.dir}"/>
+		<!--antcall target="build_war"/-->
+		<antcall target="init_deploy"/>
+		<antcall target="configure_war"/>
+		<antcall target="build_war_after_config"/>
+		<antcall target="copy_files"/>
+		<delete dir="${temp.dir}"/>
 	</target>
 
-
-	<!-- Replaces configuration parameters such as JAVA_HOME, ORACLE_HOME, etc. in run scripts. 
-	The user will specify all such configuration parameters in single property file (build.properties) 
-	and this task will copy them to appropriate run scripts.-->
-
-	<target name="replaceConfigParameters" depends="checkConfigFiles">
-		<echo message="Updating run scripts with config parameters..."/>
-
-		<fileset id="UpdateWindows.bat" dir="${base.dir}/RunScripts/Windows">
-			<include name="UpdateWindows.bat" />
-		</fileset>
-		<fileset id="UpdateLinux.sh" dir="${base.dir}/RunScripts/Linux">
-			<include name="UpdateLinux.sh" />
-		</fileset>
-		<fileset id="UpdateSolaris.sh" dir="${base.dir}/RunScripts/Solaris">
-			<include name="UpdateSolaris.sh" />
-		</fileset>
-		<fileset id="ParserScripts" dir="${base.dir}/ParserScripts">
-			<include name="UnigeneParser.sh" />
-			<include name="UnigeneParser.bat" />
-		</fileset>
-
-		<replaceregexp match="JAVA_HOME=(.*)" replace="JAVA_HOME=${JAVA_HOME}" byline="true">
-			<fileset refid="UpdateWindows.bat"/>
-			<fileset refid="UpdateLinux.sh"/>
-			<fileset refid="UpdateSolaris.sh"/>
-			<fileset refid="ParserScripts"/>
-		</replaceregexp>
-
-		<replaceregexp match="ORACLE_HOME=(.*)" replace="ORACLE_HOME=${ORACLE_HOME}" byline="true">
-			<fileset refid="UpdateWindows.bat"/>
-			<fileset refid="UpdateLinux.sh"/>
-			<fileset refid="UpdateSolaris.sh"/>
-			<fileset refid="ParserScripts"/>
-		</replaceregexp>
-
-		<replaceregexp match="PERL_HOME=(.*)" replace="PERL_HOME=${PERL_HOME}" byline="true">
-			<fileset refid="UpdateWindows.bat"/>
-			<fileset refid="UpdateLinux.sh"/>
-			<fileset refid="UpdateSolaris.sh"/>
-			<fileset refid="ParserScripts"/>
-		</replaceregexp>
-
-		<replaceregexp match="BLAST_HOME=(.*)" replace="BLAST_HOME=${BLAST_HOME}" byline="true">
-			<fileset refid="UpdateWindows.bat"/>
-			<fileset refid="UpdateLinux.sh"/>
-			<fileset refid="UpdateSolaris.sh"/>
-			<fileset refid="ParserScripts"/>
-		</replaceregexp>
+	
+	<!--Target call for both Deployment and Database Creation-->
+	<target name="deploy_all">
+		<antcall target="getLatestCodeFromCVS"/>
+		<antcall target="build_war"/>
+		<antcall target="deploy_app"/>
 	</target>
 
-
-	<!-- Create a database schema and user -->
-	<!-- Confirm Admin user name and password in the server.properties before running the target-->
-	<!-- Also check the table space name, table space file name, user name and passwords 
-	in the script "GCOracleInit.sql" -->
-	<target name="createDataBaseSpaceAndUser">
-		<echo message="Creating database table space and user..."/>
-		<sql driver="${driverName}"
-			url="${databaseURL}"
-			userid="${databaseAdminLogin}" 
-			password="${databaseAdminPassword}" 
-			onerror="continue">
-			<classpath>
-				<pathelement path="${ORACLE_HOME}/jdbc/Lib/classes12.zip"/>
-			</classpath>
-			<transaction  src="${base.dir}/RunScripts/GCOracleInit.sql"/>
-		</sql>
-	</target>
-
-	<!-- Create a database tables -->
-	<!-- Confirm database user name and password in the server.properties before running the target-->
-	<target name="createTables">
-		<echo message="Creating GeneConnect database tables..."/>
-		<sql driver="${driverName}"
-	       	url="${databaseURL}"
-	       	userid="${databaseLogin}" 
-			password="${databasePassword}" 
-			onerror="continue">
-			<classpath>
-				<pathelement path="${ORACLE_HOME}/jdbc/Lib/classes12.zip"/>
-			</classpath>
-			<transaction  src="${base.dir}/Scripts/GCSchemaCreation.sql"/>
-		</sql>
-	</target>
-
-	<!-- Copies all run scripts (as per the OS) to the GeneConnect base directory-->
-	<target name="copyRunScripts" depends="replaceConfigParameters">
-		<echo message="Copying all run scripts (for the OS : ${os.name}) to the GeneConnect base directory..."/>
-		<if>
-			<equals arg1="${os.name}" arg2="Linux"/>
-			<then>
-				<!-- Linux OS -->
-				<antcall target="copyRunScriptsForLinux"/>
-			</then>
-			<else>
-				<if>
-					<or>
-						<equals arg1="${os.name}" arg2="Windows 2000" />
-						<equals arg1="${os.name}" arg2="Windows XP" />
-					</or>
-					<then>
-						<!-- Windows OS -->
-						<antcall target="copyRunScriptsForWindows"/>
-					</then>
-					<else>
-						<if>
-							<equals arg1="${os.name}" arg2="Solaris" />
-							<then>
-								<!-- Solaris OS -->
-								<antcall target="copyRunScriptsForSolaris" />
-							</then>
-							<else>
-								<fail message="Run scripts are available only for Windows, Linux and Solaris"/>
-							</else>
-						</if>
-					</else>
-				</if>
-			</else>
-		</if>
-	</target>
-
-	<target name="copyRunScriptsForLinux">
-		<copy file="${base.dir}/RunScripts/Linux/UpdateLinux.sh" todir="${base.dir}"/>
-		<copy file="${base.dir}/RunScripts/Linux/gene2xml" todir="${base.dir}"/>
-	</target>
-
-	<target name="copyRunScriptsForWindows">
-		<copy file="${base.dir}/RunScripts/Windows/UpdateWindows.bat" todir="${base.dir}"/>
-		<copy file="${base.dir}/RunScripts/Windows/gene2xml.exe" todir="${base.dir}"/>
-	</target>
-
-	<target name="copyRunScriptsForSolaris">
-		<copy file="${base.dir}/RunScripts/Solaris/UpdateSolaris.sh" todir="${base.dir}"/>
-		<copy file="${base.dir}/RunScripts/Solaris/gene2xml" todir="${base.dir}"/>
-	</target>
-	<!-- END OF copyRunScripts-->
-
-
-	<!-- START OF RUN SCRIPTS -->
-	<target name="run" depends="copyRunScripts">
-		<echo message="Running GeneConnect Server..."/>
-		<if>
-			<equals arg1="${os.name}" arg2="Linux" />
-			<then>
-				<!-- Linux OS -->
-				<antcall target="runForLinux" />
-			</then>
-			<else>
-				<if>
-					<or>
-						<equals arg1="${os.name}" arg2="Windows 2000" />
-						<equals arg1="${os.name}" arg2="Windows XP" />
-					</or>
-					<then>
-						<!-- Windows OS -->
-						<antcall target="runForWindows" />
-					</then>
-					<else>
-						<if>
-							<equals arg1="${os.name}" arg2="Solaris" />
-							<then>
-								<!-- Solaris OS -->
-								<antcall target="runForSolaris" />
-							</then>
-							<else>
-								<fail message="Run scripts are available only for Windows, Linux and Solaris" />
-							</else>
-						</if>
-					</else>
-				</if>
-			</else>
-		</if>
-	</target>
-
-	<target name="runForLinux">
-		<exec executable="./UpdateLinux.sh">
-		</exec>
-	</target>
-
-	<target name="runForWindows">
-		<exec executable="UpdateWindows.bat">
-		</exec>
-	</target>
-
-	<target name="runForSolaris">
-		<exec executable="./UpdateSolaris.sh">
-		</exec>
-	</target>
-	<!-- END of Run Scripts-->
-
-
-
-	<!--Sends the mail for successful deployment of GeneConnect Server.-->
-	<target name="SendMail">
-		<echo message="Sending mail to: ${toAddress}" />
-		<echo message="Sending mail from: ${fromAddress}" />
-		<mail mailhost="${host}" subject="GeneConnect Successfully Deployed"  
-			user="${fromAddress}" password="${mailAccountpassword}" failonerror="false">
-			<from address="${fromAddress}" />
-			<to address="${toAddress}" />
+		
+	<target name="send_mail">
+		<echo message="Sending mail to: ${email.administrative.emailAddress}"/>
+		<echo message="Sending mail from: ${email.sendEmailFrom.emailAddress}"/>
+		<mail mailhost="${email.mailServer}" subject="caTissue Core Successfully Deployed" encoding="plain"
+			failonerror="false">
+			<from address="${email.sendEmailFrom.emailAddress}"/>
+			<to address="${email.administrative.emailAddress}"/>
 			<message>
-				Dear GeneConnect Administrator,
-					
-					This is to validate that GeneConnect Server has been installed successfully.
-				
-				Thanking You,
-				-GeneConnect Team.				
-				</message>
+Dear GeneConnect Administrator,
+	
+	This is to validate that GeneConnect application has been installed at 
+the following location: ${tomcat.home.dir}		
+    
+	To complete the deployment, you have to now perform the post installation 
+steps described in the "Readme.txt".
+	Once you have completed deployment, you should be able to access application with the following 
+details:			
+URL: http://localhost:${tomcat.server.port}/geneconnect/Home.do 
+
+Thanking You,
+-GeneConnect
+			</message>
 		</mail>
 		<echo>
-				Please check the Email of ${toAddress}.
-				If the Deployment mail is not received please check your 
-				email related parameters in server.properties.
-		</echo>
+			Please check the Email of ${first.admin.emailAddress}.
+			If the Deployment mail is not received please check your 
+			email.administrative.emailAddress and email.sendEmailFrom.emailAddress 
+			properties in caTissueInstall.properties and Re-deploy the Application.
+		</echo>	
 	</target>
-
-
 	<!-- ================================= 
           target: GetLatestAndDeply              
          ================================= -->
-	<target name="GetLatestAndDeply" depends="updateCVS,copyUpdatedCVSContents,deploy" description="Updates the repository 
+	<target name="getLatestCodeFromCVS" depends="updateCVS,copyUpdatedCVSContents" description="Updates the repository 
     	from CVS and deploys the application">
 	</target>
 
-	<!-- ================================= 
-          target: GetLatestAndBuildJar              
-         ================================= -->
-	<target name="GetLatestAndBuildJar" depends="updateCVS,copyUpdatedCVSContents,buildjar" description="Updates the repository 
-    	from CVS and builds the application jar">
-	</target>
+
 
 	<!-- Updates the CVS contents and copies the updated contents into the server repository -->
 	<target name="updateCVS">
@@ -477,5 +357,4 @@
 			<fileset dir="${CVS_LOCATION}${CVS_MODULE_LOCATION}"/>
 		</copy>
 	</target>
-
 </project>

@@ -8,6 +8,9 @@ PUBLIC
 	
 	<form-beans>
 		<form-bean name="simpleSearchForm" type="edu.wustl.geneconnect.actionForm.SimpleSearchForm"/>
+		<form-bean name="advancedSearchForm" type="edu.wustl.geneconnect.actionForm.AdvancedSearchForm"/>
+		<form-bean name="geneconnectGraphForm" type="edu.wustl.geneconnect.actionForm.GeneConnectGraphForm"/>
+		<form-bean name="advancedSearchSelectPathForm" type="edu.wustl.geneconnect.actionForm.AdvancedSearchSelectPathForm" />
 	</form-beans>
 	
 	<!-- Global Exception Definitions -->
@@ -43,16 +46,66 @@ PUBLIC
 		name="simpleSearchForm"
 		validate="false"
 		scope="request">
-		<forward name="results" path=".geneConnect.SimpleSearchResult"/>
+		<forward name="simpleSearchresults" path=".geneConnect.SimpleSearchResult"/>
+		<forward name="advancedSearchresults" path=".geneConnect.AdvancedSearchResult"/>
 	</action>
+
 	<action path="/AdvancedSearch"
-				type="org.apache.struts.actions.ForwardAction"
-				parameter=".geneConnect.homePageDef" />
-		<action path="/RedirectHome"
-					type="org.apache.struts.actions.ForwardAction"
-					parameter=".geneConnect.homePageDef" />
+		type="edu.wustl.geneconnect.action.AdvancedSearchAction"
+		name="advancedSearchForm"
+		validate="false"
+		scope="session">
+		<forward name="advancedSearch" path=".geneConnect.AdvancedSearch"/>
+		<!--  forward name="results" path="/SearchResultView.do"/ -->
+		<forward name="results" path="/SearchResultView.do"/>
+		<forward name="failure" path=".geneConnect.AdvancedSearch"/>
+	</action>
+
+	<action path="/AdvancedSearchResults"
+		type="edu.wustl.geneconnect.action.AdvancedSearchAction"
+		name="advancedSearchForm"
+		validate="true"
+		input="/AdvancedSearch.do?targetAction=failure"
+		scope="session">
+		<forward name="advancedSearch" path=".geneConnect.AdvancedSearch"/>
+		<!--  forward name="results" path="/SearchResultView.do"/ -->
+		<forward name="success" path="/AdvancedSearch.do?targetAction=search"/>
+		<forward name="results" path="/SearchResultView.do"/>
+		<forward name="failure" path="/AdvancedSearch.do?targetAction=failure"/>
+	</action>
+
+	<action path="/AdvancedSearchSelectPath"
+		type="edu.wustl.geneconnect.action.AdvancedSearchSelectPathAction"
+		name="advancedSearchForm"
+		validate="true"
+		input="/AdvancedSearch.do?targetAction=failure"
+		scope="session">
+		<forward name="advancedSearch" path=".geneConnect.AdvancedSearch"/>
+		<!--  forward name="results" path="/SearchResultView.do"/ -->
+		<forward name="results" path="/SearchResultView.do"/>
+		<forward name="advancedSearchSelectPath" path=".geneConnect.AdvancedSearchSelectPath" />
+		<forward name="failure" path="/AdvancedSearch.do?targetAction=failure"/>
+	</action>
+
+
+	<action path="/GeneConnectGraph"
+			type="edu.wustl.geneconnect.action.GeneConnectGraphAction"
+			name="geneconnectGraphForm"
+			validate="false"
+			scope="request">
+			<forward name="geneconnectGraph" path=".geneConnect.Graph"/>
+	</action>	
 	
-	<!-- Aliquots Action -->
+	<!--Spreadshet Export Actions Begins -->
+        <action path="/SpreadsheetExport"
+			type="edu.wustl.geneconnect.action.SpreadsheetExportAction"
+			name="advancedSearchForm"
+			validate="false"
+			scope="request">
+			<forward name="simpleSearchresults" path=".geneConnect.SimpleSearchResult"/>
+			<forward name="advancedSearchresults" path=".geneConnect.AdvancedSearchResult"/>
+		</action>
+		<!--Spreadshet Export Actions Ends -->
 	
 	</action-mappings>
 	

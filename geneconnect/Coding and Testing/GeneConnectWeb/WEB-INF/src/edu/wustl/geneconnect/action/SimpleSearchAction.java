@@ -6,14 +6,15 @@
 
 package edu.wustl.geneconnect.action;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionError;
@@ -32,7 +33,6 @@ import edu.wustl.geneconnect.bizlogic.InputData;
 import edu.wustl.geneconnect.bizlogic.InputDataInterface;
 import edu.wustl.geneconnect.bizlogic.ResultDataInterface;
 import edu.wustl.geneconnect.metadata.MetadataManager;
-import edu.wustl.geneconnect.metadata.MetadataManagerInterface;
 import edu.wustl.geneconnect.util.global.GCConstants;
 
 /**
@@ -52,7 +52,6 @@ public class SimpleSearchAction extends Action
 		super();
 	}
 
-	//TODO : Logging needs to be added.
 
 	/**
 	 * Execute method which will be invoked by struts framework.
@@ -74,7 +73,7 @@ public class SimpleSearchAction extends Action
 
 		try
 		{
-
+			
 			SimpleSearchForm simpleSearchActionForm = (SimpleSearchForm) form;
 
 			//Obtain target action which needs to be performed
@@ -106,7 +105,7 @@ public class SimpleSearchAction extends Action
 			saveErrors(request, errors);
 		}
 		List dataSources = MetadataManager.getDataSourcesToDisplay();
-		
+
 		Logger.out.info("Setting data source list in request object");
 		request.setAttribute(GCConstants.DATA_SOURCES_KEY, dataSources);
 
@@ -131,6 +130,9 @@ public class SimpleSearchAction extends Action
 	private ActionForward executeDisplayResults(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		
+		HttpSession session = request.getSession();
+				
 		//Get the instance of business logic factory
 		GeneConnectBizLogicFactory geneConnectBizLogicFactory = GeneConnectBizLogicFactory
 				.getInstance();
@@ -146,7 +148,23 @@ public class SimpleSearchAction extends Action
 		//Apply business logic and Get result 
 		Logger.out.info("call to simpleSearchBizLogic.getResult");
 		ResultDataInterface resultData = simpleSearchBizLogic.getResult(inputData);
-		request.setAttribute(GCConstants.RESULT_DATA_LIST, resultData);
+		List selectInputOutputList = new ArrayList();
+		//List columnHeaders = resultData.getColumnHeader();
+		List columnHeaders = (List)resultData.getValue(GCConstants.COLUMN_HEADERS);
+		for(Iterator iter=columnHeaders.iterator();iter.hasNext();)
+		{
+			String colName = (String)iter.next();
+			if ((!colName.endsWith(GCConstants.FREQUENCY_KEY_SUFFIX))
+					&& (!colName.endsWith(GCConstants.CONF_SCORE_KEY))
+					&& (!colName.endsWith(GCConstants.SET_ID_KEY)))
+			{
+				selectInputOutputList.add(colName);
+			}
+		}
+		session.setAttribute(GCConstants.SELECTED_DATASOURCES,selectInputOutputList);
+		session.setAttribute(GCConstants.RESULT_DATA_LIST, resultData);
+		List resultList = (List)resultData.getValue(GCConstants.GENOMICIDENTIIER_SET_RESULT_LIST);
+		session.setAttribute(GCConstants.GENOMICIDENTIIER_SET_RESULT_LIST, resultList);
 		Logger.out.info("Forwarding to SimpleResult page");
 		
 		// forward to SimpleSearch result page

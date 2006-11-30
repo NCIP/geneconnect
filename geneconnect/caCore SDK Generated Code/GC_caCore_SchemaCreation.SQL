@@ -324,6 +324,8 @@ INSERT INTO ROLE_LOOKUP VALUES(12,'MessengerRNA','Protein','proteinCollection');
 INSERT INTO ROLE_LOOKUP VALUES(13,'MessengerRNA','Gene','geneCollection');
 INSERT INTO ROLE_LOOKUP VALUES(14,'OrderOfNodeTraversal','GenomicIdentifierSet','genomicIdentifierSetCollection');
 INSERT INTO ROLE_LOOKUP VALUES(15,'GenomicIdentifierSet','ConsensusIdentifierData','consensusIdentifierDataCollection');
+INSERT INTO ROLE_LOOKUP VALUES(16,'OrderOfNodeTraversal','DataSource','sourceDataSource');
+INSERT INTO ROLE_LOOKUP VALUES(17,'OrderOfNodeTraversal','LinkType','linkType');
 
 
 INSERT INTO ONT VALUES(1,1,1,2,null);

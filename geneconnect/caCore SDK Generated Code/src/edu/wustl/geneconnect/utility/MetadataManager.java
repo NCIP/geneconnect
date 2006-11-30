@@ -6,6 +6,8 @@
 
 package edu.wustl.geneconnect.utility;
 
+import gov.nih.nci.system.dao.DAOException;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -136,6 +138,7 @@ public class MetadataManager //implements MetadataManagerInterface
 				temp.put(ROLE_NAME, result.getString(ROLE_NAME));
 				roleLookup.add(temp);
 			}
+
 		}
 		catch (SQLException e)
 		{
@@ -244,6 +247,7 @@ public class MetadataManager //implements MetadataManagerInterface
 
 		for (int i = 0; i < roleLookup.size(); i++)
 		{
+			//System.out.println("roleLookup :" +roleLookup.size());
 			Map map = (Map) roleLookup.get(i);
 			String sourceStr = (String) map.get(SOURCE_CLASS);
 			String targetStr = (String) map.get(TARGET_CLASS);
@@ -265,10 +269,10 @@ public class MetadataManager //implements MetadataManagerInterface
 		for (int i = 0; i < roleLookup.size(); i++)
 		{
 			Map map = (Map) roleLookup.get(i);
-			System.out.println("MAp : " + map);
+			//System.out.println("MAp : " + map);
 			String str = (String) map.get(searchkey);
 			String str1 = (String) map.get(searchkey1);
-			System.out.println("str---str1" + str + "----" + str1);
+			//System.out.println("str---str1" + str + "----" + str1);
 			if (str.equalsIgnoreCase(searchvalue) && str1.equalsIgnoreCase(searchvalue1))
 			{
 				roleLookupAttribute = (String) map.get(returnkey);

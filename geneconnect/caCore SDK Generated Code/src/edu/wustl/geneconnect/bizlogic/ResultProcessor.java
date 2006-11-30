@@ -1,20 +1,29 @@
 
 package edu.wustl.geneconnect.bizlogic;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.impl.CriteriaImpl;
 
+import edu.wustl.geneconnect.domain.ConsensusIdentifierData;
+import edu.wustl.geneconnect.domain.DataSource;
+import edu.wustl.geneconnect.domain.Gene;
+import edu.wustl.geneconnect.domain.GenomicIdentifier;
 import edu.wustl.geneconnect.domain.GenomicIdentifierSet;
+import edu.wustl.geneconnect.domain.LinkType;
+import edu.wustl.geneconnect.domain.MessengerRNA;
+import edu.wustl.geneconnect.domain.OrderOfNodeTraversal;
+import edu.wustl.geneconnect.domain.Protein;
 import edu.wustl.geneconnect.utility.Constants;
 import edu.wustl.geneconnect.utility.MetadataManager;
 
@@ -65,6 +74,7 @@ public class ResultProcessor
 
 		String intValue = "0";
 		String strValue = "0";
+		log.info("CIRT: --" + impl);
 		Iterator iter = impl.iterateExpressionEntries();
 		Iterator iter1 = impl.iterateSubcriteria();
 		/**
@@ -76,15 +86,13 @@ public class ResultProcessor
 			String predicate = o.toString();
 			CriteriaImpl.CriterionEntry a = (CriteriaImpl.CriterionEntry) o;
 
-			//System.out.println("CLASSNAME SACHin:" + a.getCriteria().toString());
 			String associationClassTemp = a.getCriteria().toString();
 			int ind1 = associationClassTemp.indexOf("(");
 			int ind2 = associationClassTemp.indexOf(":");
 			String associationClass = associationClassTemp.substring(ind1 + 1, ind2);
-			//System.out.println("associationClass* ************* " + associationClass);	
-			//System.out.println("Expression Predicates* ************* " + predicate);
 			log.info("associationClass* ************* " + associationClass);
 			log.info("Expression Predicates* ************* " + predicate);
+			System.out.println("Expression Predicates* ************* " + predicate);
 			int ind = -1;
 			ind = predicate.indexOf("=");
 			if (ind > 0)
@@ -113,11 +121,9 @@ public class ResultProcessor
 					String attrClass = MetadataManager.getRoleLookUpAttribute(
 							Constants.SOURCE_CLASS, "GenomicIdentifierSet", Constants.ROLE_NAME,
 							associationClass, Constants.TARGET_CLASS);
-					//System.out.println("SDACHIN role class: " + attrClass);
 					String dsName = MetadataManager.getDataSourceAttribute(Constants.ATTRIBUTE,
 							temp, Constants.CLASS, attrClass, Constants.DATASOURCE_NAME);
 
-					//System.out.println("SDACHIN data sourece : " + dsName);
 					if (dsName != null)
 					{
 						log.info("selectedInputDataSourceList: " + dsName);
@@ -126,7 +132,6 @@ public class ResultProcessor
 						String value = predicate.substring(temp.length() + 1, predicate.length());
 						selectedInputValueList.add(dsName + "=" + value);
 
-						//System.out.println("INPUT VALUE = " + temp + "=" + value);
 						log.info("INPUT VALUE = " + dsName + "=" + value);
 					}
 				}
@@ -256,6 +261,266 @@ public class ResultProcessor
 
 	}
 
+	public void interpretCriteria(GenomicIdentifierSet set) throws Exception
+	{
+		List dsl = null;
+		String roleName = "";
+		Field field = null;
+		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
+				Constants.GENE_CLASS_NAME);
+		System.out.println("roleName " + roleName);
+		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
+		field.setAccessible(true);
+		Object gene = field.get(set);
+
+		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
+				Constants.MRNA_CLASS_NAME);
+		System.out.println("roleName " + roleName);
+		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
+		field.setAccessible(true);
+		Object mrna = field.get(set);
+
+		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
+				Constants.PROTEIN_CLASS_NAME);
+		System.out.println("roleName " + roleName);
+		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
+		field.setAccessible(true);
+		Object protein = field.get(set);
+
+		if (gene != null)
+		{
+			dsl = MetadataManager.getAttibutes(Constants.CLASS, "Gene");
+			/**
+			 * Check if  selected output data source of Gene object contains NULL value.
+			 * Iterate over each dat source of Gene(got from MetaData) and check if the 
+			 * data source is select as output. If yes then  get tah value and if value is NULL then
+			 * Increment the counter (int countForNullGenomicId).  
+			 */
+			for (int j = 0; j < dsl.size(); j++)
+			{
+				Map map = (Map) dsl.get(j);
+				String dataSourceName = (String) map.get(Constants.DATASOURCE_NAME);
+				//System.out.println("dataSourceName to set false : "+dataSourceName);
+
+				//						String dataSourceAttribute = MetadataManager.getDataSourceAttribute(
+				//								Constants.DATASOURCE_NAME, dataSourceName, Constants.ATTRIBUTE);
+				String dataSourceAttribute = (String) map.get(Constants.ATTRIBUTE);
+				String outputAttribute = (String) map.get(Constants.OUTPUT_ATTRIBUTE);
+				String temp = dataSourceAttribute.substring(0, 1).toUpperCase();
+				String methodName = "get" + temp
+						+ dataSourceAttribute.substring(1, dataSourceAttribute.length());
+				//	System.out.println("in OP DS LISt : "+methodName); 
+				Method method = Gene.class.getDeclaredMethod(methodName, null);
+				Object value = method.invoke(gene, null);
+				System.out.println(methodName + "--------" + value);
+
+				if (value != null)
+				{
+					System.out.println("input Addedd :" + dataSourceName);
+					selectedInputDataSourceList.add(dataSourceName);
+				}
+				temp = outputAttribute.substring(0, 1).toUpperCase();
+				methodName = "get" + temp + outputAttribute.substring(1, outputAttribute.length());
+				//	System.out.println("in OP DS LISt : "+methodName); 
+				method = Gene.class.getDeclaredMethod(methodName, null);
+				value = method.invoke(gene, null);
+				System.out.println("methodName " + value);
+				if (value != null)
+				{
+					System.out.println("output Addedd :" + dataSourceName);
+					selectedOutputDataSourceList.add(dataSourceName);
+				}
+			}
+		}
+
+		if (mrna != null)
+		{
+			/**
+			 * Check if  selected output data source of MessengerRNA object contains NULL value.
+			 * Iterate over each dat source of MessengerRNA(got from MetaData) and check if the 
+			 * data source is select as output. If yes then  get tah value and if value is NULL then
+			 * Increment the counter (int countForNullGenomicId).  
+			 */
+			dsl = MetadataManager.getAttibutes(Constants.CLASS, "MessengerRNA");
+			for (int j = 0; j < dsl.size(); j++)
+			{
+				Map map = (Map) dsl.get(j);
+				String dataSourceName = (String) map.get(Constants.DATASOURCE_NAME);
+				String dataSourceAttribute = (String) map.get(Constants.ATTRIBUTE);
+				String outputAttribute = (String) map.get(Constants.OUTPUT_ATTRIBUTE);
+				String temp = dataSourceAttribute.substring(0, 1).toUpperCase();
+				String methodName = "get" + temp
+						+ dataSourceAttribute.substring(1, dataSourceAttribute.length());
+				//System.out.println("in OP DS LISt : "+methodName); 
+				Method method = MessengerRNA.class.getDeclaredMethod(methodName, null);
+				Object value = method.invoke(mrna, null);
+				System.out.println(methodName + "--------" + value);
+				if (value != null)
+				{
+					System.out.println("input Addedd :" + dataSourceName);
+					selectedInputDataSourceList.add(dataSourceName);
+				}
+				temp = outputAttribute.substring(0, 1).toUpperCase();
+				methodName = "get" + temp + outputAttribute.substring(1, outputAttribute.length());
+				//	System.out.println("in OP DS LISt : "+methodName); 
+				method = MessengerRNA.class.getDeclaredMethod(methodName, null);
+				value = method.invoke(mrna, null);
+				System.out.println("methodName " + value);
+				if (value != null)
+				{
+					System.out.println("output Addedd :" + dataSourceName);
+					selectedOutputDataSourceList.add(dataSourceName);
+				}
+			}
+		}
+		if (protein != null)
+		{
+			/**
+			 * Check if  selected output data source of Protein object contains NULL value.
+			 * Iterate over each dat source of Protein(got from MetaData) and check if the 
+			 * data source is select as output. If yes then  get tah value and if value is NULL then
+			 * Increment the counter (int countForNullGenomicId).  
+			 */
+			dsl = MetadataManager.getAttibutes(Constants.CLASS, "Protein");
+			for (int j = 0; j < dsl.size(); j++)
+			{
+				Map map = (Map) dsl.get(j);
+				String dataSourceName = (String) map.get(Constants.DATASOURCE_NAME);
+				//System.out.println("dataSourceName to set false : "+dataSourceName);
+
+				String dataSourceAttribute = (String) map.get(Constants.ATTRIBUTE);
+				String outputAttribute = (String) map.get(Constants.OUTPUT_ATTRIBUTE);
+				String temp = dataSourceAttribute.substring(0, 1).toUpperCase();
+				String methodName = "get" + temp
+						+ dataSourceAttribute.substring(1, dataSourceAttribute.length());
+				//System.out.println("in OP DS LISt : "+methodName); 
+				Method method = Protein.class.getDeclaredMethod(methodName, null);
+				Object value = method.invoke(protein, null);
+				System.out.println(methodName + "--------" + value);
+				if (value != null)
+				{
+					System.out.println("input Addedd :" + dataSourceName);
+					selectedInputDataSourceList.add(dataSourceName);
+				}
+				temp = outputAttribute.substring(0, 1).toUpperCase();
+				methodName = "get" + temp + outputAttribute.substring(1, outputAttribute.length());
+				//	System.out.println("in OP DS LISt : "+methodName); 
+				method = Protein.class.getDeclaredMethod(methodName, null);
+				value = method.invoke(protein, null);
+				System.out.println("methodName " + value);
+				if (value != null)
+				{
+					System.out.println("output Addedd :" + dataSourceName);
+					selectedOutputDataSourceList.add(dataSourceName);
+				}
+			}
+		}
+		Float conf = set.getConfidenceScore();
+		isGreaterThanEqual = true;
+		if (conf != null)
+		{
+			confScorevalue = conf.toString();
+			set.setConfidenceScore(new Float(1));
+
+		}
+		//			roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,Constants.CONSENSUS_IDENTIFIERDATA_CLASS_NAME);
+		//			field = GenomicIdentifierSet.class.getDeclaredField(roleName);
+		//			field.setAccessible(true);
+		//			Object coll = field.get(set);
+		Collection consensusCollection = set.getConsensusIdentifierDataCollection();
+		isFreqGreaterThanEqual = true;
+		if (consensusCollection != null && consensusCollection.size() > 0)
+		{
+			for (Iterator iter = consensusCollection.iterator(); iter.hasNext();)
+			{
+				ConsensusIdentifierData consensusData = (ConsensusIdentifierData) iter.next();
+				Float freq = consensusData.getFrequency();
+
+				GenomicIdentifier genomicIdentifier = consensusData.getGenomicIdentifier();
+				if (freq != null && genomicIdentifier != null)
+				{
+					String str = genomicIdentifier.getClass().getName();
+					String genomicClass = str.substring(str.lastIndexOf(".") + 1);
+					String dataSourceName = MetadataManager.getDataSourceAttribute(
+							Constants.GENOMIC_IDENTIFIER_CLASS, genomicClass,
+							Constants.DATASOURCE_NAME);
+					GCCriteria f = new GCCriteria();
+					System.out.println("Adding Frequency : " + dataSourceName + "---" + freq);
+					f.setDataSource(dataSourceName);
+					f.setPredicate(freq.floatValue());
+					freqList.add(f);
+					consensusData.setFrequency(new Float(1));
+
+				}
+
+			}
+			set.setConsensusIdentifierDataCollection(null);
+		}
+		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
+				Constants.ONT_CLASS_NAME);
+		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
+
+		field.setAccessible(true);
+		Collection ontCollection = (Collection) field.get(set);
+		if (ontCollection != null && ontCollection.size() > 0)
+		{
+			for (Iterator it = ontCollection.iterator(); it.hasNext();)
+			{
+				OrderOfNodeTraversal ont = (OrderOfNodeTraversal) it.next();
+				List innerOntList = new ArrayList();
+				OrderOfNodeTraversal tempont = ont;
+				while (tempont != null)
+				{
+					roleName = MetadataManager.getRoleName(Constants.ONT_CLASS_NAME,
+							Constants.DATASOURCE_CLASS_NAME);
+					field = OrderOfNodeTraversal.class.getDeclaredField(roleName);
+					field.setAccessible(true);
+					DataSource ds = (DataSource) field.get(tempont);
+
+					roleName = MetadataManager.getRoleName(Constants.ONT_CLASS_NAME,
+							Constants.LINKTYPE_CLASS_NAME);
+					field = OrderOfNodeTraversal.class.getDeclaredField(roleName);
+					field.setAccessible(true);
+					LinkType link = (LinkType) field.get(tempont);
+
+					if (ds != null && ds.getName() != null)
+					{
+						innerOntList.add(ds.getName());
+					}
+					if (link != null && link.getType() != null)
+					{
+						innerOntList.add(link.getType());
+					}
+					roleName = "childOrderOfNodeTraversal";
+					field = OrderOfNodeTraversal.class.getDeclaredField(roleName);
+					field.setAccessible(true);
+					OrderOfNodeTraversal nextont = (OrderOfNodeTraversal) field.get(tempont);
+					tempont = nextont;
+				}
+
+				if (innerOntList.size() > 0)
+				{
+					ontList.add(innerOntList);
+				}
+
+			}
+			System.out.println("ONT selected by USER");
+			for (int i = 0; i < ontList.size(); i++)
+			{
+				System.out.println(ontList.get(i));
+			}
+			set.setOrderOfNodeTraversalCollection(null);
+		}
+
+	}
+
+	public static void main(String ard[])
+	{
+		String str = "edu.wustl.geneconnect.domain.EntrezGene";
+		System.out.println(str.substring(str.lastIndexOf(".") + 1));
+
+	}
+
 	/**
 	 * Calls a method of bizlogic for calulating confidence / frequency
 	 * @param rs
@@ -270,7 +535,8 @@ public class ResultProcessor
 		log.info("ResultSet Size after prepareResult(): " + rs.size());
 
 		// calulate total no of traversable paths i.e. number of GenomicIdentifierSet
-		float totalSet = gcBizlogic.calculateTotalScore(rs, ontList);
+		float totalSet = gcBizlogic.calculateTotalScore(rs, ontList, selectedInputDataSourceList,
+				selectedOutputDataSourceList);
 
 		/**
 		 * calculate Confidence score for each GenomicIdentiferSet Object and remove 
@@ -287,7 +553,7 @@ public class ResultProcessor
 		 */
 		gcBizlogic.processFrequency(rs, freqList, totalSet, isFreqGreaterThanEqual);
 		log.info("ResultSet Size after frequency(): " + rs.size());
-		
+
 		gcBizlogic.filterForConfidence(rs, Float.valueOf(confScorevalue).floatValue(), totalSet,
 				isGreaterThanEqual);
 	}

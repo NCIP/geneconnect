@@ -386,6 +386,54 @@ FORM BEGINS
   border-right:1px solid #5C5C5C; /* constant: dark gray */
   text-align:left;
 }
+.formLeftTopSubTableTitle{ /* for subtitles in the table */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  font-weight:bold;
+  background-color:#CCCCCC; /* constant: medium gray */
+  color:#000000; /* constant: black */
+  border-top:1px solid #5C5C5C; /* constant: dark gray */
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  border-left:1px solid #5C5C5C; /* constant: dark gray */
+  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  text-align:left;
+}
+.formRightTopSubTableTitle{ /* for subtitles in the table */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  font-weight:bold;
+  background-color:#CCCCCC; /* constant: medium gray */
+  color:#000000; /* constant: black */
+  border-top:1px solid #5C5C5C; /* constant: dark gray */
+  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  text-align:left;
+}
+.formRightTopSubTableTitle10Sized{ /* for subtitles in the table */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  font-weight:bold;
+  background-color:#CCCCCC; /* constant: medium gray */
+  color:#000000; /* constant: black */
+  border-top:1px solid #5C5C5C; /* constant: dark gray */
+  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  text-align:left;
+  width:10em;
+}
+
+.formLeftSubTableTitleTextRightAligned{ /* for subtitles in the table */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  font-weight:bold;
+  background-color:#CCCCCC; /* constant: medium gray */
+  color:#000000; /* constant: black */
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  border-left:1px solid #5C5C5C; /* constant: dark gray */
+  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  text-align:right;
+}
+
 td.formButtonField{ /* for the cell that contains the form elements */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.8em;
@@ -439,6 +487,16 @@ td.formSerialNumberField{ /* for the cell that contains the Serial Number */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
   background-color:#F4F4F5; /* constant: light gray */
 }
+td.formSerialNumberField10sized{ /* for the cell that contains the Serial Number */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  color:#000000; /* constant: black */
+  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  border-left:1px solid #5C5C5C; /* constant: dark gray */
+  background-color:#F4F4F5; /* constant: light gray */
+  width:10px;
+}
 td.tableContainer{ /* for the cell that contains the form elements */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:1em;
@@ -446,8 +504,36 @@ td.tableContainer{ /* for the cell that contains the form elements */
   background-color:#F4F4F5; /* constant: light gray */
   border-right:1px solid #5C5C5C; /* constant: dark gray */
   border-bottom:1px solid #5C5C5C; /* constant: dark gray */
-
 }
+
+td.formRightTopSubTableTitle10Sized{ /* for subtitles in the table */
+  float: left;
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  font-weight:bold;
+  background-color:#CCCCCC; /* constant: medium gray */
+  color:#000000; /* constant: black */
+  border-top:1px solid #5C5C5C; /* constant: dark gray */
+  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  text-align:left;
+  width:100px;
+  height:100%;
+}
+input.formFieldSized10{ /* for the form elements themselves and with a constant width (on elements) */
+  font-family:arial,helvetica,verdana,sans-serif;
+  border:1px solid #5C5C5C; /* constant: dark gray */
+  font-size:1em;
+  width:100px;
+}
+label.formFieldSized10{ /* for the form elements themselves and with a constant width (on elements) */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:1em;
+  font-weight:bold;
+  width:100px;
+  -moz-column-width:100px;
+}
+
 .formLabel{ /* for the non-required form labels */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
@@ -570,7 +656,7 @@ td.formFieldAllBorders{ /* for the cell that contains the form elements */
   font-family:arial,helvetica,verdana,sans-serif;
   border:1px solid #5C5C5C; /* constant: dark gray */
   font-size:1em;
-	width:10em;
+  width:10em;
 }
 .formFieldSized15{ /* for the form elements themselves and with a constant width (on elements) */
   font-family:arial,helvetica,verdana,sans-serif;
@@ -590,7 +676,7 @@ select.formDropDownSized{ /* for the form elements themselves and with a constan
   font-family:arial,helvetica,verdana,sans-serif;
   border:1px solid #5C5C5C; /* constant: dark gray */
   font-size:1em;
-	width:6em;
+  width:15em;
 }
 input.actionButton{ /* optional style for form and action buttons */
   border-right:2px solid #5C5C5C; /* constant: dark gray */
@@ -598,6 +684,8 @@ input.actionButton{ /* optional style for form and action buttons */
   border-top:1px solid #CCCCCC; /* constant: medium gray */
   border-left:1px solid #CCCCCC; /* constant: medium gray */
 }
+
+
 .formMessage{ /* for messages above the form */
   font-family:arial,helvetica,verdana,sans-serif;
   font-size:0.7em;
@@ -672,8 +760,8 @@ DATA TABLE BEGINS
   background-color:#FFFFFF; /* constant: white */
   color:#5C5C5C; /* constant: dark gray */
   border-top:1px solid #5C5C5C; /* constant: dark gray */
-  border-left:1px solid #5C5C5C; /* constant: dark gray */
-  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  border-left:0px solid #5C5C5C; /* constant: dark gray */
+  border-right:0px solid #5C5C5C; /* constant: dark gray */
   padding-left:0.4em;
 }
 .dataTableHeader{ /* for the horizontal column headers */
@@ -735,9 +823,9 @@ DATA TABLE BEGINS
   text-align:right;
 }
 .dataPagingSection{ /* for the cell that contains the paging table */
-  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  border-right:0px solid #5C5C5C; /* constant: dark gray */
   border-top:1px solid #5C5C5C; /* constant: dark gray */
-  border-left:1px solid #5C5C5C; /* constant: dark gray */
+  border-left:0px solid #5C5C5C; /* constant: dark gray */
   background-color:#F4F4F5; /* constant: light gray */
 }
 .dataPagingText{ /* for the cells that contain the paging text */
@@ -979,7 +1067,11 @@ td.formFieldNoBorders{ /* for the cell that contains the form elements */
   font-size:0.8em;
   color:#000000; /* constant: black */
 } 
-
+.formLabelNoBackGroundWhiteColor{ /* for the non-required form labels */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  color:#FFFFFF; /* constant: black */
+}
 td.subMenuPrimaryItemsHover{ /* SubMenu Hover effect */
   font-size:0.6em;
   background-color:#475B82; 
@@ -1108,4 +1200,128 @@ td.pageTitleBorder{ /* for the over state of the cell for the elements (usually 
   background-color:#F4F4F5; /* constant: light gray */
   color:#000000; /* constant: black */
   text-align:left;
+}
+.formLabelRightNoBorder{ /* for the non-required form labels */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  background-color:#F4F4F5; /* constant: light gray */
+  color:#000000; /* constant: black */
+  text-align:right;
+}
+
+.spreadsheet {
+float:left;
+height:140px;
+overflow-x:-moz-scrollbars-none;
+overflow-y:-moz-scrollbars-vertical;
+overflow:auto;
+}
+
+.spreadsheet200 {
+float:left;
+height:140px;
+overflow: auto;
+}
+
+.headerDiv{
+width:800px;
+overflow-x:scroll;
+overflow-y:fixed;
+overflow: auto;
+}
+
+.selectPathDiv{
+height:50px;
+width:800px;
+overflow-x:scroll;
+overflow-y:fixed;
+}
+
+.selectPathColumnDiv{
+float:left;
+height:200px;
+width:100%;
+overflow-x:-moz-scrollbars-none;
+overflow-y:-moz-scrollbars-vertical;
+overflow:auto;
+white-space:normal;
+}
+
+td.formField40Height{ /* for the cell that contains the form elements */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  color:#000000; /* constant: black */
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  background-color:#F4F4F5; /* constant: light gray */
+  height:30px;
+}
+
+td.blankFormField{ /* for the cell that contains the form elements */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.75em;
+  color:#000000; /* constant: black */
+  background-color:#F4F4F5; /* constant: light gray */
+  /* width:800px;*/
+}
+
+td.formField800WidthLightGray{ /* for the cell that contains the form elements */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  color:#000000; /* constant: black */
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  background-color:#F4F4F5; /* constant: light gray */
+  width:100%;
+}
+
+td.formField800WidthMediumGray{ /* for the cell that contains the form elements */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.7em;
+  color:#000000; /* constant: black */
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  background-color:#C8C8D2; /* constant: light gray */
+  width:100%;
+}
+
+.formFieldSized8LightGray{ /* for the form elements themselves and with a constant width (on elements) */
+  font-family:arial,helvetica,verdana,sans-serif;
+  border:1px solid #5C5C5C; /* constant: dark gray */
+  font-size:1em;
+  width:7em;
+  background-color:#F4F4F5;
+}
+
+.formFieldSized8MediumGray{ /* for the form elements themselves and with a constant width (on elements) */
+  font-family:arial,helvetica,verdana,sans-serif;
+  border:1px solid #5C5C5C; /* constant: dark gray */
+  font-size:1em;
+  width:7em;
+  background-color:#C8C8D2;
+}
+
+textarea.formFieldSized15{ /* for the form elements themselves and with a constant width (on elements) */
+  font-family:arial,helvetica,verdana,sans-serif;
+  border:1px solid #5C5C5C; /* constant: dark gray */
+  font-size:1em;
+	width:15em;
+}
+.dataPagingSection1{ /* for the cell that contains the paging table */
+  border-right:0px solid #5C5C5C; /* constant: dark gray */
+  border-top:0px solid #5C5C5C; /* constant: dark gray */
+  border-left:0px solid #5C5C5C; /* constant: dark gray */
+  border-bottom:1px solid #5C5C5C; /* constant: dark gray */
+  background-color:#F4F4F5; /* constant: light gray */
+}
+
+td.formTitleSmallFont{ /* for header cells (top) of forms */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.78em;
+  font-weight:bold;
+  padding-left:0.8em;
+  background-color:#5C5C5C; /* constant: dark gray */
+  color:#FFFFFF; /* constant: white */
+  border-top:1px solid #5C5C5C; /* constant: dark gray */
+  border-left:1px solid #5C5C5C; /* constant: dark gray */
+  border-right:1px solid #5C5C5C; /* constant: dark gray */
 }

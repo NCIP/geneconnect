@@ -61,8 +61,9 @@ public abstract class AbstractBizLogicFactory
 					businessLogic = (Element) businessLogicIterator.next();
 					businessAction = businessLogic.element(GCConstants.BUSINESS_ACTION_ELEMENT);
 					instanceType = businessLogic.element(GCConstants.INSTANCE_TYPE_ELEMENT);
-					moduleMap.put(businessAction.getStringValue(), Class.forName(
-							instanceType.getStringValue()).newInstance());
+//					moduleMap.put(businessAction.getStringValue(), Class.forName(
+//							instanceType.getStringValue()).newInstance());
+					moduleMap.put(businessAction.getStringValue(), instanceType.getStringValue());
 				}
 				catch (Exception e)
 				{

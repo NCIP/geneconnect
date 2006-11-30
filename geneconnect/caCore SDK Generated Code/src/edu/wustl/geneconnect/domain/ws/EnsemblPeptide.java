@@ -1,11 +1,6 @@
 
 package edu.wustl.geneconnect.domain.ws;
 
-import edu.wustl.geneconnect.domain.ws.*;
-import edu.wustl.geneconnect.domain.*;
-import gov.nih.nci.system.applicationservice.*;
-import java.util.*;
-
 /**
  * <!-- LICENSE_TEXT_START -->
  * <!-- LICENSE_TEXT_END -->

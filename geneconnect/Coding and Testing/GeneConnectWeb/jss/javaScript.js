@@ -200,5 +200,3 @@ function  deleteChecked(subdivtag,action,countElement,checkName,isOuterTable)
 				document.getElementById(nextID).focus();
 			}
 		}
-		
-		

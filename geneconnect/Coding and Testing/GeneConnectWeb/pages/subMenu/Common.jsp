@@ -22,8 +22,8 @@
 	</td>
   </tr>
   <tr>
-  	<td class="subMenuSecondaryTitle" onmouseover="changeMenuStyle(this,'subMenuSecondaryTitleOver'),showCursor()" onmouseout="changeMenuStyle(this,'subMenuSecondaryTitle'),hideCursor()" height="20" onclick="document.location.href='AdvancedSearch.do'">
-		<a class="subMenuSecondary" href="AdvancedSearch.do">
+  	<td class="subMenuSecondaryTitle" onmouseover="changeMenuStyle(this,'subMenuSecondaryTitleOver'),showCursor()" onmouseout="changeMenuStyle(this,'subMenuSecondaryTitle'),hideCursor()" height="20" onclick="document.location.href='AdvancedSearch.do?targetAction=populate'">
+		<a class="subMenuSecondary" href="AdvancedSearch.do?targetAction=populate">
 			<bean:message key="app.advancedSearch" />
 		</a>
 	</td>

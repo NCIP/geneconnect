@@ -216,3 +216,8 @@ function submitForm(action)
 {
 	submitTabForm(action);
 }
+
+function loadForm(url)
+{
+	window.location = url;
+}

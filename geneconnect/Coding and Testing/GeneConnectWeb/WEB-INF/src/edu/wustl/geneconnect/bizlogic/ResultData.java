@@ -6,11 +6,8 @@
 
 package edu.wustl.geneconnect.bizlogic;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 /**
  * Result Data - marker interface.
@@ -33,50 +30,72 @@ public class ResultData implements ResultDataInterface
 	private List columnHeader;
 
 
+	private Map data;
+	
+	public Map getData()
+	{
+	
+		return data;
+	}
 
+	public void setData(Map data)
+	{
+	
+		this.data = data;
+	}
+	public Object getValue(Object key)
+	{
+		Object valueObject = null;
+		if(data!=null)
+		{
+			valueObject= data.get(key);
+			
+		}
+		return valueObject;
+	}
 	/**
 	 * Default constructor
 	 */
-	public ResultData()
-	{
-		result = new ArrayList();
-		columnHeader = new Vector();
-	}
-
-	/**
-	 * Getter method for data.
-	 * @return Returns the data.
-	 */
-	public List getResult()
-	{
-		return result;
-	}
-
-	/**
-	 * Setter method for result
-	 * @param result - stores result obtained by processing query 
-	 *  
-	 */
-	public void setResult(List result)
-	{
-		this.result = result;
-	}
-
-	/**
-	 * Getter method for columnHeader.
-	 * @return java.util.List  
-	 */
-	public List getColumnHeader()
-	{
-		return columnHeader;
-	}
-
-	/**
-	 * Setter method for columnHeader.
-	 * @param columnHeader - This list will contain column names
-	 */
-	public void setColumnHeader(List columnHeader)
-	{
-		this.columnHeader = columnHeader;
-	}
+//	public ResultData()
+//	{
+//		result = new ArrayList();
+//		columnHeader = new Vector();
+//	}
+//
+//	/**
+//	 * Getter method for data.
+//	 * @return Returns the data.
+//	 */
+//	public List getResult()
+//	{
+//		return result;
+//	}
+//
+//	/**
+//	 * Setter method for result
+//	 * @param result - stores result obtained by processing query 
+//	 *  
+//	 */
+//	public void setResult(List result)
+//	{
+//		this.result = result;
+//	}
+//
+//	/**
+//	 * Getter method for columnHeader.
+//	 * @return java.util.List  
+//	 */
+//	public List getColumnHeader()
+//	{
+//		return columnHeader;
+//	}
+//
+//	/**
+//	 * Setter method for columnHeader.
+//	 * @param columnHeader - This list will contain column names
+//	 */
+//	public void setColumnHeader(List columnHeader)
+//	{
+//		this.columnHeader = columnHeader;
+//	}
 }

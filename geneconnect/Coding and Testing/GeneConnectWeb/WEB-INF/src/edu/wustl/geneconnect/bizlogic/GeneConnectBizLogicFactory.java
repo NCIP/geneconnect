@@ -8,6 +8,7 @@ package edu.wustl.geneconnect.bizlogic;
 
 import java.util.Map;
 
+import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.geneconnect.util.global.GCConstants;
 
@@ -74,11 +75,22 @@ public class GeneConnectBizLogicFactory extends AbstractBizLogicFactory
 	 * @param businessAction business action for which biz logic is required.
 	 * @return BizLogic instance.
 	 */
-	public BizLogicInterface getBizLogic(String businessAction)
+	public BizLogicInterface getBizLogic(String businessAction) throws BizLogicException
 	{
 		BizLogicInterface bizLogic = null;
-		bizLogic = ((BizLogicInterface) moduleMap.get(businessAction));
-		Logger.out.info("Return bizLogic : " + bizLogic);
+		try
+		{
+			String bizLogicClass = (String)moduleMap.get(businessAction);
+			//bizLogic = ((BizLogicInterface) moduleMap.get(businessAction));
+			bizLogic = (BizLogicInterface) Class.forName(bizLogicClass).newInstance();
+			Logger.out.info("Return bizLogic : " + bizLogic);
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			Logger.out.error(e.getMessage(),e);
+			throw new BizLogicException(e.getMessage(),e);
+		}
 		return bizLogic;
 	}
 

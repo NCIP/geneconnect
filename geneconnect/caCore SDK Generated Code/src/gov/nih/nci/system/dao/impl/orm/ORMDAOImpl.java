@@ -126,7 +126,33 @@ public class ORMDAOImpl
 		Integer resultsPerQuery = (Integer) request.getRecordsCount();
 		Boolean isCount = (Boolean) request.getIsCount();
 		session = ormConn.openSession(counter);
+		/**
+		 * Check if target domain object is GenomicIdentifierSet class
+		 * if true then  calculate confidence and freuency
+		 */
+		boolean isGenomicIdSet = false;
 
+		if (entityName.equalsIgnoreCase(GenomicIdentifierSet.class.getName()))
+		{
+			isGenomicIdSet = true;
+		}
+		/**
+		 * ***Begins****
+		 * @author sachin_lale
+		 * ********************************************************************************************************************
+		 * Get JDNC connection and store metadata in cache
+		 */
+		if (session.isConnected())
+		{
+			/**
+			 * Get JDBC connection to get Metadata of DATASOURCE table through SQL.
+			 * Store the result in a List of Map where each map is stroe as KEY=ColumnName
+			 * VALUE=ColumnValue for that row.
+			 */
+			Connection conn = session.connection();
+			//log.info("JDBC Connetion successfull " + conn);
+			MetadataManager.connect(conn);
+		}
 		try
 		{
 			if (obj instanceof DetachedCriteria)
@@ -135,33 +161,8 @@ public class ORMDAOImpl
 				hCriteria = ((org.hibernate.criterion.DetachedCriteria) request.getRequest())
 						.getExecutableCriteria(session);
 
-				/**
-				 * ***Begins****
-				 * @author sachin_lale
-				 * ********************************************************************************************************************
-				 * Get JDNC connection and store metadata in cache
-				 */
-				if (session.isConnected())
-				{
-					/**
-					 * Get JDBC connection to get Metadata of DATASOURCE table through SQL.
-					 * Store the result in a List of Map where each map is stroe as KEY=ColumnName
-					 * VALUE=ColumnValue for that row.
-					 */
-					Connection conn = session.connection();
-					log.info("JDBC Connetion successfull " + conn);
-					MetadataManager.connect(conn);
-				}
-				/**
-				 * Check if target domain object is GenomicIdentifierSet class
-				 * if true then  calculate confidence and freuency
-				 */
-				boolean isGenomicIdSet = false;
-
-				if (entityName.equalsIgnoreCase(GenomicIdentifierSet.class.getName()))
-				{
-					isGenomicIdSet = true;
-				}
+	
+				
 
 				CriteriaImpl impl = (CriteriaImpl) ((DetachedCriteria) obj)
 						.getExecutableCriteria(session);
@@ -219,17 +220,7 @@ public class ORMDAOImpl
 
 						}
 						rs = hCriteria.list();
-						System.out.println("rs " + rs.size());
-						/**
-						 * if target object is GenomicIdentifier class then calulate confidence and frequency.
-						 */
-						if (isGenomicIdSet)
-						{
-							log.info("New search started");
-							log.info("ResultSet Size before prepareResult(): " + rs.size());
-							rp.processResult(rs);
-
-						}
+						
 					}
 				}
 			}
@@ -237,7 +228,18 @@ public class ORMDAOImpl
 			{
 				NestedCriteria crit = (NestedCriteria) obj;
 				List l = crit.getSourceObjectList();
-
+				
+				if(l.size()>0)
+				{
+					Object o = l.get(0);
+					if (o instanceof GenomicIdentifierSet && isGenomicIdSet)
+					{
+						GenomicIdentifierSet set = (GenomicIdentifierSet) o;
+						rp.interpretCriteria(set);
+						
+					}
+					
+				}
 				//System.out.println("ORMDAOImpl.query: it is a NestedCriteria Object ....");		
 				NestedCriteria2HQL converter = new NestedCriteria2HQL((NestedCriteria) obj, ormConn
 						.getConfiguration(counter), session);
@@ -277,6 +279,7 @@ public class ORMDAOImpl
 							query.setMaxResults(recordsPerQuery);
 
 						}
+					//	System.out.println("QUERY "+query.getQueryString());
 						rs = query.list();
 					}
 				}
@@ -317,6 +320,21 @@ public class ORMDAOImpl
 					rs = hqlQuery.list();
 				}
 			}
+			//System.out.println("rs " + rs.size());
+			/**
+			 * if target object is GenomicIdentifier class then calulate confidence and frequency.
+			 */
+			if (isGenomicIdSet)
+			{
+				log.info("New search started");
+				log.info("ResultSet Size before prepareResult(): " + rs.size());
+				if(rp.getSelectedInputDataSourceList().size()>0)
+				{
+					rp.processResult(rs);
+				}	
+				
+
+			}
 		}
 		catch (JDBCException ex)
 		{
@@ -349,7 +367,7 @@ public class ORMDAOImpl
 				throw new DAOException("Could not close the session:  " + eSession);
 			}
 		}
-
+		
 		Response rsp = new Response();
 		if (isCount != null && isCount.booleanValue())
 			rsp.setRowCount(rowCount);

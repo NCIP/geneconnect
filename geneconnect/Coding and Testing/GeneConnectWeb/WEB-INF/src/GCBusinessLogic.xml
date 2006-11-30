@@ -4,5 +4,9 @@
 		<business-action>SimpleSearchBizLogic</business-action>
 		<instance-type>edu.wustl.geneconnect.bizlogic.SimpleSearchBizLogic</instance-type>
     </business-logic>
+    <business-logic>
+		<business-action>AdvancedSearchBizLogic</business-action>
+		<instance-type>edu.wustl.geneconnect.bizlogic.AdvancedSearchBizLogic</instance-type>
+    </business-logic>
 </business-logics>  
 

@@ -12,8 +12,18 @@ import java.util.List;
 public class GCCriteria
 {
 
+	/**
+	 * store Data source name
+	 */
 	String dataSource;
+
+	/**
+	 * store predicate value 
+	 */
 	float predicate;
+	/**
+	 * Link type
+	 */
 	List type = new ArrayList();
 
 	public String getDataSource()

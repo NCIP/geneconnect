@@ -10,7 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts.action.ActionForm;
+import org.apache.struts.action.ActionMapping;
 
 /**
  * Simple Search Action Form will hold the data required for simple search operation
@@ -140,6 +143,10 @@ public class SimpleSearchForm extends ActionForm
 	{
 		this.targetAction = targetAction;
 	}
-
+	  public void reset(ActionMapping mapping, HttpServletRequest request)
+	  {
+		  values = new HashMap();
+		  counter = 1;
+	  }
 	
 }

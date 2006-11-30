@@ -141,12 +141,16 @@ b. Download the object model EAP file from caBIG CVS folder 'geneconnect\Final U
 Folder Name				Contents
 -----------				--------
 caCore SDK Generated Code		GC_caCore_SchemaCreation
+
+caCore SDK Generated Code		log4j.properties
 					
 src					GCTestClient.java
 
 edu/wustl/geneconnect			GenomicIdentifierSolution.java
+					GenomicIdentifierSolution.hbm.xml
 
 edu/wustl/geneconnect/impl		GenomicIdentifierSolutionImpl.java
+					GenomicIdentifierSolutionImpl.hbm.xml
 
 edu/wustl/geneconnect/ws		GenomicIdentifierSolution.java
 					GenomicIdentifierSolutionImpl.java
@@ -235,10 +239,11 @@ b. From GeneConnect_caCore directory ('src') copy subfolder 'edu' to the
 c. From GeneConnect_caCore directory ('src') copy gov/nih/nci/system/applicationservice/impl/ApplicationServiceBusinessImpl.java
    and gov/nih/nci/system/dao/impl/orm/ORMDAOImpl.java to the 'caCoreSDK base directory/cacoretoolkit/src' directory to appropriate 
    package structure.
-d. Generate XMI Annotaions of Object Model using Enterprise Architect.
-e. Configure caCore SDK property/configuration files given the XMI file name(generated in step 'd').
+d. From GeneConnect_caCore directory copy 'log4j.properties' file to  'caCoreSDK base directory/cacoretoolkit/conf/'.
+e. Generate XMI Annotaions of Object Model using Enterprise Architect.
+f. Configure caCore SDK property/configuration files given the XMI file name(generated in step 'd').
    (For more information on configuring caCore SDK please refer to caCore SDK Technical manual).	
-f. Execute ant script of caCore SDK.
+g.. Execute ant script of caCore SDK.
 
 
 ------------------------------------------------------------------------------

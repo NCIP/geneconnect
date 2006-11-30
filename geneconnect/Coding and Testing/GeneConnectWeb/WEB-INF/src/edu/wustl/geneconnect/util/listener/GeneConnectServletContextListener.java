@@ -7,26 +7,16 @@
 package edu.wustl.geneconnect.util.listener;
 
 import java.io.File;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
-import edu.wustl.common.bizlogic.QueryBizLogic;
-import edu.wustl.common.dao.DAOFactory;
-import edu.wustl.common.dao.JDBCDAO;
-import edu.wustl.common.util.CVSTagReader;
-import edu.wustl.common.util.XMLPropertyHandler;
 import edu.wustl.common.util.dbManager.DAOException;
-import edu.wustl.common.util.dbManager.HibernateMetaData;
 import edu.wustl.common.util.global.ApplicationProperties;
-import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.global.Variables;
 import edu.wustl.common.util.logger.Logger;
 import edu.wustl.geneconnect.cacore.CaCoreClient;
 import edu.wustl.geneconnect.metadata.MetadataManager;
-import edu.wustl.geneconnect.util.global.GCVariable;
 
 /**
  * 
