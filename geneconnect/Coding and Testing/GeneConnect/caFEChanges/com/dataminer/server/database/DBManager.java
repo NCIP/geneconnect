@@ -6,30 +6,35 @@
 
 package com.dataminer.server.database;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.StringTokenizer;
+import java.util.Vector;
+
 import com.dataminer.server.exception.ApplicationException;
 import com.dataminer.server.exception.FatalException;
+import com.dataminer.server.exception.NonFatalException;
 import com.dataminer.server.globals.Constants;
 import com.dataminer.server.globals.Variables;
+import com.dataminer.server.io.PropertiesFileHandeler;
 import com.dataminer.server.log.Logger;
 import com.dataminer.server.parser.CreateSchemaParser;
 import com.dataminer.server.record.Record;
-
-import java.util.Hashtable;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Statement;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.DriverManager;
-import java.util.Enumeration;
-import java.io.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Vector;
-import java.util.Date;
-import java.util.StringTokenizer;
-import java.lang.Integer;
 /**
  * Provides interface to the database. It provides functions to inserts and 
  * query the database. Also it provides methods for getting database related
@@ -100,6 +105,16 @@ public class DBManager
 			nullable = new int[colCount];
 		}
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isConnected()
+	{
+	    return (conn != null);
+	}
+	
 	/**
 	 * Method to execute given query and return query result as integer. It is generally
 	 * used for getting the table counts or maximum nubers from table
@@ -108,32 +123,89 @@ public class DBManager
 	 */
 	public int execQuery(String query)
 	{
+	    int max = 0;
+	    ResultSet rs = executeSQLQuery(query);
+	    /** The function reads the value returned by the query and returns the integer conversion of the 
+	     * result. The function is used for getting maximum number form the table or count of the table.*/
+	    try 
+	    {
+	        while(rs.next())
+	        {
+	            max = rs.getInt(1);
+	        }
+	    } catch(SQLException sq) {
+	        /** If query execution throws SQL Exception then 0 will be returned*/
+	        Logger.log("error in execQuery(): "+ query  + "   " + sq.getMessage(),Logger.WARNING);
+	        return 0;
+	    }
+	    return max;
+	}
+	
+	/**
+	 * Method to execute given query and return query result.
+	 * @param query Query String to execute
+	 * @return The query result 
+	 */
+	public ResultSet executeSQLQuery(String query)
+	{
+	    ResultSet resultSet = null;
+	    Logger.log("Executing: " + query,Logger.INFO);
+	    /** Execute the query*/
+	    long startTime = System.currentTimeMillis();
+	    try
+	    {
+	        //Statement stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_READ_ONLY);
+	        Statement stmt = conn.createStatement();
+	        resultSet = stmt.executeQuery(query);
+	    } catch(SQLException sq)
+	    {
+	        /** If query execution throws SQL Exception then null will be returned*/
+	        Logger.log("error in executeSQLQuery(): "+ query  + "   " + sq.getMessage(),Logger.WARNING);
+	        return null;
+	    } 
+	    long endTime = System.currentTimeMillis();
+	    long queryTime = endTime - startTime;
+	    Logger.log("Query Time: " + queryTime,Logger.INFO);
+	    Logger.log("Done ",Logger.INFO);
+	    return resultSet;
+	}
+	
+	public void executeScriptFile(String filename)
+	{
+		Logger.log("Executing sql script file " + filename, Logger.INFO);
 		try
 		{
-			int max = 0;
-			Statement stmt = conn.createStatement();
-			Logger.log("Executing: " + query,Logger.INFO);
-			/** Execute the query*/
-			long startTime = System.currentTimeMillis();
-			ResultSet rs = stmt.executeQuery(query);
-			long endTime = System.currentTimeMillis();
-			long queryTime = endTime - startTime;
-			Logger.log("Query Time: " + queryTime,Logger.INFO);
-			Logger.log("Done ",Logger.INFO);
-			/** The function reads the value returned by the query and returns the integer conversion of the 
-			 * result. The function is used for getting maximum number form the table or count of the table.*/
-			while(rs.next())
+			BufferedReader scriptFile = new BufferedReader(new FileReader(filename));
+			String query = "";
+			String currentLine = null;
+			while ((currentLine = scriptFile.readLine()) != null)
 			{
-				max = rs.getInt(1);
+				if (currentLine.contains(";"))
+				{
+					if (currentLine.indexOf(';') != 0)
+					{
+						query = query + currentLine.substring(0, currentLine.indexOf(';'));
+					}
+					executeSQLQuery(query);
+					query = "";
+				}
+				else
+				{
+					query = query + currentLine;
+				}
 			}
-			return max;
 		}
-		catch(SQLException sq)
+		catch (FileNotFoundException e)
 		{
-			/** If query execution throws SQL Exception then 0 will be returned*/
-			Logger.log("error in maxCount(): "+ query  + "   " + sq.getMessage(),Logger.WARNING);
-			return 0;
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Logger.log("Finished excuting sql script file " + filename, Logger.INFO);
 	}
 	
 	/**
@@ -1410,26 +1482,27 @@ public class DBManager
 	 * @param passWord database password
 	 * @throws FatalException throws exception if error during connection
 	 */
-	public void connect(String driverName, String dbURL, String userName,
-			String passWord) throws FatalException 
-			{
+	public void connect(String driverName, String dbURL, String userName, String passWord)
+			throws FatalException
+	{
 		m_driverName = driverName;
 		m_dbURL = dbURL;
 		m_userName = userName;
 		m_passWord = passWord;
 		/** load the driver, which also registers the driver*/
-		try 
+		try
 		{
 			Class.forName(driverName);
-		} catch (ClassNotFoundException e)
+		}
+		catch (ClassNotFoundException e)
 		{
 			Variables.errorCount++;
 			throw new FatalException("driver " + driverName + " not found");
 		}
-		try 
+		try
 		{
 			conn = DriverManager.getConnection(dbURL, userName, passWord);
-			Logger.log("connection successful",Logger.INFO);
+			Logger.log("connection successful", Logger.INFO);
 			conn.setAutoCommit(false);
 		}
 		catch (SQLException sqlEx)
@@ -1438,7 +1511,79 @@ public class DBManager
 			Variables.errorCount++;
 			throw new FatalException("SQLException: " + sqlEx.getMessage());
 		}
+	}
+	
+	/**
+	 * Connects to the database using db propeties specified in server.peoperties.
+	 * This method can be used when db manger is invoked out of server run and db properties are not loaded. 
+	 * @throws FatalException
+	 */
+	public void connect() throws FatalException
+	{
+		//Check whether invoked out of server run and db properties are not loaded. 
+		if (Variables.dbUserId == null ||  Variables.dbUserId.equals(""))
+		{
+			//Load db propeties specified in server.peoperties.
+			loadProperties();
+		}
+		connect(Variables.driverName, Variables.dbURL, Variables.dbUserId,
+				Variables.dbUserPsswd);
+	}
+		
+	/**
+	 * Loads database connection properties from server.properties file.
+	 */
+	private void loadProperties()
+	{
+		String fileSep = System.getProperty("file.separator");
+		String fileName = Variables.currentDir + fileSep + "Config" + fileSep
+				+ Constants.serverPropertiesFile;
+		PropertiesFileHandeler pfh;
+		try
+		{
+			pfh = new PropertiesFileHandeler(fileName);
+
+			/** Read username and password for database from command line */
+			Variables.dbUserId = pfh.getValue(Constants.DATABASE_USERNAME).trim();
+			Variables.dbUserPsswd = pfh.getValue(Constants.DATABASE_PASSWORD).trim();
+
+			/** Set the temperory directory to the user directory */
+			Variables.tempDir = System.getProperty("user.dir");
+
+			/** Set database configuration parameters from command lines into the global variables*/
+			Variables.dbConnect = pfh.getValue(Constants.DATABASE_CONNECT).trim();
+			Variables.driverName = pfh.getValue(Constants.DATABASE_DRIVER).trim();
+			Variables.dbURL = pfh.getValue(Constants.DATABASE_URL).trim();
+
+			String dbType = pfh.getValue(Constants.DATABASE_TYPE).trim();
+
+			/** If the database type is other than MySQL and Oracle then the execution will  terminate logging below message*/
+			if ((!(dbType.equalsIgnoreCase(Constants.ORACLE))))
+			{
+				Logger.log("Invalid Data base identifier. Only Oracle is allowed.", Logger.FATAL);
+				System.out
+						.println("Exception: Invalid Data base identifier. Only Oracle is allowed.");
+				System.exit(1);
 			}
+
+			Variables.dbIdentifier = Constants.ORACLE;
+		}
+		catch (NonFatalException nfe)
+		{
+			Logger.log("Non Fatal Error Loading Properties from Properties File "
+					+ nfe.getMessage(), Logger.WARNING);
+		}
+		catch (ApplicationException ae)
+		{
+			Logger.log("Application Error Loading Properties from Properties File "
+					+ ae.getMessage(), Logger.WARNING);
+		}
+		catch (Exception e)
+		{
+			Logger.log("Exception while Loading Properties from Properties File " + e.getMessage(),
+					Logger.WARNING);
+		}
+	}
 	
 	/**
 	 * constructs the prepareStmt to insert a row in a table
