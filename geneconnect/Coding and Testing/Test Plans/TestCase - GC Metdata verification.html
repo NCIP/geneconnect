@@ -122,13 +122,13 @@ TD {
 To check that the metadata tables are created and populated with the correct data.
 
 Setup:
-GeneConnect Server has been deployed on the machine (Deployment Target of the GeneConnect Build.xml has been run).
+GeneConnect Server has been deployed on the machine (Deployment Target of the GeneConnect Build.xml has been run.) Please refer GeneConnectServer ReadMe for setting up the server.
 
 Procedure:
 
-1.Configure and Verify  the file GCGraph.txt in \config folder.
+1.Configure and Verify  the file GCGraph.txt in \config folder. (Refer GeneConnect Sever ReadMe for configuration details).
 2.Configure and Verify  the file server.properties in \config folder.
-3.Run the Deploy target of GeneConnect Build.xml.
+3.Run the Deploy target of GeneConnect Build.xml or run calculateMetaData target if the server has been setup already and only metadata needs to be calculated.
 
 
 Input/Data:
@@ -242,7 +242,7 @@ Check the SUBPATH_ID value (34) in PATH table, in column PATH_ID.This entry show
 
 All the other sub paths can be verified with similar logic.
 
-</pre></font></td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Mode of Execution</b></td>              <td vAlign="top" height="1">Manual                </td>              <td vAlign="top" height="21"><b>Verification Logic</b></td>              <td vAlign="top" height="1">BOTH<br>                </td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Author</b></td>              <td vAlign="top" height="21">Shweta Chavan</td>              <td vAlign="top" height="21"><b>Date Entered</b></td>              <td vAlign="top" height="21">03/10/2006&nbsp;</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"><b>Date Last Update</b></td>              <td vAlign="top" height="21">04/10/2006&nbsp;</td>            </tr>          </tbody>        </table>      </td>    </tr>  </tbody></table>
+</pre></font></td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Mode of Execution</b></td>              <td vAlign="top" height="1">Manual                </td>              <td vAlign="top" height="21"><b>Verification Logic</b></td>              <td vAlign="top" height="1">BOTH<br>                </td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Author</b></td>              <td vAlign="top" height="21">Shweta Chavan</td>              <td vAlign="top" height="21"><b>Date Entered</b></td>              <td vAlign="top" height="21">03/10/2006&nbsp;</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"><b>Date Last Update</b></td>              <td vAlign="top" height="21">04/12/2006&nbsp;</td>            </tr>          </tbody>        </table>      </td>    </tr>  </tbody></table>
 <p align="right"><a href="#TMT Generated Test Plans">Top</a></p><a name="Test Case ID: GeneConnectver 1.1Metadata CalculationMetadata CalculationMetadata Calculation for newly added DataSource"><center><table bgColor="#CCCCFF" border="1" cellPadding="0" cellSpacing="0" width="700">  <tbody>    <tr>      <td align="middle" bgColor="#CCCCFF">        <p align="left"><font color="#660066"><b>Test Case ID : 1896</b></font></p>      </td>    </tr>    <tr>      <td bgcolor="#FFFFFF"><b>Short Title : </b>Metadata Calculation for newly added DataSource</td>    </tr>    <tr>      <td bgcolor="#FFFFFF"><b>Title : </b>Testing Metadata Calculations for newly added DataSource</td>    </tr>  </tbody></table><br><table bgColor="#CCCCFF" border="1" cellPadding="0" cellSpacing="0" width="700">  <tbody>    <tr>      <td align="middle" bgColor="#CCCCFF">        <p align="left"><font color="#660066"><b>VITALS</b></font></p>      </td>    </tr>    <tr>      <td>        <table bgColor="#CCCCFF" border="1" cellPadding="2" width="100%">          <tbody>            <tr bgColor="#ffffff">              <td vAlign="top"><b>Product</b></td>              <td vAlign="top" colspan="3">GeneConnect</td>            <tr bgColor="#ffffff">              <td vAlign="top"><b>Component</b></td>              <td vAlign="top">Metadata Calculation<br>              </td>              <td vAlign="top"><b>Test Area</b></td>              <td vAlign="top">Metadata Calculation</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top"><b>Reference</b></td>              <td vAlign="top">1</td>              <td vAlign="top"><b>Priority</b></td>              <td vAlign="top">P2</td>            </tr>          </tbody>        </table>    <tr>      <td align="middle" bgColor="#CCCCFF">        <p align="left"><font color="#660066"><b>DESCRIPTION</b></font></p>      </td>    </tr>    <tr>      <td>        <table bgColor="#CCCCFF" border="1" cellPadding="2" width="100%" height="113">          <tbody>            <tr bgColor="#ffffff"><td vAlign="top" height="32" colspan="4"><font class="itsmultlinefont"><pre>Purpose:
 To test whether the newly added Data Source is correctly represented in the relevant Metadata Tables.
 
@@ -264,7 +264,7 @@ Inferred-&gt;2
 3.Verify  that the file is present in GCGraph.txt in \config folder.
 4.Configure and Verify  the file server.properties in \config folder.
 5.Modify the SQL scripts GCSchemaCreation.sql for defining the base tables for new data source and GCMetadataPopulation.sql  to define the metadata for those base tables.
-Also modify GCMetadataSchemaCreation.sql for adding the column in GENE, MRNA or PROTEIN table.
+Also modify sql scripts in \script folder for adding the column in GENE, MRNA or PROTEIN table.
 6.Run the Deploy target of GeneConnect Build.xml.
 
 Input/Data:
@@ -294,5 +294,5 @@ Verification Logic:
 
 
 
-</pre></font></td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Mode of Execution</b></td>              <td vAlign="top" height="1">Manual                </td>              <td vAlign="top" height="21"><b>Verification Logic</b></td>              <td vAlign="top" height="1">BOTH<br>                </td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Author</b></td>              <td vAlign="top" height="21">Shweta Chavan</td>              <td vAlign="top" height="21"><b>Date Entered</b></td>              <td vAlign="top" height="21">04/10/2006&nbsp;</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"><b>Date Last Update</b></td>              <td vAlign="top" height="21">04/10/2006&nbsp;</td>            </tr>          </tbody>        </table>      </td>    </tr>  </tbody></table>
+</pre></font></td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Mode of Execution</b></td>              <td vAlign="top" height="1">Manual                </td>              <td vAlign="top" height="21"><b>Verification Logic</b></td>              <td vAlign="top" height="1">BOTH<br>                </td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Author</b></td>              <td vAlign="top" height="21">Shweta Chavan</td>              <td vAlign="top" height="21"><b>Date Entered</b></td>              <td vAlign="top" height="21">04/10/2006&nbsp;</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"><b>Date Last Update</b></td>              <td vAlign="top" height="21">04/12/2006&nbsp;</td>            </tr>          </tbody>        </table>      </td>    </tr>  </tbody></table>
 <p align="right"><a href="#TMT Generated Test Plans">Top</a></p></body></html>

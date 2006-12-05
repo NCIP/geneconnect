@@ -71,6 +71,7 @@ public class Variables {
 	
 	/**cmd file*/
 	public static String CommandFile;
+	public static boolean calculateSummary = true;
 	
 	public static String taxonomyCmdFile = "OrganismTaxonomyConfig.txt";
 	public static String taxonomyFileNames = "OrganismTaxonomyFiles.txt";

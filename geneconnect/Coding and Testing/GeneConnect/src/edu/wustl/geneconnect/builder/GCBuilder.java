@@ -7,11 +7,9 @@
 package edu.wustl.geneconnect.builder;
 
 import com.dataminer.server.exception.ApplicationException;
-import com.dataminer.server.exception.NonFatalException;
 import com.dataminer.server.globals.Constants;
 import com.dataminer.server.globals.Utility;
 import com.dataminer.server.globals.Variables;
-import com.dataminer.server.io.PropertiesFileHandeler;
 import com.dataminer.server.jobmanager.BaseBuilder;
 import com.dataminer.server.log.Logger;
 
@@ -46,8 +44,11 @@ public  class GCBuilder extends BaseBuilder
 		// dropEntrezTables();
 		
 		//Invoke Summary table calculator to calculate all-to-all genomic links 
-		SummaryCalculator summaryCalculator = new SummaryCalculator();
-		summaryCalculator.calculateSummary();
+		if (Variables.calculateSummary)
+		{
+			SummaryCalculator summaryCalculator = new SummaryCalculator();
+			summaryCalculator.calculateSummary();
+		}
 	}
 
 	/**
@@ -132,54 +133,18 @@ public  class GCBuilder extends BaseBuilder
 
 	protected void loadProperties()
 	{
+		super.loadProperties();
 		try
 		{
-			String fileSep = System.getProperty("file.separator");
-			String fileName = Variables.currentDir + fileSep + "Config" + fileSep + Constants.serverPropertiesFile;
-			PropertiesFileHandeler pfh = new PropertiesFileHandeler(fileName);
 			/**Load actual properties now*/
 
 			/** set the mode of operation for server as update mode**/
 			Variables.updateMode = true;
 
-
-			/** Read username and password for database from command line */
-			Variables.dbUserId = pfh.getValue(Constants.DATABASE_USERNAME).trim();
-			Variables.dbUserPsswd = pfh.getValue(Constants.DATABASE_PASSWORD).trim();
-
-			/** Set the temperory directory to the user directory */
-			Variables.tempDir = System.getProperty("user.dir");
-
-			/** Set database configuration parameters from command lines into the global variables*/
-			Variables.dbConnect =  pfh.getValue(Constants.DATABASE_CONNECT).trim();
-			Variables.driverName = pfh.getValue(Constants.DATABASE_DRIVER).trim();
-			Variables.dbURL = pfh.getValue(Constants.DATABASE_URL).trim();
-
-
-			String dbType = pfh.getValue(Constants.DATABASE_TYPE).trim();
-
-			/** If the database type is other than MySQL and Oracle then the execution will  terminate logging below message*/
-			if((!(dbType.equalsIgnoreCase(Constants.ORACLE) || dbType.equalsIgnoreCase(Constants.MYSQL) )))
-			{
-				Logger.log("Invalid Data base identifier. Oracle and Mysql are only allowed.",Logger.FATAL);
-				System.out.println("Exception: Invalid Data base identifier. Oracle and Mysql are only allowed.");
-				System.exit(1);
-			}
-
-			/** This will avoid checking equalsIgnoreCase again and again for database identifiers */
-			if(true == dbType.equalsIgnoreCase(Constants.ORACLE))
-				Variables.dbIdentifier = Constants.ORACLE;
-			else
-				Variables.dbIdentifier = Constants.MYSQL;
-
-			/** This function will set date format, date function and null character specific to the database being used */
-			makeDBServerSpecificSettings();
-
 			/** Get the name of Command file have source information from which data is to be downloaded
 			 *  If Command file is not specified for Update and Add Chip mode then ArrayOutOfBound Exception
 			 *  will be thrown
 			 **/
-
 			Variables.CommandFile = pfh.getValue(Constants.COMMAND_FILE_NAME).trim();
 			if(null == Variables.CommandFile)
 			{
@@ -189,81 +154,14 @@ public  class GCBuilder extends BaseBuilder
 				System.out.println("Command File path and name is required for modes other than CreateDBSchema mode");
 				System.exit(1);
 			}
-			/** Following block will log all the options specified by user through command line */
-			Logger.log("dbuser = " + Variables.dbUserId,Logger.INFO);
-			Logger.log("Command file path = " + Variables.CommandFile,Logger.INFO);
-			Logger.log("update mode = " + Variables.updateMode,Logger.INFO);
-			Logger.log("adding new chips = " + Variables.addChip,Logger.INFO);
-			Logger.log("driverName = " + Variables.driverName,Logger.INFO);
-			Logger.log("dbURL = " + Variables.dbURL,Logger.INFO);
-			Logger.log("Temp. working directory = " + Variables.tempDir,Logger.INFO);
-
-
-			/** Properties for mail client and status mail parameters */
-			Variables.toAddress = pfh.getValue(Constants.TOADDRESS).trim();
-			Variables.host = pfh.getValue(Constants.HOST).trim();
-			Variables.fromAddress = pfh.getValue(Constants.FROMADDRESS).trim();
-			Variables.password = pfh.getValue(Constants.MAIL_PASSWORD);
-			Variables.signature = pfh.getValue(Constants.SIGNATURE).trim();
-			Variables.subject = pfh.getValue(Constants.SUBJECT).trim();
-
-			/** Properties for Server*/
-			Variables.noOfThreads = Integer.parseInt(pfh.getValue(Constants.NUMBER_OF_THREADS).trim());
-
-			/** MySQL specific setting which requires host name to connect to the database */
-			if(pfh.getValue(Constants.DBNAME)!=null)
+			
+			String calculateSummary = pfh.getValue(Constants.CALCULATE_SUMMARY).trim();
+			if (calculateSummary != null)
 			{
-				Variables.dbName = pfh.getValue(Constants.DBNAME).trim();
+				Variables.calculateSummary = Utility.toBoolean(calculateSummary);
 			}
-
-//			/** Properties used to set whether postwork and caCore table population needs to be done or not */
-//			String postWork = pfh.getValue(Constants.POSTWORK).trim();
-//			/**if postwork flag is not set then default value true indicating perform postwork will be used.*/
-//			if(postWork != null)
-//			{
-//				Variables.postWork = Utility.toBoolean(postWork);
-//				Logger.log("Variables.postWork = " + Variables.postWork,Logger.DEBUG);
-//			}
-//			/**if caCorePostwork flag is not set then default value true indicating perform caCorepostwork will be used.*/
-//			String caCoreSystemPostWork = pfh.getValue(Constants.CACORE_TABLE_CREATION).trim();
-//			if(caCoreSystemPostWork != null)
-//			{
-//				Variables.caCoreSystemPostWork = Utility.toBoolean(caCoreSystemPostWork);
-//				Logger.log("Variables.caCoreSystemPostWork = " + caCoreSystemPostWork,Logger.DEBUG);
-//			}
-			String processTaxonomy= pfh.getValue(Constants.PROCESS_TAXONOMY).trim();
-			/**if processTaxonomy flag is not set then default value true indicating perform processTaxonomy will be used.*/
-			if(processTaxonomy != null)
-			{
-				Variables.processTaxonomy = Utility.toBoolean(processTaxonomy);
-				Logger.log("Variables.processTaxonomy = " + Variables.processTaxonomy,Logger.DEBUG);
-			}
-			if((null == pfh.getValue(Constants.orgNames).trim()) || (null == pfh.getValue(Constants.orgHistory).trim()))
-			{
-				Logger.log("HomoloGene configuration parameters not found in server.properties file", Logger.WARNING);
-				Logger.log("Default values for the same will be used",Logger.WARNING);
-			}
-			Variables.serverProperties.put(Constants.orgNames,pfh.getValue(Constants.orgNames).trim());
-			Variables.serverProperties.put(Constants.orgHistory,pfh.getValue(Constants.orgHistory).trim());
-
-			Variables.serverTables = pfh.getValue(Constants.SERVER_TABLES);
-			Variables.caCoreSystemTables = pfh.getValue(Constants.CACORE_SYSTEM_TABLES);
-
-			/**Commented as this are caFE specific. Overridden in FEBuilder*/
-
-
-			/** deleteDownloadedFiles is by default false. It can be initialised to
-			 * the parameter read from the server.properties file */
-			if(pfh.getValue(Constants.deleteDownloadedFiles).trim() != null)
-			{
-				Variables.deleteDownloadedFiles = Utility.toBoolean(pfh.getValue(Constants.deleteDownloadedFiles).trim());
-				Logger.log("deleteDownloadedFiles = " + Variables.deleteDownloadedFiles,Logger.DEBUG);
-			}
+			
 			Logger.log("Loaded Properties from Properties File"+Variables.subject,Logger.INFO);
-		}
-		catch(NonFatalException nfe)
-		{
-			Logger.log("Non Fatal Error Loading Properties from Properties File " + nfe.getMessage(),Logger.WARNING);
 		}
 		catch(ApplicationException ae)
 		{

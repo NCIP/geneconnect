@@ -888,6 +888,47 @@ public class FEBuilder extends BaseBuilder
 		super.loadProperties();
 		try
 		{
+			/** get the mode of operation for server as first command line argument**/
+			int serverRunMode = Integer.parseInt(pfh.getValue(Constants.EXECUTION_MODE).trim());
+			Logger.log("Mode in which server will run: 1:Update 2:Add Chip 3:Create Database Schema = " + serverRunMode,Logger.INFO);
+			/** Based on the mode selected set appropriate variable */
+			if(Constants.UPDATE_MODE == serverRunMode)
+			{
+				Variables.updateMode = true;
+			}
+			else if (Constants.ADD_CHIP_MODE == serverRunMode) 
+			{
+				Variables.addChip = true;
+			} 
+			else if (Constants.CREATE_DB_SCHEMA_MODE == serverRunMode) 
+			{
+				Variables.createDBSchema = true;
+			}
+			else
+			{
+				Logger.log("Invalid mode for server. Only modes 1,2,3 are allowed.",Logger.FATAL);
+				System.out.println("Exceptin: Invalid mode for server. Only modes 1,2,3 are allowed");
+				System.exit(1);
+			}
+			
+			/** If Update or Add Chip modes are selected then their should be 8th parameter on the command line
+			 * specifying the name of Command file have source information from which data is to be downloaded */
+			if(false == Variables.createDBSchema)
+			{
+				/** If Command file is not specified for Update and Add Chip mode then ArrayOutOfBound Exception 
+				 * will be thrown */
+				Variables.CommandFile = pfh.getValue(Constants.COMMAND_FILE_NAME).trim();
+				
+				if(null == Variables.CommandFile)
+				{
+					/** If Command file name is not specified on command line in case of Update and Add Chip mode then 
+					 * execution will terminate logging correct message */
+					Logger.log("Command File path and name is required for modes other than CreateDBSchema mode",Logger.FATAL);
+					System.out.println("Command File path and name is required for modes other than CreateDBSchema mode");
+					System.exit(1);
+				}
+			}
+			
 			String fileSep = System.getProperty("file.separator");
 			String fileName = Variables.currentDir + fileSep + "Config" + fileSep + Constants.serverPropertiesFile;
 			PropertiesFileHandeler pfh = new PropertiesFileHandeler(fileName);

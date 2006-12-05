@@ -22,6 +22,8 @@ import edu.wustl.geneconnect.domain.Protein;
 import edu.wustl.geneconnect.metadata.domain.DataSource;
 
 /**
+ * This class contains various utilities which are mainly required to take care of addition 
+ * of new Data source usecase.
  * @author mahesh_nalkande
  * @version 1.0
  */

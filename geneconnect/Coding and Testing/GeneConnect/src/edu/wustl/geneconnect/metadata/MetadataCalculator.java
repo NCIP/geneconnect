@@ -53,54 +53,54 @@ import edu.wustl.geneconnect.metadata.domain.DataSource;
 public class MetadataCalculator implements GeneConnectServerConstants
 {
 
-	private static BufferedReader m_gcGraphFileReader;
+	private BufferedReader m_gcGraphFileReader;
 
 	// This parameter will be read from the input config file
-	private static int[][] m_adjacencyMatrix;
+	private int[][] m_adjacencyMatrix;
 
 	//  
-	private static int[][] m_statusMatrix;
+	private int[][] m_statusMatrix;
 
 	/**
 	 * Total no. of Data sources
 	 */
-	private static int m_numSources;
+	private int m_numSources;
 
 	/**
 	 * Map to store DataSource info
 	 * Key - Data Source ID
 	 * Value - DataSource object 
 	 */
-	private static Map m_srcNameIDPair = new HashMap();
+	private Map m_srcNameIDPair = new HashMap();
 
 	/**
 	 * Contains multimaps, one each for a source node
 	 */
-	private static List m_masterPathList = new ArrayList();
+	private List m_masterPathList = new ArrayList();
 
 	/**
 	 *  Used to keep track of which nodes have been (directly or indirectly) connected to the source node so far
 	 */
-	private static List m_masterNodeList = new ArrayList();
+	private List m_masterNodeList = new ArrayList();
 
 	/**
 	 * Contains mapping of each path to all sub-paths contained within the path
 	 * Key is path index and value is a list of sub-path indices
 	 * All paths are represented by unique path index
 	 */
-	private static Map m_pathToSubPathMap = new HashMap();
+	private Map m_pathToSubPathMap = new HashMap();
 
 	/**
 	 * m_linkTypeMap is a map of maps below, which is used to keep track of link-types between a source and destination
 	 * Key is source ID and value is a map of destination IDs and associated link types with each destination (stored as a list) 
 	 */
-	private static Map m_linkTypeMap = new HashMap();
+	private Map m_linkTypeMap = new HashMap();
 
 	
 	static int PLAIN_FORMAT = 1;
 	static int DB_FORMAT = 2;
 
-	private static int ontCount = 1;
+	private int ontCount = 1;
 
 	/**
 	 * Main method
@@ -109,39 +109,44 @@ public class MetadataCalculator implements GeneConnectServerConstants
 	public static void main(String[] args)
 	{
 		MetadataCalculator metadataCalculator = new MetadataCalculator();
+		metadataCalculator.calculateMetaData();
+	}
+	
+	private void calculateMetaData()
+	{
 		try
 		{
-			metadataCalculator.readGraph();
+			readGraph();
 		}
 		catch (IOException ioex)
 		{
 			// throw exception object from main method?
 		}
 
-		metadataCalculator.initMasterPathList();
-		metadataCalculator.initMasterNodeList();
+		initMasterPathList();
+		initMasterNodeList();
 
-		metadataCalculator.getDirectLinkages();
+		getDirectLinkages();
 
-		metadataCalculator.calculateConnections(m_numSources);
+		calculateConnections(m_numSources);
 
-		metadataCalculator.getSubPaths();
+		getSubPaths();
 
 		// write to file for sqlloader to load
-		metadataCalculator.writeDataSourceInformation("DataSources.txt");
-		metadataCalculator.writeLinkTypes("DataSourceLinks.txt");
-		metadataCalculator.writePaths("Paths.txt", DB_FORMAT);
-		metadataCalculator.writeSubPaths("SubPaths-Ref.txt", "SubPaths.txt");
-		metadataCalculator.writeONTs("ONT-Ref.txt", "ONTs.txt", "PathToOntMappings.txt");
+		writeDataSourceInformation("DataSources.txt");
+		writeLinkTypes("DataSourceLinks.txt");
+		writePaths("Paths.txt", DB_FORMAT);
+		writeSubPaths("SubPaths-Ref.txt", "SubPaths.txt");
+		writeONTs("ONT-Ref.txt", "ONTs.txt", "PathToOntMappings.txt");
 
 		// apply filter such that only non-redundant paths appear in the list
-		metadataCalculator.filterPaths();
+		filterPaths();
 
-		metadataCalculator.writePaths("NonRedundantLongestPaths.txt", PLAIN_FORMAT);
+		writePaths("NonRedundantLongestPaths.txt", PLAIN_FORMAT);
 
-		metadataCalculator.uploadOutputDataFiles();
+		uploadOutputDataFiles();
 		
-		metadataCalculator.rebuildMetaDataIndexes();
+		rebuildMetaDataIndexes();
 	}
 
 	/**

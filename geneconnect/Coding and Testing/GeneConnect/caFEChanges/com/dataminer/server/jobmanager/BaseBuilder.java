@@ -566,11 +566,12 @@ public abstract class BaseBuilder
 			PropertiesFileHandeler pfh = new PropertiesFileHandeler(fileName);
 			/**Load actual properties now*/
 			
+			//FE specific code moved to fe builder
 			/** get the mode of operation for server as first command line argument**/
-			int serverRunMode = Integer.parseInt(pfh.getValue(Constants.EXECUTION_MODE).trim());
+			/*int serverRunMode = Integer.parseInt(pfh.getValue(Constants.EXECUTION_MODE).trim());
 			Logger.log("Mode in which server will run: 1:Update 2:Add Chip 3:Create Database Schema = " + serverRunMode,Logger.INFO);
 			/** Based on the mode selected set appropriate variable */
-			if(Constants.UPDATE_MODE == serverRunMode)
+			/*if(Constants.UPDATE_MODE == serverRunMode)
 			{
 				Variables.updateMode = true;
 			}
@@ -587,7 +588,7 @@ public abstract class BaseBuilder
 				Logger.log("Invalid mode for server. Only modes 1,2,3 are allowed.",Logger.FATAL);
 				System.out.println("Exceptin: Invalid mode for server. Only modes 1,2,3 are allowed");
 				System.exit(1);
-			}
+			}*/
 
 			/** Read username and password for database from command line */
 			Variables.dbUserId = pfh.getValue(Constants.DATABASE_USERNAME).trim();
@@ -621,23 +622,25 @@ public abstract class BaseBuilder
 			/** This function will set date format, date function and null character specific to the database being used */
 			makeDBServerSpecificSettings();
 			
+			//FE Builder specific code moved to fe builder
 			/** If Update or Add Chip modes are selected then their should be 8th parameter on the command line
 			 * specifying the name of Command file have source information from which data is to be downloaded */
-			if(false == Variables.createDBSchema)
+			/*if(false == Variables.createDBSchema)
 			{
 				/** If Command file is not specified for Update and Add Chip mode then ArrayOutOfBound Exception 
 				 * will be thrown */
-				Variables.CommandFile = pfh.getValue(Constants.COMMAND_FILE_NAME).trim();
+				/*Variables.CommandFile = pfh.getValue(Constants.COMMAND_FILE_NAME).trim();
 				
 				if(null == Variables.CommandFile)
 				{
 					/** If Command file name is not specified on command line in case of Update and Add Chip mode then 
 					 * execution will terminate logging correct message */
-					Logger.log("Command File path and name is required for modes other than CreateDBSchema mode",Logger.FATAL);
+					/*Logger.log("Command File path and name is required for modes other than CreateDBSchema mode",Logger.FATAL);
 					System.out.println("Command File path and name is required for modes other than CreateDBSchema mode");
 					System.exit(1);
 				}
-			}
+			}*/
+			
 			/** Following block will log all the options specified by user through command line */
 			Logger.log("dbuser = " + Variables.dbUserId,Logger.INFO);
 			Logger.log("Command file path = " + Variables.CommandFile,Logger.INFO);
@@ -664,12 +667,14 @@ public abstract class BaseBuilder
 			
 			/** Properties used to set whether postwork and caCore table population needs to be done or not */
 			String postWork = pfh.getValue(Constants.POSTWORK).trim();
+			
 			/**if postwork flag is not set then default value true indicating perform postwork will be used.*/
 			if(postWork != null)
 			{	
 				Variables.postWork = Utility.toBoolean(postWork);
 				Logger.log("Variables.postWork = " + Variables.postWork,Logger.DEBUG);
 			}
+			
 			/**if caCorePostwork flag is not set then default value true indicating perform caCorepostwork will be used.*/
 			String caCoreSystemPostWork = pfh.getValue(Constants.CACORE_TABLE_CREATION).trim(); 
 			if(caCoreSystemPostWork != null)
@@ -891,6 +896,8 @@ public abstract class BaseBuilder
 				/** Check permission for creating file writer*/
 				FileWriter fw = new FileWriter(fileName);
 				fw.close();
+				File testfile = new File(fileName);
+				testfile.delete();
 			}
 			catch(IOException e)
 			{

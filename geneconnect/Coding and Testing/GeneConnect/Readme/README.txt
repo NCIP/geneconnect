@@ -19,6 +19,7 @@ Index
     3.7. BLAST Installation
     3.8. Ensembl API Installation
     3.9. Unzip and gzip utilities Installation
+    3.10 Ant Installation
 
 4. Folder Structure
     4.1. Contents of base directory and the subdirectories
@@ -28,6 +29,7 @@ Index
     5.2. Configuring server.properties
     5.3. Configuring Command File 
     5.4. Configuring ApplicationConfig.properties File 
+    5.5  Configuring build.properties File
 
 6. Configuring Scripts for GeneConnect Server run
 
@@ -37,7 +39,9 @@ Index
  
 9. Building the server jar files with the updated code
 
-10. Appendix
+10. Using GeneConnect server build script
+
+11. Appendix
 
 Appendix A : Oracle Database installation details
 
@@ -66,7 +70,7 @@ GeneConnect is the mapping service that will facilitate interoperability by inte
 3.1. Database Installation
 --------------------------
 	 
-	 This release of GeneConnect Server supports Oracle 9i.
+	 This release of GeneConnect Server supports Oracle 9i, 10g.
 
          - Oracle database server should be installed. Oracle instance should be running on it. 
 	 
@@ -96,8 +100,8 @@ The other operating Systems such as Windows 2000, NT, XP will be supported in th
 3.4. Minimum Disk Space and RAM Requirements
 --------------------------------------------
 
-Disk Space: 25 GB 
-RAM: <<<1>>> GB
+Disk Space: 50 GB 
+RAM: 2 GB
 
 
 3.5. JAVA Installation
@@ -110,7 +114,7 @@ Installable can be downloaded from http://java.sun.com/j2se/1.4.2/download.html.
 
 3.6. PERL Installation and integrating BioPerl modules
 ------------------------------------------------------
-Download <<<ActivePerl-5.8.7>>> installer from http://www.activestate.com/Products/ActivePerl/ and install it on your machine.
+Download ActivePerl-5.8.7 installer from http://www.activestate.com/Products/ActivePerl/ and install it on your machine.
 DownLoad bioperl-1.4.zip from http://www.bioperl.org/Core/Latest/index.shtml and extract it. Follow the instructions in install file to integrate it with the perl.
 (For Windows) Copy Bio directory from bioperl-1.4 to PERL_HOME\site\lib directory of your perl installation.
 
@@ -146,6 +150,14 @@ For Windows :
 - Update the System PATH to include gzip exe.
 
 Similarly install unzip utility and update the system path.
+
+
+3.10 Ant Installation
+----------------------
+Download ant from http://ant.apache.org/.
+- To install Ant, choose a directory and copy the distribution file there. This directory will be known as ANT_HOME.
+- Add the bin directory to your path.
+- Set the ANT_HOME environment variable to the directory where you installed Ant.
 
 
 ------------------------------------------------------------------------------
@@ -240,7 +252,7 @@ Lib                             activation.jar
 				tar.jar
 				xercesImpl.jar
 				xml-apis.jar 
-                                FEServer.jar (jar that has been compiled from 
+                                GeneConnectServer.jar (jar that has been compiled from 
                                 the source code)
 
 Config                          ApplicationConfig.properties
@@ -334,6 +346,7 @@ Go to 'RunScripts' folder under base directory and copy all files from the subfo
 a. server.properties file 
 b. CommandFile.xml
 c. ApplicationConfig.properties 
+d. build.properties
 
 
 5.2. Configuring Server.properties
@@ -420,6 +433,23 @@ CONSTRAINT_DROP_FILE_MYSQL
 CONSTRAINT_CREATION_FILE	
 
 
+5.5  Configuring build.properties File
+--------------------------------------
+Before runing GeneConnect server build script, Specify the following properties in build.properties file :
+GC_HOME = GeneConnect Server home directory
+JAVA_HOME = Java base Directory
+ORACLE_HOME = Oracle home directory
+PERL_HOME = Perl home directory
+BLAST_HOME = BLAST home directory
+CVS_PACKAGE = Name of the CVS package/module to check out\update
+CVS_CHECKOUT = Decides which CVS operation to perform. It should be true for first time to do checkout operation
+and false later on , to get the updates from CVS. 
+CVS_LOCATION = Directory where the checked out files should be placed. OR the CVS location which has to be updated. 
+CVS_MODULE_LOCATION = Directory from the CVS which should be copied to current repository. 
+   CVS_LOCATION + CVS_MODULE_LOCATION should point to GeneConnctServer (GeneConnect Base Directory) folder in CVS.
+
+
+
 
 
 ------------------------------------------------------------------------------
@@ -429,7 +459,7 @@ CONSTRAINT_CREATION_FILE
 To execute GeneConnect server, perform the following steps:
 
 a. Copy the Update<OS> script (e.g. UpdateLinux.sh) from the RunScripts/<OS> folder to the 
-   base directory
+   base directory. 
 b. Update the script to configure the system variables to correct paths and 
    command line parameters to desired values. 
 
@@ -445,6 +475,7 @@ c. Specify correct values for JAVA_HOME, ORACLE_HOME, PERL_HOME and BLAST_HOME, 
 
 To create the database tables required by GeneConnect Server, run the script "GCSchemaCreation.sql" in the /Scripts directory.
 
+OR Run the "createTables" target of GeneConnect build script. (Refer Section 10 for more details)
 
 
 
@@ -456,30 +487,68 @@ Before running GeneConnect Server make sure that you go through the check list i
 To run the server from command prompt, execute the below command from the base directory.
 
 Linux/Solaris:
-$ nohup ./updateLinux.sh &
+$ nohup ./update.sh &
 
 Windows:
-> updateWindows.bat 
+> update.bat 
 
+OR Run the "run" target of GeneConnect build script. (Refer Section 10 for more details)
 
 --------------------------------------------------------
 9. Building the server jar files with the updated code
 --------------------------------------------------------
-This section describes the procedure that should be followed for building FEServer.jar from .java files.
+This section describes the procedure that should be followed for building GeneConnectServer.jar from .java files.
 
 a. Add the path of ant utility in PATH variable.
 
-b. Execute ant command from base directory of the GeneConnectServer (directory which contains "build.xml" file) to build FEServer.jar
+b. Execute ant command from base directory of the GeneConnectServer (directory which contains "build.xml" file) to build GeneConnectServer.jar
 
            ant -emacs buildjar
 
-c. Ant file "build.xml" present in the base directory will be used for generating FEServer.jar which will be placed in the Lib directory under the base directory. 
+c. Ant file "build.xml" present in the base directory will be used for generating GeneConnectServer.jar which will be placed in the Lib directory under the base directory. 
 
-
+Run the "buildjar" target of GeneConnect build script. (Refer Section 10 for more details).
 
 
 ------------------------------------------------------------------------------
-10. Appendix
+10. Using GeneConnect server build script
+------------------------------------------------------------------------------
+The various targets in the GeneConnect Server build script and their usages are as follows :
+
+a) clean: Clean ups all temporary and log files.
+b) buildjar: Create the application JAR - GeneConnectServer.jar.
+c) checkConfigFiles: Checks server.properties and build.properties files for mandatory and correct property values.
+After specifying values in all config files , run this target to check for correctness.
+d) replaceConfigParameters: Replaces configuration parameters such as JAVA_HOME, ORACLE_HOME, etc. in run scripts. 
+	You just need to specify all such configuration parameters in single property file (build.properties) 
+	and run this task. It will copy them to appropriate run scripts.
+e) createDataBaseSpaceAndUser: Create a database schema and user.
+f) createTables: Create a database tables - Base as well as metadata tables.
+g) copyRunScripts: Copies run scripts to the GeneConnect base directory.
+h) run: Runs the GeneConnect server.
+i) calculateMetaData: Calculates GeneConnect MetaData as per the configuartions done /Config/GCGraph.txt file.
+j) calculateSummary: Calculates genomis identifier links.
+k) GetLatestAndDeply: Retrieves latest contents from CVS (it can be caBIG CVS or any other CVS , needs to configured in build.properties file) and deploys the GeneConnect server.
+l) GetLatestAndBuildJar: Retrieves latest contents from CVS (it can be caBIG CVS or any other CVS , needs to configured in build.properties file) and builds GeneConnectServer.jar.
+m) deploy: Deploys GeneConnect server. The steps followed are :
+	1> Checks server.properties and build.properties files for mandatory and correct property values
+	2> Replaces configuration parameters such as JAVA_HOME, ORACLE_HOME, etc. in run scripts.
+	3> Create a database schema and user
+	4> Create a database tables - Base as well as metadata tables.
+	5> Copies run scripts to the GeneConnect base directory.
+	6> Calculates GeneConnect MetaData as per the configuartions done /Config/GCGraph.txt file.
+	7> Sends the mail for successful deployment of GeneConnect Server.
+
+To execute any of the above tasks:
+1> Make sure that Ant is installed on your system. Environment variable ANT_HOME has been set and PATH contains the location of bin directory of Ant. (Refer section 3.10)
+2> Open a command prompt or shell terminal.
+3> Go to the GeneConnect server base directory.
+4> Run the command : ant <task_name>
+    where <task_name> can be any of the item among a-m from the above list.
+
+
+------------------------------------------------------------------------------
+11. Appendix
 ------------------------------------------------------------------------------
 
 

@@ -37,7 +37,7 @@ public interface GeneConnectServerConstants
 	
 	//public int MAX_GENOMIC_ID_SET_RECORDS_TO_BE_PROCESSED = 5000000;
 	//public int MAX_GENOMIC_ID_SET_RECORDS_TO_BE_PROCESSED = 10000;
-	public int MAX_GENOMIC_ID_SET_RECORDS_TO_BE_PROCESSED = 2000000;
+	public int MAX_GENOMIC_ID_SET_RECORDS_TO_BE_PROCESSED = 1000000;
 	
 	public static final int STEP_1_FOR_UNNORMALIZED_SET_ONT = 1;
 	public static final int STEP_2_FOR_UNIQUE_GENES = 2;

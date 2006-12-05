@@ -452,6 +452,8 @@ public class Constants
 	/** Property read to get the command file*/
 	public static final String COMMAND_FILE_NAME = "commandFileName";
 	
+	public static final String CALCULATE_SUMMARY = "calculateSummary";
+	
 	/** Properties read for GO data source*/
 	public static final String XML_ROOT = "xmlRoot";
 	public static final String PARENT_TERMID = "parentTermid";

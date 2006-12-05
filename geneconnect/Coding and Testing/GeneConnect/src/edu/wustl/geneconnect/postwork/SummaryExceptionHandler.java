@@ -5,6 +5,8 @@
  */
 package edu.wustl.geneconnect.postwork;
 
+import com.dataminer.server.log.Logger;
+
 
 /**
  * Exception handler
@@ -31,6 +33,7 @@ public class SummaryExceptionHandler
 		//TODO : this method can be extended further to check for type of exception (error code)
 		//and take the action accordingly.
 		e.printStackTrace();
+		Logger.log("Exception message : " + e.getMessage(), Logger.DEBUG);
 		System.out.println("Exception has occured during the calculation of "
 				+ "all-to-all genomic links.");
 		System.out.println("Calculation of all-to-all genomic links can not be continued further.");
