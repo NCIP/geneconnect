@@ -13,10 +13,8 @@
 
 	<!--define require dir and Properties -->
 	<property name="base.dir" value="."/>
-	<property name="web.dir" value="./web"/>
 	<property name="src.dir" value="${base.dir}/src"/>
 	<property name="fesrc.dir" value="${base.dir}/caFEChanges"/>
-	<property name="websrc.dir" value="${web.dir}/WEB-INF/src"/>
 	<property name="output.dir" value="${base.dir}/bin"/>
 	<property name="lib.dir" value="${base.dir}/Lib"/>
 	<property name="build.dir" value="${base.dir}/Lib"/>
@@ -50,71 +48,31 @@
 		<!-- Create the build directory structure used by compile -->
 		<mkdir dir="${output.dir}"/>
 		<mkdir dir="${output.dir}/classes"/>
-		<mkdir dir="${output.dir}/classes/jar"/>
-		<mkdir dir="${output.dir}/classes/war"/>
 		<mkdir dir="${output.dir}/jar"/>
-		<mkdir dir="${output.dir}/war"/>
 		<!-- Extract existing FE server jar in the output folder -->
-		<unjar src="${base.dir}/FEServer.jar" dest="${output.dir}/classes/jar"/>
+		<unjar src="${base.dir}/FEServer.jar" dest="${output.dir}/classes"/>
 	</target>
 
 
 	<!-- Compile all files, generated and hand-written -->
 	<target name="compile" depends="init">
-		<javac srcdir="${src.dir}:${fesrc.dir}" destdir="${output.dir}/classes/jar" fork="true" includes="**/*.*" >
+		<javac srcdir="${src.dir}:${fesrc.dir}" destdir="${output.dir}/classes" fork="true" includes="**/*.*" >
 			<classpath>
 				<fileset dir="${lib.dir}">
 					<include name="**/*.jar" />
 				</fileset>
 			</classpath>
 		</javac>
-		<!--javac srcdir="${websrc.dir}" destdir="${output.dir}/classes/war" fork="true" includes="**/*.*" includeAntRuntime="true">
-			<classpath>
-				<fileset dir="${lib.dir}">
-					<include name="**/*.jar" />
-				</fileset>
-				<fileset dir="${web.dir}/WEB-INF/lib">
-					<include name="**/*.jar" />
-				</fileset>
-			</classpath>
-		</javac-->
 	</target>
 
 
 	<!-- Create the application JAR -->
 	<target name="buildjar" depends="compile" >
 		<jar taskname="buildJar" jarfile="${output.dir}/jar/GeneConnectServer.jar">
-			<fileset dir="${output.dir}/classes/jar" includes="**/*"/>
+			<fileset dir="${output.dir}/classes" includes="**/*"/>
 		</jar>
-		<copy file="${output.dir}/jar/GeneConnectServer.jar" todir="${base.dir}/lib"/>
+		<copy file="${output.dir}/jar/GeneConnectServer.jar" todir="${lib.dir}"/>
 	</target>
-
-	<!-- Creates the WAR (Web Application Archive) file of the application -->
-	<target name="build_war" depends="init, compile">
-		<delete file="${output.dir}/war/geneconnect.war"/>
-		<copy file="${web.dir}/Config/GCBusinessLogic.xml" todir="${output.dir}/classes/war"/>
-		<war destfile="geneconnect.war" webxml="${web.dir}/WEB-INF/web.xml">
-			<classes dir="${output.dir}/classes/war">
-			</classes>
-			<lib dir="${web.dir}/WEB-INF/lib">
-			</lib>
-			<webinf dir="${web.dir}/WEB-INF">
-				<exclude name="classes/**" />
-				<exclude name="src/**" />
-			</webinf>
-
-			<fileset dir="${web.dir}">
-				<include name="css/**"/>
-				<include name="images/**"/>
-				<include name="scripts/**"/>
-				<include name="pages/**"/>
-				<include name="pages/**"/>
-			</fileset>
-		</war>
-		<copy file="geneconnect.war" todir="${output.dir}/war"/>
-		<delete file="geneconnect.war"/>
-	</target>
-
 
 	<!-- Deploys the application -->
 	<!-- 1. Checks config file parameters -->
