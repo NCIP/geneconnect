@@ -30,6 +30,7 @@ Index
     5.3. Configuring Command File 
     5.4. Configuring ApplicationConfig.properties File 
     5.5  Configuring build.properties File
+    5.6  Configuring GCGraph.txt File
 
 6. Configuring Scripts for GeneConnect Server run
 
@@ -449,6 +450,38 @@ CVS_MODULE_LOCATION = Directory from the CVS which should be copied to current r
    CVS_LOCATION + CVS_MODULE_LOCATION should point to GeneConnctServer (GeneConnect Base Directory) folder in CVS.
 
 
+5.6  Configuring GCGraph.txt File
+---------------------------------
+Various datasource and links available among them are configured in GCGraph.txt. After addition or removal of any data source 
+GCGraph.txt needs to be modified accordingly. After any modification in this cofig file metaData and summary of base tables 
+(genomic links calculation) needs to be calculated. This can be achieved by running calculateMetaData and calculateSummary target of
+GeneConnect server build script. Refer "Section 10. Using GeneConnect server build script" for more details.
+
+Syntax of every line in GCGraph.txt is as follows : (Every item in the list is separated by ',')
+1) List of data source names.
+2) List of Genomic identifier class name
+3) List of following value pairs : <Data type of values of the Data source> "-"  <Class Name> "-" <Attribute Name>
+4) List of following value pairs : <Table Name> "-" <Column Name>
+5) List of row no. in which data source needs to displayed in GeneConect graph.
+6) List of column no. in which data source needs to displayed in GeneConect graph.
+7) List of output attribute name for the data source from genomic class.
+8) Line 8 and onwards specifies adjacency matrix for GeneConnect graph.
+
+Each entry in the matrix represents the link types between two Data Sources. 
+
+Possible values and their significance in adjacency matrix is as follows :
+0 – No Link
+1 – Direct Annotation
+2 – Inferred Annotation
+4 – Identity
+8 - Alignment
+n – Addition of 1, 2, 4 or 8 to represent multiple link types (e.g. 3 means Direct and Inferred Annotation, 6 means Inferred and Identity, 15 means all link types)
+
+E.g.  If we are calculating the matrix value for Ensembl Protein to UniprotKB, then 
+Link types = Alignment based + Inferred = 8 + 4 + 2 = 14.
+Thus there should be value 14 for in the adjacency matrix for the directional link from Ensembl Protein to UniprotKB.
+
+All properties of the data sources should be specified in the same order of data sources (specified on first line).
 
 
 
