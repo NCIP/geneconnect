@@ -15,17 +15,17 @@
 	<property name="entrezGeneAsOutput" formula="(select 1 from dual)"/>
 	<property name="unigeneAsOutput" formula="(select 1 from dual)"/>
     
-    <set name="genomicIdentifierSetCollection" lazy="true" inverse="true">
+    <!--set name="genomicIdentifierSetCollection" lazy="true" inverse="true">
       <cache usage="read-write" />
       <key column="GENE_ID" />
       <one-to-many class="edu.wustl.geneconnect.domain.GenomicIdentifierSet" />
-    </set>
-    <set name="messengerRNACollection" table="GENE_MRNA" lazy="true">
+    </set-->
+    <set name="messengerRNACollection" table="GENE_MRNA" lazy="false">
       <cache usage="read-write" />
       <key column="GENE_ID" />
       <many-to-many class="edu.wustl.geneconnect.domain.MessengerRNA" column="MRNA_ID" />
     </set>
-    <set name="proteinCollection" table="PROTEIN_GENE" lazy="true">
+    <set name="proteinCollection" table="PROTEIN_GENE" lazy="false">
       <cache usage="read-write" />
       <key column="GENE_ID" />
       <many-to-many class="edu.wustl.geneconnect.domain.Protein" column="PROTEIN_ID" />

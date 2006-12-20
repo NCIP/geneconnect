@@ -4,6 +4,8 @@ package edu.wustl.geneconnect.domain;
 import gov.nih.nci.system.applicationservice.ApplicationService;
 import gov.nih.nci.system.applicationservice.ApplicationServiceProvider;
 
+import java.util.HashSet;
+
 /**
  * <!-- LICENSE_TEXT_START -->
  * <!-- LICENSE_TEXT_END -->
@@ -73,38 +75,40 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 		this.parentPathid = parentPathid;
 	}
 
-	private java.util.Collection genomicIdentifierSetCollection = new java.util.HashSet();
+	private java.util.Collection genomicIdentifierSetCollection=new HashSet();
 
 	public java.util.Collection getGenomicIdentifierSetCollection()
 	{
-		try
-		{
-			if (genomicIdentifierSetCollection.size() == 0)
-			{
-			}
-		}
-		catch (Exception e)
-		{
-			ApplicationService applicationService = ApplicationServiceProvider
-					.getApplicationService();
-			try
-			{
+//		System.out.println("DEBUG 22");
+//		try
+//		{
+//			if (genomicIdentifierSetCollection.size() == 0)
+//			{
+//			}
+//		}
+//		catch (Exception e)
+//		{
+//			ApplicationService applicationService = ApplicationServiceProvider
+//					.getApplicationService();
+//			try
+//			{
+//
+//				edu.wustl.geneconnect.domain.OrderOfNodeTraversal thisIdSet = new edu.wustl.geneconnect.domain.OrderOfNodeTraversal();
+//				thisIdSet.setId(this.getId());
+//				java.util.Collection resultList = applicationService.search(
+//						"edu.wustl.geneconnect.domain.GenomicIdentifierSet", thisIdSet);
+//				genomicIdentifierSetCollection = resultList;
+//				return resultList;
+//
+//			}
+//			catch (Exception ex)
+//			{
+//				System.out
+//						.println("OrderOfNodeTraversal:getGenomicIdentifierSetCollection throws exception ... ...");
+//				ex.printStackTrace();
+//			}
+//		}
 
-				edu.wustl.geneconnect.domain.OrderOfNodeTraversal thisIdSet = new edu.wustl.geneconnect.domain.OrderOfNodeTraversal();
-				thisIdSet.setId(this.getId());
-				java.util.Collection resultList = applicationService.search(
-						"edu.wustl.geneconnect.domain.GenomicIdentifierSet", thisIdSet);
-				genomicIdentifierSetCollection = resultList;
-				return resultList;
-
-			}
-			catch (Exception ex)
-			{
-				System.out
-						.println("OrderOfNodeTraversal:getGenomicIdentifierSetCollection throws exception ... ...");
-				ex.printStackTrace();
-			}
-		}
 		return genomicIdentifierSetCollection;
 	}
 
@@ -118,7 +122,6 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 
 	public edu.wustl.geneconnect.domain.DataSource getSourceDataSource()
 	{
-
 		ApplicationService applicationService = ApplicationServiceProvider.getApplicationService();
 		edu.wustl.geneconnect.domain.OrderOfNodeTraversal thisIdSet = new edu.wustl.geneconnect.domain.OrderOfNodeTraversal();
 		thisIdSet.setId(this.getId());
@@ -137,7 +140,9 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 			System.out.println("OrderOfNodeTraversal:getSourceDataSource throws exception ... ...");
 			ex.printStackTrace();
 		}
+	
 		return sourceDataSource;
+		
 
 	}
 
@@ -150,7 +155,6 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 
 	public edu.wustl.geneconnect.domain.LinkType getLinkType()
 	{
-
 		ApplicationService applicationService = ApplicationServiceProvider.getApplicationService();
 		edu.wustl.geneconnect.domain.OrderOfNodeTraversal thisIdSet = new edu.wustl.geneconnect.domain.OrderOfNodeTraversal();
 		thisIdSet.setId(this.getId());
@@ -242,37 +246,37 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 	public edu.wustl.geneconnect.domain.OrderOfNodeTraversal getParentOrderOfNodeTraversal()
 	{
 
-		ApplicationService applicationService = ApplicationServiceProvider.getApplicationService();
-		edu.wustl.geneconnect.domain.OrderOfNodeTraversal thisIdSet = new edu.wustl.geneconnect.domain.OrderOfNodeTraversal();
-		// Changed to search a path id which eqauls to next_path_id
-		// instead of (as genarated by caCore )searching a path id which eqauls to path_id
-		if (this.getParentPathid() == null)
-		{
-			return null;
-		}
-		else
-		{
-			thisIdSet.setId(this.getParentPathid());
-		}
-		try
-		{
-			java.util.List resultList = applicationService.search(
-					"edu.wustl.geneconnect.domain.OrderOfNodeTraversal", thisIdSet);
-
-			if (resultList != null && resultList.size() > 0)
-			{
-				parentOrderOfNodeTraversal = (edu.wustl.geneconnect.domain.OrderOfNodeTraversal) resultList
-						.get(0);
-			}
-		}
-		catch (Exception ex)
-		{
-			System.out
-					.println("OrderOfNodeTraversal:getParentOrderOfNodeTraversal throws exception ... ...");
-			ex.printStackTrace();
-		}
+//		ApplicationService applicationService = ApplicationServiceProvider.getApplicationService();
+//		edu.wustl.geneconnect.domain.OrderOfNodeTraversal thisIdSet = new edu.wustl.geneconnect.domain.OrderOfNodeTraversal();
+//		// Changed to search a path id which eqauls to next_path_id
+//		// instead of (as genarated by caCore )searching a path id which eqauls to path_id
+//		if (this.getParentPathid() == null)
+//		{
+//			return null;
+//		}
+//		else
+//		{
+//			thisIdSet.setId(this.getParentPathid());
+//			System.out.println("this.getParentPathid() "+this.getParentPathid());
+//		}
+//		try
+//		{
+//			java.util.List resultList = applicationService.search(
+//					"edu.wustl.geneconnect.domain.OrderOfNodeTraversal", thisIdSet);
+//
+//			if (resultList != null && resultList.size() > 0)
+//			{
+//				parentOrderOfNodeTraversal = (edu.wustl.geneconnect.domain.OrderOfNodeTraversal) resultList
+//						.get(0);
+//			}
+//		}
+//		catch (Exception ex)
+//		{
+//			System.out
+//					.println("OrderOfNodeTraversal:getParentOrderOfNodeTraversal throws exception ... ...");
+//			ex.printStackTrace();
+//		}
 		return parentOrderOfNodeTraversal;
-
 	}
 
 	public void setParentOrderOfNodeTraversal(

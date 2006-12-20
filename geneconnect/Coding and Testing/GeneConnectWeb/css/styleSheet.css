@@ -1325,3 +1325,32 @@ td.formTitleSmallFont{ /* for header cells (top) of forms */
   border-left:1px solid #5C5C5C; /* constant: dark gray */
   border-right:1px solid #5C5C5C; /* constant: dark gray */
 }
+td.formTitleSmallFont10Sized{ /* for header cells (top) of forms */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.78em;
+  font-weight:bold;
+  /* padding-left:0.8em; */
+  background-color:#5C5C5C; /* constant: dark gray */
+  color:#FFFFFF; /* constant: white */
+  border-top:1px solid #5C5C5C; /* constant: dark gray */
+  border-left:1px solid #5C5C5C; /* constant: dark gray */
+  border-right:1px solid #5C5C5C; /* constant: dark gray */
+  width:10px;
+}
+
+.formFieldSized60{ /* for the form elements themselves and with a constant width (on elements) */
+  font-family:arial,helvetica,verdana,sans-serif;
+  border:1px solid #5C5C5C; /* constant: dark gray */
+  font-size:1em;
+  width:51em;
+}
+td.formSerialNumberFieldHome{ /* for the cell that contains the Serial Number */
+  font-family:arial,helvetica,verdana,sans-serif;
+  font-size:0.8em;
+  /* font-weight:bold; */
+  color:#000000; /* constant: black */
+  /* border-right:1px solid #5C5C5C; *//* constant: dark gray */
+  /* border-bottom:1px solid #5C5C5C; *//* constant: dark gray */
+  /* border-left:1px solid #5C5C5C; *//* constant: dark gray */
+  background-color:#F4F4F5; /* constant: light gray */
+}

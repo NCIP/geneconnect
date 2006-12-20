@@ -42,6 +42,7 @@ public interface GCConstants
 	/********************************************************/
 
 	/**************** Constants for Action forwards *********/
+	String FORWARD_TO_HOME_PAGE = "homePage";
 	String FORWARD_TO_SIMPLE_PAGE = "simpleSearch";
 	String FORWARD_TO_RESULT_PAGE = "results";
 	String FORWARD_TO_ADVANCED_PAGE = "advancedSearch";
@@ -58,7 +59,8 @@ public interface GCConstants
 	/********************************************************/
 	/*********** Constants for Business Logic ***************/
 	String SIMPLE_SEARCH_BIZLOGIC = "SimpleSearchBizLogic";
-	String ADVANCED_SEARCH_BIZLOGIC = "AdvancedSearchBizLogic"; 
+	String ADVANCED_SEARCH_BIZLOGIC = "AdvancedSearchBizLogic";
+	String ONT_BIZLOGIC = "ONTBizLogic";
 	/********************************************************/
 	
 	public static final String QUERY_KEY= "queryKey";
@@ -89,6 +91,7 @@ public interface GCConstants
 	public static final String SET_ID_KEY = "SET_ID";
 	public static final String CONF_SCORE_KEY = "Confidence Score";
 	public static final String CONF_SCORE_DISPLAY = "Confidence Score";	
+	public static final String SELECTED_DATA_SOURCES = "SELECTED_DATA_SOURCES";
 	
 	
 	public static final String DELEMITER = "_";
@@ -116,6 +119,12 @@ public interface GCConstants
 	public static final String SOURCE_DATASOURCE_ID = "SOURCE_DATASOURCE_ID";
 	public static final String TARGET_DATASOURCE_ID = "TARGET_DATASOURCE_ID";
 	public static final String LINK_TYPE_ID = "LINK_TYPE_ID";
+	public static final String PATH = "PATH";
+	public static final String DATASOURCES_LIST = "DATASOURCES_LIST";
+	public static final String ONT_FILTER_CODE = "ONT_FILTER_CODE";
+	public static final String PATH_TYPE = "PATH_TYPE";
+	public static final String STARTS_WITH_DATA_SOURCE = "STARTS_WITH_DATA_SOURCE";
+	public static final String ENDS_WITH_DATA_SOURCE = "ENDS_WITH_DATA_SOURCE";
 
 	/**
 	 * Column Names for ROLELOOKUP TABLE
@@ -153,4 +162,20 @@ public interface GCConstants
 	
 	public static final String DOAMIN_CLASSNAME_PREFIX = "edu.wustl.geneconnect.domain";
 	public static final String FREQUENCY_VALUE= "FrequenceValue";
+	
+	/*********** Constants for Home page ***************/
+	String NO_OF_PARIWISE_LINKS = "NoOfPariwiseLinks";
+	String NO_OF_GI_SETS = "NoOfGISets";
+	String NO_OF_GRAPH_PATHS = "NoOfGraphPaths";
+	/********************************************************/
+	
+	/*********** Constants for DATABASE TABLES ***************/
+	String TABLE_DATASOURCE = "DATASOURCE";
+	String TABLE_DATASOURCE_LINKS = "DATASOURCE_LINKS";
+	String TABLE_ROLE_LOOKUP = "ROLE_LOOKUP";
+	String TABLE_LINKTYPE = "LINKTYPE";
+	String TABLE_PATH = "PATH"; 
+	String TABLE_GENOMIC_IDENTIFIER_SET = "GENOMIC_IDENTIFIER_SET";
+	String TABLE_ONT = "ONT";
+	/********************************************************/
 }

@@ -17,7 +17,7 @@
     <many-to-one name="sourceDataSource" class="edu.wustl.geneconnect.domain.impl.DataSourceImpl" column="SOURCE_DS_ID" lazy="false" fetch="join" />
     <many-to-one name="linkType" class="edu.wustl.geneconnect.domain.impl.LinkTypeImpl" column="LINKTYPE_ID" lazy="false" fetch="join" />
     <many-to-one name="childOrderOfNodeTraversal" class="edu.wustl.geneconnect.domain.impl.OrderOfNodeTraversalImpl" column="NEXT_PATH_ID" unique="true" lazy="true" />
-    <many-to-one name="parentOrderOfNodeTraversal" class="edu.wustl.geneconnect.domain.impl.OrderOfNodeTraversalImpl" column="PREV_PATH_ID" unique="true" lazy="true" />
+    <many-to-one name="parentOrderOfNodeTraversal" class="edu.wustl.geneconnect.domain.impl.OrderOfNodeTraversalImpl" column="PREV_PATH_ID" unique="true" lazy="false" />
   </class>
 </hibernate-mapping>
 

@@ -16,8 +16,11 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.impl.CriteriaImpl;
 
+import edu.wustl.geneconnect.bizlogic.HQLProcessor;
 import edu.wustl.geneconnect.bizlogic.ResultProcessor;
 import edu.wustl.geneconnect.domain.GenomicIdentifierSet;
+import edu.wustl.geneconnect.domain.OrderOfNodeTraversal;
+import edu.wustl.geneconnect.utility.Constants;
 import edu.wustl.geneconnect.utility.MetadataManager;
 import gov.nih.nci.common.net.Request;
 import gov.nih.nci.common.net.Response;
@@ -25,6 +28,8 @@ import gov.nih.nci.common.util.Constant;
 import gov.nih.nci.common.util.HQLCriteria;
 import gov.nih.nci.common.util.NestedCriteria;
 import gov.nih.nci.common.util.NestedCriteria2HQL;
+import gov.nih.nci.system.applicationservice.ApplicationService;
+import gov.nih.nci.system.applicationservice.ApplicationServiceProvider;
 import gov.nih.nci.system.dao.DAOException;
 import gov.nih.nci.system.servicelocator.ServiceLocator;
 
@@ -131,7 +136,7 @@ public class ORMDAOImpl
 		 * if true then  calculate confidence and freuency
 		 */
 		boolean isGenomicIdSet = false;
-
+		boolean processResult = false;
 		if (entityName.equalsIgnoreCase(GenomicIdentifierSet.class.getName()))
 		{
 			isGenomicIdSet = true;
@@ -236,9 +241,9 @@ public class ORMDAOImpl
 					{
 						GenomicIdentifierSet set = (GenomicIdentifierSet) o;
 						rp.interpretCriteria(set);
+						processResult=true;
 						
 					}
-					
 				}
 				//System.out.println("ORMDAOImpl.query: it is a NestedCriteria Object ....");		
 				NestedCriteria2HQL converter = new NestedCriteria2HQL((NestedCriteria) obj, ormConn
@@ -281,12 +286,33 @@ public class ORMDAOImpl
 						}
 					//	System.out.println("QUERY "+query.getQueryString());
 						rs = query.list();
+						
 					}
 				}
 			}
 			else if (obj instanceof HQLCriteria)
 			{
 				Query hqlQuery = session.createQuery(((HQLCriteria) obj).getHqlString());
+				boolean isToprocessGC=false;
+				GenomicIdentifierSet gset =null;
+				if(isGenomicIdSet)
+				{
+					if(hqlQuery.getQueryString().indexOf("From " +Constants.DOMAIN_CLASSNAME_PREFIX+".GenomicIdentifierSet")==0)
+					{
+						HQLProcessor hqlProcessor = new HQLProcessor();
+						gset = hqlProcessor.interpretHQL(hqlQuery.getQueryString());
+						if(gset!=null)
+						{
+							isToprocessGC=true;
+						}
+						else
+						{
+							processResult=false;
+							isGenomicIdSet=false;
+						}
+
+					}
+				}
 				if (isCount != null && isCount.booleanValue())
 				{
 					rowCount = new Integer(hqlQuery.list().size());
@@ -317,22 +343,37 @@ public class ORMDAOImpl
 					{
 						hqlQuery.setMaxResults(recordsPerQuery);
 					}
-					rs = hqlQuery.list();
+					if(isToprocessGC)
+					{
+						log.info("Querying again with domin objects");
+						ApplicationService applicationService = ApplicationServiceProvider.getApplicationService();
+						rs = applicationService.search("edu.wustl.geneconnect.domain.GenomicIdentifierSet", gset);
+						isGenomicIdSet=false;
+						processResult=false;
+					}
+					else
+					{	
+						rs = hqlQuery.list();
+					}	
 				}
 			}
 			//System.out.println("rs " + rs.size());
 			/**
 			 * if target object is GenomicIdentifier class then calulate confidence and frequency.
 			 */
-			if (isGenomicIdSet)
+			//if (isGenomicIdSet)
+			if (processResult)
 			{
 				log.info("New search started");
 				log.info("ResultSet Size before prepareResult(): " + rs.size());
+				long t1 = System.currentTimeMillis();
+				
 				if(rp.getSelectedInputDataSourceList().size()>0)
 				{
 					rp.processResult(rs);
 				}	
-				
+				long t2 = System.currentTimeMillis();
+				log.info("Total TIme required: " +(t2-t1)/1000);
 
 			}
 		}

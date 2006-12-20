@@ -44,7 +44,7 @@ public class GenomicIdentifierSet implements java.io.Serializable
 		this.confidenceScore = confidenceScore;
 	}
 
-	private java.util.Collection orderOfNodeTraversalCollection = new java.util.HashSet();
+	private java.util.Collection orderOfNodeTraversalCollection;
 
 	public java.util.Collection getOrderOfNodeTraversalCollection()
 	{

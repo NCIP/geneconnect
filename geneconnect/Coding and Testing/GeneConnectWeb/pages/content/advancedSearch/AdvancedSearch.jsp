@@ -40,10 +40,6 @@
 
 				outputSources = (HashMap) advancedSearchForm.getOutputDataSources();
 			}
-
-	//System.out.println("No. of InputDataSources-->"+inputSources.size());
-	//System.out.println("No. of OutputDataSources-->"+outputSources.size());
-
 %>
 <!-- Css and Scripts -->
 <head>
@@ -59,6 +55,10 @@
 		function checkAll(element)
 		{			
 			var checkbox2=element;
+			if(checkbox2.checked==true)
+			{
+				alert("Please be noted alignment based data is not available. Thus selecting all data sources may lead to empty results.");
+			}
 			var checkBox;
 			<%
 				for(int i=0;i<dataSourceList.size();i++)
@@ -393,6 +393,120 @@
 		{
 			currentTextbox=t;
 		}
+
+		function checkInputOutput()
+		{
+			var divObj=document.getElementById("Inputspreadsheet");
+			var rows = new Array(); 
+			rows = document.getElementById("Inputspreadsheet").rows; 
+			var totalrows = rows.length;
+
+			var isInputAvailable = false;
+			for(var i=0; i<totalrows; i++) 
+			{
+				var cols = new Array();
+
+				cols=document.getElementById("Inputspreadsheet").rows[i].cells;
+				
+				//alert("No. of Columns-->"+cols.length);
+
+				var totalcols = cols.length;
+				for(var j=1; j<totalcols; j++) 
+				{	
+					var textField = cols[j].firstChild;
+					//var textField = cols[j].childNodes[0];
+					
+					for(var k=0; k<cols[j].childNodes.length; k++)
+					{
+						//alert("Inner Loop-->"+cols[j].childNodes[k]);
+					}		
+
+					//alert("1"+cols[j].childNodes);
+					//alert("2-->"+cols[j].childNodes.length);
+					//alert("3"+cols[j].childNodes[1].value);
+					//alert("4"+cols[j].firstChild);
+
+
+					var val=textField.value;
+					//alert("Value%%%%%%%%-->"+trim(val));
+
+					if( (val != null) && (trim(val) != "") )
+					{
+						//alert("Value-->"+textField.value);
+						isInputAvailable = true;
+						break;
+					}
+				}
+			}
+
+			var isOutputAvailable = false;
+			var checkBox;
+			<%
+
+				for(int i=0;i<dataSourceList.size();i++)
+				{
+					NameValueBean bean =(NameValueBean)dataSourceList.get(i);
+					String check = bean.getName();
+			%>	
+				checkBox = document.getElementById("<%=check%>");
+				
+				if(checkBox.checked & isOutputAvailable == false)
+				{
+					isOutputAvailable = true;
+					//alert(checkBox.id);								
+				}
+			<%		
+				}
+			%>		
+			
+			var selectButton = document.getElementsByName("selectPathButton");
+			var searchButton = document.getElementsByName("searchButton");
+			
+			if( (isInputAvailable == true) & (isOutputAvailable == true) )
+			{
+				selectButton[0].disabled = false;
+				searchButton[0].disabled = false;
+
+				//alert("One input and One output is available...");
+			}
+			else
+			{
+				selectButton[0].disabled = true;
+				searchButton[0].disabled = true;
+			}
+		}
+
+		function trim(inputString) 
+		{
+			// Removes leading and trailing spaces from the passed string. Also removes
+			// consecutive spaces and replaces it with one space. If something besides
+			// a string is passed in (null, custom object, etc.) then return the input.
+			if (typeof inputString != "string") { return inputString; }
+			var retValue = inputString;
+			var ch = retValue.substring(0, 1);
+			while (ch == " ") 
+			{ // Check for spaces at the beginning of the string
+				retValue = retValue.substring(1, retValue.length);
+				ch = retValue.substring(0, 1);
+			}
+
+			ch = retValue.substring(retValue.length-1, retValue.length);
+			while (ch == " ") 
+			{ // Check for spaces at the end of the string
+				retValue = retValue.substring(0, retValue.length-1);
+				ch = retValue.substring(retValue.length-1, retValue.length);
+			}
+
+			while (retValue.indexOf("  ") != -1) 
+			{ 
+				// Note that there are two spaces in the string - look for multiple spaces within the string
+				retValue = retValue.substring(0, retValue.indexOf("  ")) + retValue.substring(retValue.indexOf("  ")+1, retValue.length); 
+				// Again, there are two spaces in each of the strings
+			}
+			
+			return retValue; // Return the trimmed string back to the user
+		} // Ends the "trim" function
+
 </script>
 </head>
 <html:errors />
@@ -420,33 +534,34 @@
 		class="contentPage" width="800">
 		<tr>
 			<td valign="top" halign="Left">
-			<table summary="" cellpadding="1" cellspacing="0" border="0"
-				width="800">
+			<table summary="" cellpadding="1" cellspacing="0" border="0" width="800">
 				<tr>
 					<td>
 <!-- Paste Button-->					
 					<table summary="" cellpadding="0" cellspacing="0" border="1">
 						<tr>
-							<td class="formTitle" height="20"><bean:message
-								key="simpleSearch.input" /></td>
-							<td class="formTitle" height="20" align="right"><html:button
-								property="" styleClass="actionButton" onclick="pasteData()">
-								<bean:message key="buttons.pasteMultipleIds" />
-							</html:button></td>
+							<td class="formTitle" height="20">
+								<bean:message key="simpleSearch.input" />
+							</td>
+							<td class="formTitle" height="20" align="right">
+								<html:button property="" styleClass="actionButton" onclick="pasteData()">
+									<bean:message key="buttons.pasteMultipleIds" />
+								</html:button>
+							</td>
 						</tr>
 						<tr>
 <!-- Spread sheet view-->						
-							<td colspan="2" class="formField"><spreadsheet:sheetview
-								className="Input" attributes="<%=attributesMap%>"
-								collection="inputDataSources" inputs="<%=inputSources%>" /></td>
+							<td colspan="2" class="formField">
+								<spreadsheet:sheetview className="Input" attributes="<%=attributesMap%>" collection="inputDataSources" inputs="<%=inputSources%>" />
+							</td>
 						</tr>
 						<tr>
 <!--Confidence score textbo x-->						
-							<td class="formLeftTopSubTableTitle" colspan="2"><bean:message
-								key="advancedSearch.confidenceScore" /> <html:text
-								styleId="confidenceScore" property="confidenceScore"
-								styleClass="formFieldSized10" onkeypress="intOnly(this);"
-								onchange="intOnly(this);" onkeyup="intOnly(this);" /></td>
+							<td class="formLeftTopSubTableTitle" colspan="2">
+								<bean:message key="advancedSearch.confidenceScore" /> 
+								<html:text styleId="confidenceScore" property="confidenceScore" styleClass="formFieldSized10" onkeypress="intOnly(this);" 
+											onchange="intOnly(this);" onkeyup="intOnly(this);" />
+							</td>
 						</tr>
 					</table>
 					</td>
@@ -460,19 +575,24 @@
 						width="400">
 						<tr>
 <!--Output data sources-->						
-							<td class="formTitle" height="20" colspan="3" nowrap><bean:message
-								key="simpleSearch.output" /></td>
+							<td class="formTitle" height="20" colspan="3" nowrap>
+								<bean:message key="simpleSearch.output" />
+							</td>
 						</tr>
 						<tr>
-							<td class="formLeftTopSubTableTitle" width="10%"><input
-								type='checkbox' name='checkAll2' id='checkAll2'
-								onClick='checkAll(this)' /></td>
-							<td class="formRightTopSubTableTitle" width="40%"><span
-								class="formField"> <bean:message
-								key="advancedSearch.outputDataSource" /> </span></td>
-							<td class="formRightTopSubTableTitle" width="50%"><span
-								class="formField"> <bean:message key="advancedSearch.frequency" />
-							</span></td>
+							<td class="formLeftTopSubTableTitle" width="10%">
+								<input type='checkbox' name='checkAll2' id='checkAll2'onClick='checkAll(this)' />
+							</td>
+							<td class="formRightTopSubTableTitle" width="40%">
+								<span class="formField"> 
+									<bean:message key="advancedSearch.outputDataSource" /> 
+								</span>
+							</td>
+							<td class="formRightTopSubTableTitle" width="50%">
+								<span class="formField"> 
+									<bean:message key="advancedSearch.frequency" />
+								</span>
+							</td>
 						</tr>
 					</table>
 					<DIV class="spreadsheet200">
@@ -496,15 +616,14 @@
 
 					%>
 						<tr>
-							<td class="formField" width="10%"><input type=checkbox
-								property="<%=dsName %>" name="<%=dsName %>" id="<%=dsName %>"
-								onclick="checkFrequency(this)" checked></td>
+							<td class="formField" width="10%">
+								<input type=checkbox property="<%=dsName %>" name="<%=dsName %>" id="<%=dsName %>" onclick="checkFrequency(this);checkInputOutput()" checked>
+							</td>
 							<td class="formField" width="40%"><%=dsName%></td>
-							<td class="formField" width="50%"><input type="text"
-								class="formFieldSized10" name="<%=frequencyValue%>"
-								id="<%=frequencyValue%>" onkeypress="intOnly(this);"
-								onchange="intOnly(this);" onkeyup="intOnly(this);"
-								value="<%=frequency%>"></td>
+							<td class="formField" width="50%">
+								<input type="text" class="formFieldSized10" name="<%=frequencyValue%>" id="<%=frequencyValue%>" onkeypress="intOnly(this);"
+									onchange="intOnly(this);" onkeyup="intOnly(this);" value="<%=frequency%>">
+							</td>
 						</tr>
 						<%}
 				else
@@ -512,19 +631,18 @@
 
 					%>
 						<tr>
-							<td class="formField" width="10%"><input type=checkbox
-								property="<%=dsName %>" name="<%=dsName %>" id="<%=dsName %>"
-								onclick="checkFrequency(this)"></td>
+							<td class="formField" width="10%">
+								<input type=checkbox property="<%=dsName %>" name="<%=dsName %>" id="<%=dsName %>" onclick="checkFrequency(this);checkInputOutput()">
+							</td>
 							<td class="formField" width="40%"><%=dsName%></td>
-							<td class="formField" width="50%"><input type="text"
-								class="formFieldSized10" name="<%=frequencyValue%>"
-								id="<%=frequencyValue%>" disabled onkeypress="intOnly(this);"
-								onchange="intOnly(this);" onkeyup="intOnly(this);"></td>
+							<td class="formField" width="50%">
+								<input type="text" class="formFieldSized10" name="<%=frequencyValue%>" id="<%=frequencyValue%>" disabled onkeypress="intOnly(this);"
+									onchange="intOnly(this);" onkeyup="intOnly(this);">
+							</td>
 						</tr>
 
 						<%}
 			}
-
 		%>
 					</table>
 					</DIV>
@@ -537,13 +655,39 @@
 			<td align="right" colspan="3"><!-- action buttons begins -->
 			<table cellpadding="10" cellspacing="0" border="0">
 				<tr>
-					<td><html:submit styleClass="actionButton">
-						<bean:message key="buttons.search" />
-					</html:submit></td>
-					<td><html:button styleClass="actionButton" property=""
-						onclick="submitForm('AdvancedSearchSelectPath.do')" disabled="true">
-						<bean:message key="buttons.selectPath" />
-					</html:button></td>
+					<%
+					if(outputSources.size() > 0)
+					{
+					%>
+					<td>
+						<html:submit styleClass="actionButton" property="searchButton">
+							<bean:message key="buttons.search" />
+						</html:submit>
+					</td>
+					<td>
+						<html:button styleClass="actionButton" property="selectPathButton" onclick="submitForm('AdvancedSearchSelectPath.do')">
+							<bean:message key="buttons.selectPath" />
+						</html:button>
+					</td>
+					<%
+					}
+					else
+					{
+					%>
+					<td>
+						<html:submit styleClass="actionButton" property="searchButton" disabled="true">
+							<bean:message key="buttons.search" />
+						</html:submit>
+					</td>
+					<td>
+						<html:button styleClass="actionButton" property="selectPathButton" onclick="submitForm('AdvancedSearchSelectPath.do')" disabled="true">
+							<bean:message key="buttons.selectPath" />
+						</html:button>
+					</td>
+	
+					<%
+					}
+					%>
 				</tr>
 			</table>
 			<!-- action buttons end --></td>

@@ -136,57 +136,79 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     
     protected Color pathListBackgroundColor = new Color(-4665371);
     
+    //this function draws the graph
     public void init()
     {
+    	//call to function to create list of Nodes of the graph
     	createNodeList();
     	
+    	//call to calculate no of Rows and Columns to draw in the grpah
     	calculateRowsCols();
     	
     	//create a simple graph for the demo
 	    graph = new SparseGraph();  
+	    
+	    //Initializing map of the nodes of the graph
 	    nodeMap = new HashMap();
 	    
+	    //Initializing array of the Vertices of the graph
 	    v = createVertices(nodeList.size());
 	    
+	    //Initializing renderer object for the graph
 	    pr = new CustomPluggableRenderer();
 	    
-	    //a Map for the node labels
+	    //Initiliazing map for the node labels
         Map map = new HashMap();
         for(int i=0; i<v.length; i++) 
         {
         	map.put(v[i], (String)((DataSource)nodeList.get(i)).getName());
-        	
-//        	nodeMap.put(((DataSource)nodeList.get(i)).getId(), v[i]);
         }
         
-        
+        //Initializing labeller of the vertices of the grpah
         vertexStringerImpl = new VertexStringerImpl(map);
         
+        //setting the populated labeller of the vertices
         pr.setVertexStringer(vertexStringerImpl);
         
+        //Initializing the instance of the shape of the Vertices of the graph
         cvs= new CustomVertexShape();
         
+        //setting instance of the set of the Vertices
         pr.setVertexShapeFunction(cvs);
         
-        
+        //Initializing layout instance of the graph
 	    Layout layout = new MyLayout(graph);
+	    
+	    //Initializing viewer instance of the graph
 	    vv =  new VisualizationViewer(layout, pr, new Dimension(500,500));
+	    
+	    //setting pickup type of the graph shape
 	    vv.setPickSupport(new ShapePickSupport());
+	    
+	    //setting shape of the Edges of the graph
 	    pr.setEdgeShapeFunction(new EdgeShape.QuadCurve());
 	    
+	    //setting shape of the edge arrows of the graph
 	    pr.setEdgeArrowFunction(new DirectionalEdgeArrowFunction(10,8,4));
 	    
+	    //setting background color of the graph viewer and initial location of the graph
 	    vv.setBackground(Color.white);
 	    vv.setLocation(0,0);
 	    
+	    //Initializing weight stroke of the edges of the graph
 	    ewcs = new EdgeWeightStrokeFunction(edge_weight);
 	    ewcs.setWeighted(true);
+	    
+	    //setting weight stroke of the edges of the grpah
 	    pr.setEdgeStrokeFunction(ewcs);
 	    
+	    //call to the function to create list of paths to display in the graph
 	    createPathList();
 	    
+	    //call to the function to create list of paths to highlight in the graph
 	    createHighlightPathList();
 	    
+	    //call to function to create list of the edges in the graph
 	    createEdges(pathList);
 	    
 	    vv.updateUI();
@@ -204,6 +226,7 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
         };
 //        pr.setEdgeStringer(stringer);
         
+        //setting edge paint function of the graph  
         pr.setEdgePaintFunction(new PickableEdgePaintFunction(pr, Color.black, Color.cyan));
         pr.setEdgePaintFunction(new CustomEdgePaintFunction(Color.red));
         
@@ -213,18 +236,22 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
         final DefaultModalGraphMouse graphMouse = new DefaultModalGraphMouse();
         vv.setGraphMouse(graphMouse);
         
-        // create a frome to hold the graph
+        // create a frame to hold the graph
         panel = new GraphZoomScrollPane(vv);
         
         panel.setSize(500, 500);
         
         Container content = getContentPane();
         
+        //setting layout of the container containing the graph
         content.setLayout(new GridBagLayout());
         content.setBackground(Color.white);
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
         
+		//adding different components of the graph into container of the graph
+		
+		
         c.ipadx = 500;
 		c.ipady = 450;
 //		c.anchor = GridBagConstraints.FIRST_LINE_START; 
@@ -313,7 +340,9 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 		
     }
     
-    
+    /**
+     * this function clean up frees memory allocated to attributes
+     */
     public void destroy() 
     {
     	highlightPathList = null;
@@ -328,11 +357,14 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     {
 	}
     
+    /**
+     * This function creates list of Nodes for the graph
+     */
     private void createNodeList()
     {
     	nodeList = new ArrayList();
     	
-//    	System.out.println(this.getParameter("noOfDatasources"));
+//    	Logger.out.debug(this.getParameter("noOfDatasources"));
     	
     	int noOfDataSources = Integer.parseInt(this.getParameter("noOfDatasources"));
     	
@@ -343,19 +375,18 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     		
     		StringTokenizer dataSourceToken = new StringTokenizer(dataSourceString, ",");
     		
-//    		nodeList.add(new DataSource(new Integer(1),"Ensembl Gene", 1,1));
-    		
     		nodeList.add(new DataSource(new Integer(dataSourceToken.nextToken()), dataSourceToken.nextToken(), (new Integer(dataSourceToken.nextToken())).intValue(), (new Integer(dataSourceToken.nextToken())).intValue()));
-    		
     	}
-    	
     }
     
+    /**
+     * This function creates list of possible paths to draw in the graph
+     */
     private void createPathList()
     {
     	pathList = new ArrayList();
     	
-//    	System.out.println(this.getParameter("noOfDatasourcesLinks"));
+//    	Logger.out.debug(this.getParameter("noOfDatasourcesLinks"));
     	
     	int noOfDataSourcesLinks = Integer.parseInt(this.getParameter("noOfDatasourcesLinks"));
     	
@@ -366,14 +397,14 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     		
     		StringTokenizer dataSourceLinkToken = new StringTokenizer(dataSourceLinkString, ",");
     		
-//    		pathList.add(new Path(((DataSource)nodeList.get(0)).getId(), ((DataSource)nodeList.get(1)).getId(), 1));
-    		
     		pathList.add(new Path(new Integer(dataSourceLinkToken.nextToken()), new Integer(dataSourceLinkToken.nextToken()), Integer.parseInt(dataSourceLinkToken.nextToken())));
-    		
     	}
-    	
     }
     
+    /**
+     * This function creates list of paths to highlight in the graph
+     *
+     */
     private void createHighlightPathList()
     {
     	ArrayList highlightVertexList;
@@ -400,7 +431,7 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 	    		
 	    		highlightLinkTypes = this.getParameter("highlightLinkTypes_"+(i+1));
 	    		
-//	    		System.out.println("Highlight Path-->"+highlightNodeList+"  "+highlightLinkTypes);
+//	    		Logger.out.debug("Highlight Path-->"+highlightNodeList+"  "+highlightLinkTypes);
 	    		
 	    		StringTokenizer highlightToken = new StringTokenizer(highlightNodeList, ">");   
 	    		
@@ -417,12 +448,12 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 	    			highlightPathString+= vertexStringerImpl.getLabel(v);
 	    			highlightPathString+=" --> ";
 	    			
-//	    			System.out.println("NodeName to Highlight-->"+vertexStringerImpl.getLabel(v));
+//	    			Logger.out.debug("NodeName to Highlight-->"+vertexStringerImpl.getLabel(v));
 	    		}
 	    		
 	    		highlightPathList[i]=highlightPathString.substring(0, highlightPathString.length()-5);
 	    		
-//	    		System.out.println("Size of highlightVertexList==>"+highlightVertexList.size());
+//	    		Logger.out.debug("Size of highlightVertexList==>"+highlightVertexList.size());
 	    		
 	    		StringTokenizer highlightLinkToken = new StringTokenizer(highlightLinkTypes, ",");
 	    		
@@ -431,22 +462,21 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 	    		{
 	    			String linkType = highlightLinkToken.nextToken();
 	    			
-	//    			new CustomEdge(fetchVertex(path.getSource()), fetchVertex(path.getDestination()), path.getPathType());
-	    			
 	    			highlightLinksList.add(new CustomEdge((CustomVertex)highlightVertexList.get(counter-1), (CustomVertex)highlightVertexList.get(counter), Integer.parseInt(linkType)));
 	    			
 	    			counter+=1;
-	    			
 	    		}
-	    		
 	    		highlightPathsMap.put(new Integer(i),highlightLinksList);
 	    	}
     	}
     }
     
+    /**
+     * This listener function gets called when user changes value of the list of highlight paths
+     */
     public void valueChanged(ListSelectionEvent evt) 
     {
-//    	System.out.println(highlightList.getSelectedIndex()+"-->"+highlightList.getSelectedValue());
+//    	Logger.out.debug(highlightList.getSelectedIndex()+"-->"+highlightList.getSelectedValue());
     	
     	isHighlight = true;
     	
@@ -456,13 +486,17 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	
     	if(highlightList.getSelectionBackground() == Color.white)
     	{
-//    		System.out.println("Changing selectionBackground Color...");
+//    		Logger.out.debug("Changing selectionBackground Color...");
     		highlightList.setSelectionBackground(pathListBackgroundColor);
     	}
     	
     	panel.repaint();
     }
     
+    /**
+     * This listener function gets called when User clicks button to draw initial graph 
+     * or selected checkbox to show paths in Gray color
+     */
     public void actionPerformed(java.awt.event.ActionEvent actionEvent) 
     {
     	AbstractButton abstractButton = (AbstractButton)actionEvent.getSource();
@@ -473,13 +507,13 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 	        
 	        if(selected)
 	        {
-//	        	System.out.println("showGrayedPaths = true");
+//	        	Logger.out.debug("showGrayedPaths = true");
 	        	showGrayedPaths = true;
 	        	panel.repaint();
 	        }
 	        else
 	        {
-//	        	System.out.println("showGrapyedPaths = false");
+//	        	Logger.out.debug("showGrapyedPaths = false");
 	        	showGrayedPaths = false;
 	        	panel.repaint();
 	        }
@@ -502,9 +536,12 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	
     }
     
+    /**
+     * This listener function gets called when highlight paths listbox gets the focus
+     */
     public void focusGained(FocusEvent fe) //method of focuslistener
 	{
-//    	System.out.println("Focus Gained...");
+//    	Logger.out.debug("Focus Gained...");
     	
     	highlightList.setSelectionBackground(pathListBackgroundColor);
     	
@@ -513,14 +550,20 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	panel.repaint();
 	}
  
+    /**
+     * This listener function gets called when highlight paths listbox losses the focus
+     */
 	public void focusLost(FocusEvent fe) //in focusevent "getID()"is a method
 	{
-//		System.out.println("Focus Lost...");
+//		Logger.out.debug("Focus Lost...");
 	}
 	
+	/**
+	 * This listener function gets called when User clicks to select an option of highlight paths listbox
+	 */
 	public void mouseClicked(MouseEvent e) 
 	{
-//    	System.out.println(highlightList.getSelectedIndex()+"-->"+highlightList.getSelectedValue());
+//    	Logger.out.debug(highlightList.getSelectedIndex()+"-->"+highlightList.getSelectedValue());
     	
     	isHighlight = true;
     	
@@ -530,13 +573,16 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	
     	if(highlightList.getSelectionBackground() == Color.white)
     	{
-//    		System.out.println("Changing selectionBackground Color...");
+//    		Logger.out.debug("Changing selectionBackground Color...");
     		highlightList.setSelectionBackground(pathListBackgroundColor);
     	}
     	
     	panel.repaint();
     }
 
+	/**
+	 * below 4 methods required to implement for MouseListener
+	 */
     public void mouseEntered(MouseEvent e) 
     {
     }
@@ -554,22 +600,25 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     }
 	    
     /**
-     * create some vertices
+     * create vertices of the graph
      * @param count how many to create
      * @return the Vertices in an array
      */
-    private Vertex[] createVertices(int count) {
-        Vertex[] v = new Vertex[count];
-        for (int i = 0; i < count; i++) {
+    private Vertex[] createVertices(int count) 
+    {
+    	Vertex[] v = new Vertex[count];
+        for (int i = 0; i < count; i++) 
+        {
             v[i] = graph.addVertex(new CustomVertex((DataSource)nodeList.get(i)));
-            
-//            System.out.println("In createVertices==>"+((DataSource)nodeList.get(i)).getId()+ " "+v[i].getClass());
-            
+//            Logger.out.debug("In createVertices==>"+((DataSource)nodeList.get(i)).getId()+ " "+v[i].getClass());
             nodeMap.put( (Integer)((DataSource)nodeList.get(i)).getId(), v[i]);
         }
         return v;
     }
     
+    /**
+     * This function calculate no. of Rows and Columns to creat in the graph
+     */
     private void calculateRowsCols()
     {
     	DataSource tempDataSource;
@@ -583,10 +632,13 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     		if(tempDataSource.getCol() > noOfCols)
     			noOfCols = tempDataSource.getCol();
     	}
-    	
-//    	System.out.println("Rows=="+noOfRows+"  Cols=="+noOfCols);
+//    	Logger.out.debug("Rows=="+noOfRows+"  Cols=="+noOfCols);
     }
     
+    /**
+     * This functions creates edges of the graph
+     * @param pathList - list of the paths
+     */
     private void createEdges(ArrayList pathList)
     {
     	Path path;
@@ -594,12 +646,15 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	{
     		path = (Path)pathList.get(i);
     		
-//    		System.out.println("Creating Edge between==>"+path.getSource() +"--"+path.getDestination());
+//    		Logger.out.debug("Creating Edge between==>"+path.getSource() +"--"+path.getDestination());
     		
     		graph.addEdge(new CustomEdge(fetchVertex(path.getSource()), fetchVertex(path.getDestination()), path.getPathType()));
     	}
     }
     
+    /**
+     * This class overrides the functionality provided by basic Vertex
+     */
     final class CustomVertex extends SparseVertex
 	{
     	private DataSource dataSource;
@@ -627,6 +682,9 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	}
 	}
     
+    /**
+     *This class overrides the functionality provided by basic Edge 
+     */
     final class CustomEdge extends DirectedSparseEdge
 	{
     	private int edgeType;
@@ -660,10 +718,13 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     {
     	Vertex v = (Vertex)nodeMap.get(id);
 
-//    	System.out.println("Fetched Vertex==>"+v);
+//    	Logger.out.debug("Fetched Vertex==>"+v);
     	return v;
     }
     
+    /**
+     *This class overrides the funcionality provided by basic EdgePaint functionality 
+     */
     final class CustomEdgePaintFunction extends ConstantEdgePaintFunction
 	{
     	public CustomEdgePaintFunction(Paint draw_paint)
@@ -678,7 +739,7 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
         {
         	CustomEdge edge = (CustomEdge)e;
         	
-//        	System.out.println("In getDrawPaint...");
+//        	Logger.out.debug("In getDrawPaint...");
         	
         	if(isGrayedEdge & showGrayedPaths)
         		return Color.gray;
@@ -721,7 +782,9 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	
 	}
     
-    
+    /**
+     *This class overrides StaticLayout class and sets locaion of the componenets of the graph as per the need 
+     */
     private final class MyLayout extends StaticLayout
 	{
     	int rowSize = 500 / noOfCols;
@@ -736,12 +799,12 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	{
     		CustomVertex cv =(CustomVertex)v;
     		
-//    		System.out.println("Inside InitializeLocation==>"+cv.getDataSource().getName()+ "  "+cv.getDataSource().getRow()+ " "+cv.getDataSource().getCol());
+//    		Logger.out.debug("Inside InitializeLocation==>"+cv.getDataSource().getName()+ "  "+cv.getDataSource().getRow()+ " "+cv.getDataSource().getCol());
     	   	
     	   	int xPosition = cv.getDataSource().getCol() * rowSize;
     	   	int yPosition = cv.getDataSource().getRow() * colSize;
     	   	
-//    	   	System.out.println("Drawing at ==>"+xPosition+" - "+yPosition);
+//    	   	Logger.out.debug("Drawing at ==>"+xPosition+" - "+yPosition);
     	   	
     	   	coord.setX(xPosition);
     	   	
@@ -771,6 +834,10 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
         }
     }
     
+    /**
+     *This class overrides the funcionality provided by basic EdgeStroke functionality
+     *It provides functionality to draw the edges with the thickness required to highlight 
+     */
     private final  class EdgeWeightStrokeFunction implements EdgeStrokeFunction
     {
     	protected final float[] dashing = {5.0f};
@@ -797,7 +864,7 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
         
         public Stroke getStroke(Edge e)
         {
-//        	System.out.println("In getStroke...");
+//        	Logger.out.debug("In getStroke...");
         	
         	CustomEdge edge = (CustomEdge)e;
         	
@@ -891,6 +958,9 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
         }
     }
     
+    /**
+     *This class overrides basic functionality provided by VertedShape to draw different shapes for vertices of the graph 
+     */
     private final static class CustomVertexShape extends AbstractVertexShapeFunction implements VertexSizeFunction, VertexAspectRatioFunction
 	{
     	public CustomVertexShape()
@@ -917,6 +987,9 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
         }
 	}
     
+    /**
+     *This class overrides basic Renderer of the graph to set location of the label of vertices on the grpah  
+     */
     private final class CustomPluggableRenderer extends PluggableRenderer
 	{
     	protected void labelVertex(Graphics g, Vertex v, String label, int x, int y)
@@ -957,12 +1030,5 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
         
         frame.pack();
         frame.setVisible(true);
-        
     }
-	   
 }
-
-
-
-
-

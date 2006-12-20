@@ -20,8 +20,6 @@
 
 	Map graphHighlightPaths = (HashMap)request.getAttribute(GCConstants.GRAPH_HIGHLIGHT_PATHS);
 
-	System.out.println("ontMap size-"+graphHighlightPaths.size());
-
 %>
 <html>
   <head>

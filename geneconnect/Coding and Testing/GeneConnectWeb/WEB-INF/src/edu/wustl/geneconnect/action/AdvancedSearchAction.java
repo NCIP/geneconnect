@@ -78,37 +78,46 @@ public class AdvancedSearchAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		//Initializing map of Attributes to search 
 		Map searchAttributes = new HashMap();
 		
+		//typecasting formbean object to AdvanceSearchFrom instance
 		AdvancedSearchForm advancedSearchActionForm = (AdvancedSearchForm) form;
-		String targetAction = advancedSearchActionForm.getTargetAction();
 		
+		//setting formbean instance into request object  
 		request.setAttribute("advancedSearchForm", advancedSearchActionForm);
+		
+		//logging attributes if this request is called by clicking "Back To Query" from AdvancedSearchSelectPath page
+		Logger.out.debug("@@@@@@@@@@@@@@@@@@@@@@@ Back from SelectPath-->"+advancedSearchActionForm.isBackFromSelectPath());
+		if(advancedSearchActionForm.isBackFromSelectPath())
+		{
+			Logger.out.debug("InputDataSources size-->"+advancedSearchActionForm.getInputDataSources().size());
+			Logger.out.debug("OutputDataSources size-->"+advancedSearchActionForm.getOutputDataSources().size());
+			Logger.out.debug("AlreadySelectedPaths-->"+advancedSearchActionForm.getSelectedPaths());
+			Logger.out.debug("Initial IO-->"+advancedSearchActionForm.getInitialInputOutput());
+		}
+		
+		//initializing string of target action to be performed
+		String targetAction = advancedSearchActionForm.getTargetAction();
 		
 		try
 		{
 			//Obtain target action which needs to be performed
-			
-			Logger.out.info("targetAction is :" + targetAction);
-			
-			System.out.println("targetAction is :" + targetAction);
+			Logger.out.debug("targetAction is :" + targetAction);
 			
 			if (targetAction.equals("search"))
 			{
 				//Search operation.
-				
 				return executeDisplayResults(mapping, form, request, response);
 			}
 			
 			String targetActionParameter = request.getParameter("targetAction");
-			System.out.println("TargetActionParameter on Action-->"+targetActionParameter);
+			Logger.out.debug("TargetActionParameter on Action-->"+targetActionParameter);
 			
 			if(targetActionParameter != null && targetActionParameter.equals("updateMap"))
 			{
 				updateMap(advancedSearchActionForm, request);
 			}
-			
-			
 		}
 		catch (BizLogicException bizExp)
 		{
@@ -126,11 +135,13 @@ public class AdvancedSearchAction extends Action
 			errors.add(ActionErrors.GLOBAL_ERROR, error);
 			saveErrors(request, errors);
 		}
+		
 		/**
 		 * Get datasource attributes such as datasource name , id. 
 		 */
 		List dataSources = MetadataManager.getDataSourcesToDisplay();
 
+		//populating map of the attributes to search
 		for (int i = 0; i < dataSources.size(); i++)
 		{
 			NameValueBean dataSource = (NameValueBean) dataSources.get(i);
@@ -141,9 +152,11 @@ public class AdvancedSearchAction extends Action
 			searchAttributes.put(dataSource.getName(), attribute);
 		}
 
+		//Setting data source attributes map in request object
 		Logger.out.info("Setting data source attributes map in request object");
 		request.setAttribute(GCConstants.DATASOURCE_ATTRIBUTES, searchAttributes);
 
+		//Setting data source list in request object
 		Logger.out.info("Setting data source list in request object");
 		request.setAttribute(GCConstants.DATA_SOURCES_KEY, dataSources);
 
@@ -155,13 +168,12 @@ public class AdvancedSearchAction extends Action
 			
 			return mapping.findForward("failure");
 		}
-		// do action when user clicks on back to advanced serc page from select path
+		// do action when user clicks on back to advanced search page from select path
 		if(targetAction.equals("nothing"))
 		{
-//			advancedSearchActionForm.setOutputDataSources(createOutputDataSources(request));
+			//nothing required to perform for this target action
 		}
-			
-		
+
 		Logger.out.info("Forwarding to AdvancedSearch.jsp");
 		return (mapping.findForward(GCConstants.FORWARD_TO_ADVANCED_PAGE));
 	}
@@ -221,10 +233,7 @@ public class AdvancedSearchAction extends Action
 						{	
 							freqValue="0";
 						}	
-//						else if (freqValue.length() > 0)
-//						{
-//							
-//						}
+
 						Float freq =  new Float(freqValue);
 						frequencyMap.put(bean.getName(),freq);
 					}
@@ -243,10 +252,32 @@ public class AdvancedSearchAction extends Action
 			advancedSearchActionForm.setOutputDataSources(frequencyMap);
 		}
 		
+		//setting selected ONTs into formbean in case of User selected some ONTs 
+		//on ONT page and calling search action from AdvancedSearch page 
+		String selectedPaths ="";
+		String selectedONTs=advancedSearchActionForm.getSelectedPaths();
+		
+		if(selectedONTs != null)
+		{
+			if(selectedONTs.length() > 0 & (!selectedONTs.endsWith("$")))
+			{
+				StringTokenizer ontTokenized = new StringTokenizer(selectedONTs, "#");
+				
+				while(ontTokenized.hasMoreTokens())
+				{
+					String ont = ontTokenized.nextToken();
+					
+					selectedPaths += ont.substring(ont.indexOf("=")+1, ont.length())+"$";
+					Logger.out.debug("ONT Token--> "+ont.substring(ont.indexOf("=")+1, ont.length()));
+				}
+				
+				Logger.out.debug("selectedONTs-->"+selectedPaths);
+				advancedSearchActionForm.setSelectedPaths(selectedPaths);
+			}
+		}
+		
+		
 		data.put(GCConstants.FORM, advancedSearchActionForm);
-		
-//		data.put(GCConstants.FREQUENCY_MAP,frequencyMap);
-		
 		
 		inputData.setData(data);
 		/**
@@ -258,7 +289,6 @@ public class AdvancedSearchAction extends Action
 		 * Prepare Query list that os to be listed on search page in view display result combo box.
 		 */
 		Map allresultMap = resultData.getData();
-		//Map queryKeyMap = new HashMap();
 		List queryKeyList = new ArrayList();
 		Set keySet = allresultMap.keySet();
 		List keyList = new ArrayList(keySet);
@@ -266,7 +296,7 @@ public class AdvancedSearchAction extends Action
 		for(Iterator iter=keyList.iterator();iter.hasNext();)
 		{
 			String k = (String)iter.next();
-			System.out.println("Key :" +k);
+			Logger.out.debug("Key :" +k);
 			int ind = k.indexOf("_");
 			if(ind>0)
 			{
@@ -274,7 +304,6 @@ public class AdvancedSearchAction extends Action
 				NameValueBean  bean = new NameValueBean();
 				bean.setName(displayKey);
 				bean.setValue(k);
-				//queryKeyMap.put(k,displayKey);
 				queryKeyList.add(bean);
 				
 			}
@@ -282,19 +311,23 @@ public class AdvancedSearchAction extends Action
 		/**
 		 * Set the result in session and forward to SearchResultView Action
 		 */
-		//session.setAttribute(GCConstants.SELECTED_DATASOURCES,selectInputOutputList);
 		session.setAttribute(GCConstants.RESULT_DATA_LIST, resultData);
-		//session.setAttribute(GCConstants.QUERY_KEY_MAP, queryKeyMap);
 		session.setAttribute(GCConstants.QUERY_KEY_MAP, queryKeyList);
 		request.setAttribute(Constants.PAGEOF, GCConstants.ADVANCED_SEARCH);
 		
 		return (mapping.findForward(GCConstants.FORWARD_TO_RESULT_PAGE));
 	}
 	
+	//this method populates map of Output Datasources selected by user on AdvancedSearch page
 	private Map createOutputDataSources(HttpServletRequest request) throws Exception
 	{
+		//initializing list of datasources
 		List dataSources = MetadataManager.getDataSourcesToDisplay();
+		
+		//initializing map for Output Datasources
 		Map frequencyMap = new HashMap();
+		
+		//populating map of Output Datasources
 		for (int i = 0; i < dataSources.size(); i++)
 		{
 			try
@@ -310,10 +343,7 @@ public class AdvancedSearchAction extends Action
 					{	
 						freqValue="0";
 					}	
-//					else if (freqValue.length() > 0)
-//					{
-//						
-//					}
+
 					Float freq =  new Float(freqValue);
 					frequencyMap.put(bean.getName(),freq);
 				}
@@ -329,16 +359,25 @@ public class AdvancedSearchAction extends Action
 			}
 		}
 		
+		//returning map of Output Datasources
 		return frequencyMap;
 	}
 
+	/**
+	 * This method updates map of formbean InputDatasources while user deletes any of the already entered InputDatasources 
+	 * @param advancedSearchActionForm - formbean object to update
+	 * @param request - request object associated with action
+	 * @throws Exception
+	 */
 	private void updateMap(AdvancedSearchForm advancedSearchActionForm, HttpServletRequest request) throws Exception
 	{
-//		System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  Update Map &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//		System.out.println("Rows To Delete-->"+request.getParameter("rowsToDelete"));
+//		Logger.out.debug("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  Update Map &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+//		Logger.out.debug("Rows To Delete-->"+request.getParameter("rowsToDelete"));
 		
+		//initializing list of datasources
 		List dataSources = MetadataManager.getDataSourcesToDisplay();
 		
+		//initializing map of InputDatasources
 		Map inputs = advancedSearchActionForm.getInputDataSources();
 		
 		Set inputKeys = inputs.keySet();
@@ -347,6 +386,7 @@ public class AdvancedSearchAction extends Action
 		
 		TreeMap sortedKeys = new TreeMap();
 		
+		//sorting InputDatasources
 		for(int i=0; i<inputKeys.size(); i++)
 		{
 			String inputKey = (String)inputKeyList.get(i);
@@ -364,6 +404,7 @@ public class AdvancedSearchAction extends Action
 		
 		StringTokenizer rowsTokened = new StringTokenizer(rowsToDelete, ",");
 		
+		//traversing through sorted InputDatasources to delete Inputs selected by user to delete
 		while(rowsTokened.hasMoreTokens())
 		{
 			String rowId = rowsTokened.nextToken();
@@ -378,19 +419,20 @@ public class AdvancedSearchAction extends Action
 					
 					inputs.remove(inputHeader+"_"+dataSource.getName());
 					
-//					System.out.println("To Delete-->"+(inputHeader+dataSource.getName()));
+					Logger.out.debug("To Delete-->"+(inputHeader+dataSource.getName()));
 				}
 			}
 		}
 		
+		//setting InputDatasources of formbean with updated Inputs
 		advancedSearchActionForm.setInputDataSources(inputs);
 		
+		//setting updated formbean into request object
 		request.setAttribute("advancedSearchForm", advancedSearchActionForm);
 		
+		//storing new instance of formbean into session as formbean values are changed
 		HttpSession session = request.getSession();
 		session.setAttribute("advancedSearchForm", new AdvancedSearchForm());
 		
 	}
-	
-
 }

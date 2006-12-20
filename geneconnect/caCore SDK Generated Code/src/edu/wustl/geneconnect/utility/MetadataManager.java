@@ -5,7 +5,9 @@
  */
 
 package edu.wustl.geneconnect.utility;
-
+/**
+ * This class stored the meta data information from database used to process bizlogic
+ */
 import gov.nih.nci.system.dao.DAOException;
 
 import java.sql.Connection;
@@ -14,25 +16,36 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+
 /**
  * This class will implement all business logic to provide geneconnect metadata.
- * @author mahesh_nalkande
+ * @author sachin_lale
  */
-public class MetadataManager //implements MetadataManagerInterface
+public class MetadataManager 
 {
 
+	private static Logger log = Logger.getLogger(MetadataManager.class.getName());
+	
 	// Store datasoruceid , dataSource name
 	private static List dataSourcesToDisplay = null;
 
-	// represents teh DATSOURCE meta data table
+	// represents the DATSOURCE meta data table
 	private static List dataSources = null;
 
-	// represents teh ROLE_LOOKUP meta data table
+	// represents the ROLE_LOOKUP meta data table
 	private static List roleLookup = null;
-
+	
+	//	 represents the ONT list  meta data table
+	private static Map ontMap = null;
+	
+//	 represents the LINKTYPE meta data table
+	private static List linkType = null;
+	
 	private static Connection connection = null;
 
 	/** MetadataManager as a singleton class */
@@ -53,7 +66,7 @@ public class MetadataManager //implements MetadataManagerInterface
 	 * @return MetadataManager Returns object of this class
 	 */
 
-	public static void connect(Connection conn) throws Exception
+	public static synchronized void connect(Connection conn) throws Exception
 	{
 		if (connection == null)
 		{
@@ -73,6 +86,8 @@ public class MetadataManager //implements MetadataManagerInterface
 
 			setDataSource();
 			setRoleLookup();
+			setLinkType();
+			setONTMap();
 		}
 		catch (Exception e)
 		{
@@ -148,7 +163,100 @@ public class MetadataManager //implements MetadataManagerInterface
 
 		}
 	}
+	
+	/**
+	 * Execute query and store the meta data of LINKTYPE
+	 * @throws DAOException
+	 */
+	private static void setLinkType() throws Exception
+	{
+		try
+		{
+			linkType = new ArrayList();
+			Statement st = connection.createStatement();
+			String sql = "SELECT "+Constants.LINK_TYPE_ID+","+Constants.LINK_TYPE_NAME+" FROM "+Constants.LINKTYPE_TABLE;
+			log.info("SQL FO LINKTYPE: " +sql);
+			ResultSet result = st.executeQuery(sql);
 
+			while (result.next())
+			{
+				Map temp = new HashMap();
+				temp.put(Constants.LINK_TYPE_ID, result.getString(Constants.LINK_TYPE_ID));
+				temp.put(Constants.LINK_TYPE_NAME, result.getString(Constants.LINK_TYPE_NAME));
+				linkType.add(temp);
+			}
+
+		}
+		catch (SQLException e)
+		{
+			//Logger.out.error(e.getMessage(), e);
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+
+		}
+	}
+	
+	/**
+	 * Execute query and store the meta data of ONT
+	 * @throws DAOException
+	 */
+	private static void setONTMap() throws Exception
+	{
+		try
+		{
+			long t1 = System.currentTimeMillis();
+			ontMap = new Hashtable();
+			Statement st = connection.createStatement();
+			String sql = "SELECT o."+Constants.ONT_PATH_ID+",d."+Constants.DATASOURCE_NAME+",o."+
+						 Constants.ONT_LINKTYPE_ID+",o."+Constants.ONT_NEXT_PATH_ID+",o."+ Constants.ONT_PREV_PATH_ID+
+								" FROM "+Constants.ONT_TABLE +" o,"+Constants.DATASOURCE_TABLE+" d WHERE o."+Constants.ONT_SOURCE_DS_ID+"=d."+Constants.DATASOURCE_ID+" ORDER BY o."+Constants.ONT_PATH_ID;
+			log.info("SQL FOR ONT: " +sql);
+			log.info("ONT debug1: ");
+			ResultSet result = st.executeQuery(sql);
+			log.info("ONT debug2: "+result);
+			List dataSourcelist = null;
+			Long ontid=null;
+			log.info("ONT debug3: ");
+			while (result.next())
+			{
+				if(result.getLong(Constants.ONT_PREV_PATH_ID)==0)
+				{
+					dataSourcelist = new ArrayList();
+					ontid = new Long(result.getLong(Constants.ONT_PATH_ID));
+				}
+				dataSourcelist.add(result.getString(Constants.DATASOURCE_NAME));
+				if(result.getLong(Constants.ONT_LINKTYPE_ID)>0)
+				{
+					String linkTypeId =result.getString(Constants.ONT_LINKTYPE_ID);
+					String linkTypeName = getLinkTypeAttribute(Constants.LINK_TYPE_ID,linkTypeId,Constants.LINK_TYPE_NAME);
+					dataSourcelist.add(linkTypeName);
+				}
+				else
+				{
+					ontMap.put(ontid,dataSourcelist);
+				}
+			}
+			log.info("ONT debug6: ");
+			long t2 = System.currentTimeMillis();
+			log.info("ONT debug7: ");
+			log.info("Time for caching ONT :" + ((t2-t1)/1000));
+			log.info("ONT debug8: ");
+			log.info("ONT count---"+ontMap.keySet().size());
+			log.info("ONT debug9: ");
+//			for(int i=0;i<keyList.size();i++)
+//			{
+//				log.info("ss:"+keyList.get(i)+"---"+ontMap.get(keyList.get(i))); 
+//			}
+		}
+		catch (SQLException e)
+		{
+			//Logger.out.error(e.getMessage(), e);
+			e.printStackTrace();
+			throw new Exception(e.getMessage());
+
+		}
+	}
+	 
 	/**
 	 * Returns a list of all data sources.
 	 * @return List of Data source names.
@@ -244,7 +352,7 @@ public class MetadataManager //implements MetadataManagerInterface
 	public static String getRoleName(String sourceClass, String targetClass)
 	{
 		String roleName = "";
-
+		//System.out.println(sourceClass+"--"+targetClass);
 		for (int i = 0; i < roleLookup.size(); i++)
 		{
 			//System.out.println("roleLookup :" +roleLookup.size());
@@ -280,6 +388,66 @@ public class MetadataManager //implements MetadataManagerInterface
 			}
 		}
 		return null;
+	}
+	/**
+	 * Returns the value of given column name of LINKTYPE 
+	 * @param searchkey - Search criteria on column name
+	 * @param searchvalue - value to be search on column name
+	 * @param returnkey - column name whose value to return
+	 * @return
+	 */
+	public static String getLinkTypeAttribute(String searchkey, String searchvalue,
+			String returnkey)
+	{
+		String linkTypeAttribute = "";
+		for (int i = 0; i < linkType.size(); i++)
+		{
+			Map map = (Map) linkType.get(i);
+			String str = (String) map.get(searchkey);
+			if (str.equalsIgnoreCase(searchvalue))
+			{
+				linkTypeAttribute = (String) map.get(returnkey);
+				return linkTypeAttribute;
+			}
+		}
+		return null;
+	}
+	/**
+	 * Returns the List of paht(datasource,linktype)for a given ONT id
+	 * @param searchkey - Search criteria on column name
+	 * @param searchvalue - value to be search on column name
+	 * @param returnkey - column name whose value to return
+	 * @return
+	 */
+	public static List  getONTList(Long ontId)
+	{
+		List ontList =null;
+		if(ontMap!=null)
+		{
+			ontList = (List )ontMap.get(ontId);
+		}
+		return ontList;
+	}
+	/**
+	 * Returns the List of dataource ONLY foa a given ONT id
+	 * @param searchkey - Search criteria on column name
+	 * @param searchvalue - value to be search on column name
+	 * @param returnkey - column name whose value to return
+	 * @return
+	 */
+	public static List  getDataSourceListFromONT(Long ontId)
+	{
+		List dsListfromONT =new ArrayList();
+		if(ontMap!=null)
+		{
+			List ontList = (List )ontMap.get(ontId);
+			for(int i=0;i<ontList.size();i++)
+			{
+				dsListfromONT.add(ontList.get(i));
+				i++;
+			}
+		}
+		return dsListfromONT;
 	}
 
 }

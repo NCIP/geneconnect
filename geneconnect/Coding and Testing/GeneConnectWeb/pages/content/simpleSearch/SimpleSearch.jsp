@@ -35,7 +35,6 @@
 			
 				targetAction=form.getTargetAction();
 
-				//System.out.println("Target Action-->"+form.getTargetAction());
 			}
 %>
 <head>
@@ -133,7 +132,11 @@
 		function checkAll(element)
 		{			
 			var checkbox2=element;
-
+			if(checkbox2.checked==true)
+			{
+				alert("Please be noted alignment based data is not available. Thus selecting all data sources may lead to empty results.");
+			}
+			
 			var checkBox;
 			<%
 				for(int i=0;i<dataSourceList.size();i++)

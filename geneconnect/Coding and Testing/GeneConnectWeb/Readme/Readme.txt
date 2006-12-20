@@ -103,7 +103,7 @@ To install GeneConnect caCore-Like system please refer to 'Readme.txt' localted 
 ------------------------------------------------------------------------------
 4. Folder Structure
 ------------------------------------------------------------------------------
-a. Download the Geneconnect alpha release zip file from cabig CVS folder 'geneconnect/Coding and Testing/GeneConnectWeb/Release/GeneConnectWeb_Alpha_Release'.
+a. Download the Geneconnect release zip file from cabig CVS folder 'geneconnect/Coding and Testing/GeneConnectWeb/Release/GeneConnect_Web_Installable.zip'.
 
 
 ------------------------------------------------------------------------------
@@ -180,7 +180,7 @@ Appendix A : General Checks before starting with Tomcat server
 -------------------------------------------------------------------------------
 1. Check if Web Application Archieve 'geneconnectcaCore.war' (WAR file) is deployed and running.
 2. Check if GeneConnect Web Application Archieve 'geneconnect.war' (WAR file)is deployed in Apache Tomcat location.
-3. 'log4j/xml' file is properly set as described in section 5.1.
+3. 'log4j.xml' file is properly set as described in section 5.1.
 4. The database is setuped. Please refer to GeneConnect server Readme.txt located at 'geneconnect/Coding and Testing/GeneConnect/Readme'
 
 ------------------------------------------------------------------------------

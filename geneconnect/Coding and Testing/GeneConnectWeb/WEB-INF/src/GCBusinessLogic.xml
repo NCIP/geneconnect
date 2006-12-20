@@ -8,5 +8,9 @@
 		<business-action>AdvancedSearchBizLogic</business-action>
 		<instance-type>edu.wustl.geneconnect.bizlogic.AdvancedSearchBizLogic</instance-type>
     </business-logic>
+	<business-logic>
+		<business-action>ONTBizLogic</business-action>
+		<instance-type>edu.wustl.geneconnect.bizlogic.ONTBizLogic</instance-type>
+    </business-logic>
 </business-logics>  
 

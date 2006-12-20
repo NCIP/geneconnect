@@ -16,8 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.hibernate.criterion.DetachedCriteria;
-
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.exceptionformatter.DefaultExceptionFormatter;
@@ -155,8 +153,8 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 				oldSetMap.put(GCConstants.SET_ID_KEY, combineSetID);
 				dataMap.remove(mapKey);
 				dataMap.put(mapKey, oldSetMap);
-				System.out.println("Added combine Set " + combineSetID);
-				System.out.println("Removing redundant Set " + mapKey);
+				Logger.out.debug("Added combine Set " + combineSetID);
+				Logger.out.debug("Removing redundant Set " + mapKey);
 				Logger.out.info("Removing redundant Set " + mapKey);
 				iter.remove();
 			}
@@ -197,14 +195,14 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 			for (int i = 0; i < inputDsList.size(); i++)
 			{
 				NameValueBean bean = (NameValueBean) inputDsList.get(i);
-				System.out.println("INP DS : " + bean.getName());
+				Logger.out.debug("INP DS : " + bean.getName());
 				columnHeader.add(bean.getName());
 				//columnHeader.add(bean.getName() + GCConstants.FREQUENCY_KEY_SUFFIX);
 			}
 			for (int i = 0; i < outputDsList.size(); i++)
 			{
 				columnHeader.add((String) outputDsList.get(i));
-				System.out.println("OUtP DS : " + outputDsList.get(i));
+				Logger.out.debug("OUtP DS : " + outputDsList.get(i));
 				columnHeader.add((String) outputDsList.get(i) + GCConstants.FREQUENCY_KEY_SUFFIX);
 			}
 			columnHeader.add(GCConstants.CONF_SCORE_KEY);
@@ -220,7 +218,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 
 				GenomicIdentifierSolution solution = set.getGenomicIdentifierSolution();
 				Collection coll = solution.getConsensusIdentifierDataCollection();
-				System.out.println("Genomic Identifer\tFrequency");
+				Logger.out.debug("Genomic Identifer\tFrequency");
 				for (Iterator iter1 = coll.iterator(); iter1.hasNext();)
 				{
 					//OrderOfNodeTraversal ont = (OrderOfNodeTraversal)iter1.next();
@@ -228,7 +226,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 					GenomicIdentifier g = freqData.getGenomicIdentifier();
 					if (g != null)
 					{
-						System.out.println("\t" + g.getGenomicIdentifier() + "\t\t\t"
+						Logger.out.debug("\t" + g.getGenomicIdentifier() + "\t\t\t"
 								+ freqData.getFrequency());
 						/**
 						 * If genomicIdentifier is Null the add key as GenomicIdentifierClass + '_NULL'
@@ -276,7 +274,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 					 */
 					String className = MetadataManager.getDataSourceAttribute(
 							GCConstants.DATASOURCE_NAME, column, GCConstants.CLASS);
-					//System.out.println("className : " + className);
+					//Logger.out.debug("className : " + className);
 
 					temp.append(MetadataManager.getRoleName("GenomicIdentifierSet", className));
 
@@ -298,7 +296,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 							+ classAttribute.substring(0, 1).toUpperCase()
 							+ classAttribute.substring(1, classAttribute.length());
 
-					//System.out.println("methodForClassAttribute: " + methodForClassAttribute);
+					//Logger.out.debug("methodForClassAttribute: " + methodForClassAttribute);
 					Logger.out.info("methodForClassAttribute: " + methodForClassAttribute);
 					Class genomicClass = Class.forName("edu.wustl.geneconnect.domain." + className);
 
@@ -317,12 +315,12 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 					method = genomicClass.getDeclaredMethod(methodForClassAttribute, null);
 					Object value = method.invoke(genomicObject, null);
 
-					//System.out.println("Resutl : " + methodForClassAttribute + "------" + value);
-					//System.out.println("Freq : " + value.toString());
+					//Logger.out.debug("Resutl : " + methodForClassAttribute + "------" + value);
+					//Logger.out.debug("Freq : " + value.toString());
 					/**
 					 * Add entry in Map to strore data w.r.t column
 					 */
-					//System.out.println("value1: "+ value);
+					//Logger.out.debug("value1: "+ value);
 					String key = "";
 					/**
 					 * If genoimicIdentifier is null the set key = GenomicIdentifier class + '_NULL'
@@ -330,7 +328,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 					 */
 					if (value == null || value.equals("NULL"))
 					{
-						//System.out.println("value: " + value);
+						//Logger.out.debug("value: " + value);
 						value = new String(GCConstants.NO_MATCH_FOUND);
 						StringBuffer genomicIDClass = new StringBuffer(
 								"edu.wustl.geneconnect.domain.");
@@ -345,7 +343,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 					{
 						key = value.toString();
 					}
-					//System.out.println(column+"===="+value.toString());
+					//Logger.out.debug(column+"===="+value.toString());
 					setMap.put(column, value.toString());
 					Float freq = (Float) frequency.get(key);
 					String freqValue = "";
@@ -425,18 +423,18 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 		for (Iterator iter = s.iterator(); iter.hasNext();)
 		{
 			String str = (String) iter.next();
-			//System.out.println("KEys: " + str);
+			//Logger.out.debug("KEys: " + str);
 			if (str.endsWith("_systemIdentifier"))
 			{
 				//noOfInputs++;
-				//System.out.println("noOfInputs: " + noOfInputs);
+				//Logger.out.debug("noOfInputs: " + noOfInputs);
 			}
 			else if (str.startsWith("Input:"))
 			{
 				/**
 				 * Store inmput data in MAp for further validating processs
 				 */
-				System.out.println("map.get(str): " + map.get(str));
+				Logger.out.debug("map.get(str): " + map.get(str));
 				if (str.endsWith("DataSource_Id") && ((String) map.get(str)).equalsIgnoreCase("-1"))
 				{
 					throw new BizLogicException("Select valid data source");
@@ -451,8 +449,8 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 					inputMap.put(str, map.get(str));
 				Logger.out.info("Input Key  " + str);
 				Logger.out.info("Input Value : " + map.get(str));
-				//System.out.println("Input Key  " + str);
-				//System.out.println("Input Value : " + map.get(str));
+				//Logger.out.debug("Input Key  " + str);
+				//Logger.out.debug("Input Value : " + map.get(str));
 			}
 			else if (str.startsWith("Output:"))
 			{
@@ -480,7 +478,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 		String temp = null;
 		List dsName = new ArrayList();
 		Logger.out.info("noOfInputs: " + noOfInputs);
-		//System.out.println("noOfInputs: " + noOfInputs);
+		//Logger.out.debug("noOfInputs: " + noOfInputs);
 
 		/**
 		 * Loop over Input map 
@@ -494,7 +492,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 			if (key.startsWith("Input:") && key.endsWith("DataSource_Id"))
 			{
 				temp = key.substring(key.indexOf("Input:") + "Input:".length(), key.indexOf("_"));
-				//System.out.println("temp " +temp+"---"+temp.length());
+				//Logger.out.debug("temp " +temp+"---"+temp.length());
 				if (!inputCounter.contains(temp))
 				{
 					inputCounter.add(temp);
@@ -505,27 +503,27 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 		{
 			NameValueBean bean = new NameValueBean();
 			String key = (String) it.next();
-			//System.out.println("KEEYY " +key);
+			//Logger.out.debug("KEEYY " +key);
 			temp = "Input:" + key + "_DataSource_Id";
 			//"Input:" + i + "_DataSource_Id";
 			String dataSourceID = (String) inputMap.get(temp);
-			System.out.println("dataSourceID " + dataSourceID);
+			Logger.out.debug("dataSourceID " + dataSourceID);
 			String dataSourceName = MetadataManager.getDataSourceName(dataSourceID);
-			System.out.println("dataSourceName " + dataSourceName);
+			Logger.out.debug("dataSourceName " + dataSourceName);
 			Logger.out.info("size: " + dsName.size());
 			/**
 			 * Logic to check whther user has enter more tahn one genomicId for same input data source
 			 */
 			for (int j = 0; j < dsName.size(); j++)
 			{
-				//System.out.println("dataSourceName :"+dataSourceName);
-				//System.out.println("dsName : "+dsName.get(j).toString());
+				//Logger.out.debug("dataSourceName :"+dataSourceName);
+				//Logger.out.debug("dsName : "+dsName.get(j).toString());
 				if (dataSourceName.equalsIgnoreCase(dsName.get(j).toString()))
 				{
 					String arg[] = new String[]{dataSourceName};
 					String errmsg = new DefaultExceptionFormatter().getErrorMessage(
 							"errors.duplicate.datasource", arg);
-					//System.out.println("errmsg : "+errmsg);
+					//Logger.out.debug("errmsg : "+errmsg);
 					Logger.out.info(errmsg);
 					throw new BizLogicException(errmsg);
 				}

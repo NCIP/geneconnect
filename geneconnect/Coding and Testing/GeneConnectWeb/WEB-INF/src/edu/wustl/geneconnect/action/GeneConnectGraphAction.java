@@ -41,10 +41,6 @@ import edu.wustl.geneconnect.util.global.Utility;
  */
 public class GeneConnectGraphAction extends Action
 {
-//	Map ontMap = null;
-	
-	
-	
 	/**
 	 * Defalut Constructor
 	 */
@@ -72,22 +68,29 @@ public class GeneConnectGraphAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
+		//Initializing session object
 		HttpSession session = request.getSession();
+		
 		List selectedInputOutputList = (List)session.getAttribute(GCConstants.SELECTED_DATASOURCES);
 		
+		//Initializing list of datasources 
 		List dataSources = MetadataManager.getDataSourcesToDisplay();
 		
+		//Initializing list of datasources for graph
 		List graphDataSources = new ArrayList();
 		
+		//Initializing list of links of datasources
 		List dataSourcesLinks = MetadataManager.getDataSourcesLinks();
 		
+		//Initializing list of links of datasources for graph
 		List graphDataSourcesLinks = new ArrayList();
-		
-		String graphDataSourceString;
 		
 		Logger.out.info("Setting data source list in request object");
 		request.setAttribute(GCConstants.DATA_SOURCES_KEY, dataSources);
 		
+		String graphDataSourceString;
+
+		//populating list of datasources for graph
 		for(int i=0; i<dataSources.size(); i++)
 		{
 			NameValueBean dataSource = (NameValueBean)dataSources.get(i);
@@ -104,10 +107,13 @@ public class GeneConnectGraphAction extends Action
 			
 		}
 		
+		//setting populated datasources for graph into request
 		Logger.out.info("Setting data source attributes list in request object");
 		request.setAttribute(GCConstants.GRAPH_DATASOURCES, graphDataSources);
 
 		String graphDataSourceLinkString;
+		
+		//populating list of links of datasources for graph into request object
 		for(int i=0; i<dataSourcesLinks.size(); i++)
 		{
 			Map dataSourceLink = (HashMap)dataSourcesLinks.get(i);
@@ -120,22 +126,26 @@ public class GeneConnectGraphAction extends Action
 			
 		}
 		
+		//setting populated links of datasources for graph into request object
 		Logger.out.info("Setting data source links attributes list in request object");
 		request.setAttribute(GCConstants.GRAPH_DATASOURCES_LINKS, graphDataSourcesLinks);
 		
+		//Initializing map object for ONTs
 		HashMap ontMap = new HashMap();
 		
 		int ontMapCounter=0;
 		
+		//getting parameter of GenomicIdentifierSets from request object
 		Logger.out.info("SetId parameter==>"+request.getParameter("setid"));
 		String setIds = request.getParameter("setid");
 		
+		//populating map of ONTs for selected GenomicIdentifierSets
 		if(setIds != null)
 		{
 			StringTokenizer setIdsTokenizer = new StringTokenizer(setIds, ",");
 			
 			Logger.out.info("No. of Set Tokens->"+setIdsTokenizer.countTokens());
-			System.out.println("No. of Set Tokens->"+setIdsTokenizer.countTokens());
+			Logger.out.debug("No. of Set Tokens->"+setIdsTokenizer.countTokens());
 			if(setIdsTokenizer.countTokens() > 0)
 			{
 				while(setIdsTokenizer.hasMoreTokens())
@@ -144,121 +154,92 @@ public class GeneConnectGraphAction extends Action
 					Long setID = new Long(setIdsTokenizer.nextToken());
 					List resultList = (List)session.getAttribute(GCConstants.GENOMICIDENTIIER_SET_RESULT_LIST);
 					
-				//	gset.setId(new Long(setIdsTokenizer.nextToken()));
+					Logger.out.debug("curretnt serach for :" +setID);
 					
-	//				query(gset, ontMap);
-					//List resultList = CaCoreClient.appServiceQuery(GenomicIdentifierSet.class.getName(),gset);
-					
-					//	if(resultList.size()>0)
-					System.out.println("curretnt serach for :" +setID);
 					GenomicIdentifierSet  set =null;
-					boolean setFound=false;
-					for(int i=0;i<resultList.size();i++)
-						{
 					
-							set = (GenomicIdentifierSet )resultList.get(i);
-							if(set.getId().longValue()==setID.longValue())
-							{
-								setFound=true;
-								break;
-								
-							}
+					boolean setFound=false;
+					
+					for(int i=0;i<resultList.size();i++)
+					{
+						set = (GenomicIdentifierSet )resultList.get(i);
+						if(set.getId().longValue()==setID.longValue())
+						{
+							setFound=true;
+							break;
+							
 						}
+					}
+					
 					if(setFound)
 					{	
-							Collection coll = set.getOrderOfNodeTraversalCollection();
-					
-							Logger.out.info("asa :"+set.getId()+"-----"+ coll.size());
-							
-							/*Get and Print the Order of Node Traveersal associated with this GenomicIdentifierSet*/
-							Logger.out.info("________________________________________________________");
-	//						StringBuffer firstDataSource = new StringBuffer();
-	//						StringBuffer lastDataSource = new StringBuffer();
-							
-							for (Iterator iter1 = coll.iterator(); iter1.hasNext();)
-							{
-	//							firstDataSource.setLength(0);
-	//							lastDataSource.setLength(0);
-								
-								Logger.out.info("ONT Id----DataSource-------LinkType");
-					
-								OrderOfNodeTraversal ont = (OrderOfNodeTraversal) iter1.next();
-								
-	//							firstDataSource.append(ont.getSourceDataSource().getName());	
-								
-								OrderOfNodeTraversal tempont = ont;
-								
-								String highlightNodes ="";
-								String highlightLinkTypes="";
-								List dsList = new ArrayList();
-								while (tempont != null)
-								{
-									LinkType ltype = tempont.getLinkType();
-					                                                             
-									String linkType = null;
-									
-									Long linkId = null;
-									
-									if (ltype != null)
-									{
-										linkType = ltype.getType();
-										
-										linkId = ltype.getId();
-										
-										if(linkId != null)
-											highlightLinkTypes+=linkId+",";
-									}
-	//								dsList.add(tempont.getSourceDataSource().getName());
-	//								highlightNodes +=tempont.getSourceDataSource().getId().toString()+"("+tempont.getSourceDataSource().getName()+")>";
-									highlightNodes +=tempont.getSourceDataSource().getId().toString()+">";
-									
-									Logger.out.info(tempont.getId() + "----" + tempont.getSourceDataSource().getId() + "------" + linkId);
-					
-									OrderOfNodeTraversal nextont = tempont.getChildOrderOfNodeTraversal();
-									
-	//								if(nextont==null)
-	//								{
-	//									lastDataSource.append(tempont.getSourceDataSource().getName());
-	//								}
-									
-									tempont = nextont;
-								}
-								
-								Logger.out.info("________________________________________________________");
-								ontMapCounter+=1;
-								
-								ontMap.put("highlightNodeList_"+ontMapCounter, highlightNodes);
-								ontMap.put("highlightLinkTypes_"+ontMapCounter, highlightLinkTypes);
-								
-								Logger.out.info("NodeList==> "+highlightNodes+"  LinkTypeIds==>"+highlightLinkTypes);
-	//							if((Utility.listContainValue(firstDataSource.toString(),selectedInputOutputList)
-	//									&&Utility.listContainValue(lastDataSource.toString(),selectedInputOutputList)))
-	//							{
-	//								if(dsList.containsAll(selectedInputOutputList))
-	//								{
-	//									ontMapCounter+=1;
-	//									
-	//									ontMap.put("highlightNodeList_"+ontMapCounter, highlightNodes);
-	//									ontMap.put("highlightLinkTypes_"+ontMapCounter, highlightLinkTypes);
-	//									
-	//									Logger.out.info("NodeList==> "+highlightNodes+"  LinkTypeIds==>"+highlightLinkTypes);
-	//								}	
-	//							}
-								
-							}
-					}		
+						Collection coll = set.getOrderOfNodeTraversalCollection();
+				
+						Logger.out.info("asa :"+set.getId()+"-----"+ coll.size());
 						
-					System.out.println("Returning ontMap of size==>"+ontMap.size());
+						/*Get and Print the Order of Node Traveersal associated with this GenomicIdentifierSet*/
+						Logger.out.info("________________________________________________________");
+						
+						for (Iterator iter1 = coll.iterator(); iter1.hasNext();)
+						{
+							Logger.out.info("ONT Id----DataSource-------LinkType");
+				
+							OrderOfNodeTraversal ont = (OrderOfNodeTraversal) iter1.next();
+							
+							OrderOfNodeTraversal tempont = ont;
+							
+							String highlightNodes ="";
+							String highlightLinkTypes="";
+							List dsList = new ArrayList();
+							while (tempont != null)
+							{
+								LinkType ltype = tempont.getLinkType();
+				                                                             
+								String linkType = null;
+								
+								Long linkId = null;
+								
+								if (ltype != null)
+								{
+									linkType = ltype.getType();
+									
+									linkId = ltype.getId();
+									
+									if(linkId != null)
+										highlightLinkTypes+=linkId+",";
+								}
+								highlightNodes +=tempont.getSourceDataSource().getId().toString()+">";
+								
+								Logger.out.info(tempont.getId() + "----" + tempont.getSourceDataSource().getId() + "------" + linkId);
+				
+								OrderOfNodeTraversal nextont = tempont.getChildOrderOfNodeTraversal();
+								
+								tempont = nextont;
+							}
+							
+							Logger.out.info("________________________________________________________");
+							ontMapCounter+=1;
+							
+							ontMap.put("highlightNodeList_"+ontMapCounter, highlightNodes);
+							ontMap.put("highlightLinkTypes_"+ontMapCounter, highlightLinkTypes);
+							
+							Logger.out.info("NodeList==> "+highlightNodes+"  LinkTypeIds==>"+highlightLinkTypes);
+						}
+					}		
+					Logger.out.debug("Returning ontMap of size==>"+ontMap.size());
 				}
 			}
 		}
+		//populating map of ONTs by parsing selected ONTs by user for graph
 		else
 		{
 			String selectedPathsForGraph = request.getParameter("selectedPathsForGraph");
-			//System.out.println("SelectedPathsForGraph-->"+selectedPathsForGraph);
+			Logger.out.debug("SelectedPathsForGraph-->"+selectedPathsForGraph);
+			
+			//calling Utility method to parse possible multiple links for a selected ONT by user 
+			selectedPathsForGraph = Utility.parseAnyOption(selectedPathsForGraph);
 			
 			StringTokenizer selectedPathsTokenized = new StringTokenizer(selectedPathsForGraph, "$");
-			
 			
 			while(selectedPathsTokenized.hasMoreTokens())
 			{
@@ -284,11 +265,12 @@ public class GeneConnectGraphAction extends Action
 				
 				Logger.out.info("NodeList==> "+highlightNodes+"  LinkTypeIds==>"+highlightLinkTypes);
 			}
-			
 		}
 		
+		//setting map of ONTs to highlight on graph in request object
 		request.setAttribute(GCConstants.GRAPH_HIGHLIGHT_PATHS, ontMap);
 		
+		//forwarding to graph page
 		Logger.out.info("Forwarding to GeneConnectGraph.jsp");
 		return (mapping.findForward(GCConstants.FORWARD_TO_GRAPH_PAGE));
 	}
@@ -374,6 +356,6 @@ public class GeneConnectGraphAction extends Action
 			
 //			request.setAttribute(GCConstants.GRAPH_HIGHLIGHT_PATHS, ontMap);
 		}
-		System.out.println("Returning ontMap of size==>"+ontMap.size());
+		Logger.out.debug("Returning ontMap of size==>"+ontMap.size());
 	}
 }

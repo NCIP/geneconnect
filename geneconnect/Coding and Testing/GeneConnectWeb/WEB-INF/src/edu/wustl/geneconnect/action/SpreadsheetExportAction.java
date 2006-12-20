@@ -26,7 +26,6 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
-import edu.wustl.common.action.BaseAction;
 import edu.wustl.common.util.ExportReport;
 import edu.wustl.common.util.SendFile;
 import edu.wustl.common.util.global.Constants;
@@ -43,7 +42,7 @@ public class SpreadsheetExportAction  extends Action
     public SpreadsheetExportAction()
 	{
 		super();
-		System.out.println("In CONSTRY");
+		Logger.out.debug("In CONSTRY");
 		// TODO Auto-generated constructor stub
 	}
 
@@ -55,7 +54,7 @@ public class SpreadsheetExportAction  extends Action
             throws IOException, ServletException
     {
     	//AdvanceSearchForm searchForm = (AdvanceSearchForm)form;
-    	System.out.println("1");
+    	Logger.out.debug("1");
     	HttpSession session = request.getSession();
     	String fileName = Variables.applicationHome + System.getProperty("file.separator") + session.getId() + ".csv";
     	
@@ -142,7 +141,7 @@ public class SpreadsheetExportAction  extends Action
     	ExportReport report = new ExportReport(fileName);
 		report.writeData(exportList,delimiter);
 		report.closeFile();
-    	 System.out.println(fileName);
+    	 Logger.out.debug(fileName);
     	SendFile.sendFileToClient(response,fileName,GCConstants.SEARCH_RESULT,"application/download");
     	String forwardTo;
     	String pageOf=request.getParameter(Constants.PAGEOF);

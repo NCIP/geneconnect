@@ -9,7 +9,7 @@ PUBLIC
 	<form-beans>
 		<form-bean name="simpleSearchForm" type="edu.wustl.geneconnect.actionForm.SimpleSearchForm"/>
 		<form-bean name="advancedSearchForm" type="edu.wustl.geneconnect.actionForm.AdvancedSearchForm"/>
-		<form-bean name="geneconnectGraphForm" type="edu.wustl.geneconnect.actionForm.GeneConnectGraphForm"/>
+		<form-bean name="blankForm" type="edu.wustl.geneconnect.actionForm.GeneConnectGraphForm"/>
 		<form-bean name="advancedSearchSelectPathForm" type="edu.wustl.geneconnect.actionForm.AdvancedSearchSelectPathForm" />
 	</form-beans>
 	
@@ -25,12 +25,18 @@ PUBLIC
 	</global-exceptions-->
 	
 	<action-mappings>
+	
 	<action path="/Home"
-				type="org.apache.struts.actions.ForwardAction"
-				parameter=".geneConnect.homePageDef" />
-		<action path="/RedirectHome"
-					type="org.apache.struts.actions.ForwardAction"
-					parameter=".geneConnect.homePageDef" />
+		type="edu.wustl.geneconnect.action.HomeAction"
+		name="blankForm"
+		validate="false"
+		scope="request">
+		<forward name="homePage" path=".geneConnect.homePageDef"/>
+	</action>
+	
+	<action path="/RedirectHome"
+			type="org.apache.struts.actions.ForwardAction"
+			parameter=".geneConnect.homePageDef" />
 	
 	<action path="/SimpleSearch"
 		type="edu.wustl.geneconnect.action.SimpleSearchAction"
@@ -90,7 +96,7 @@ PUBLIC
 
 	<action path="/GeneConnectGraph"
 			type="edu.wustl.geneconnect.action.GeneConnectGraphAction"
-			name="geneconnectGraphForm"
+			name="blankForm"
 			validate="false"
 			scope="request">
 			<forward name="geneconnectGraph" path=".geneConnect.Graph"/>

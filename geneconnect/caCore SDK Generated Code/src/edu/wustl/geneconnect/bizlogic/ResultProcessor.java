@@ -268,6 +268,7 @@ public class ResultProcessor
 		Field field = null;
 		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
 				Constants.GENE_CLASS_NAME);
+		log.info("debug1");
 		System.out.println("roleName " + roleName);
 		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
 		field.setAccessible(true);
@@ -275,6 +276,7 @@ public class ResultProcessor
 
 		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
 				Constants.MRNA_CLASS_NAME);
+		log.info("debug2");
 		System.out.println("roleName " + roleName);
 		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
 		field.setAccessible(true);
@@ -282,7 +284,10 @@ public class ResultProcessor
 
 		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
 				Constants.PROTEIN_CLASS_NAME);
+		log.info("debug3");
+		System.out.println("debug3");
 		System.out.println("roleName " + roleName);
+		System.out.println("debug4");
 		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
 		field.setAccessible(true);
 		Object protein = field.get(set);
@@ -324,7 +329,7 @@ public class ResultProcessor
 				//	System.out.println("in OP DS LISt : "+methodName); 
 				method = Gene.class.getDeclaredMethod(methodName, null);
 				value = method.invoke(gene, null);
-				System.out.println("methodName " + value);
+				//System.out.println("methodName " + value);
 				if (value != null)
 				{
 					System.out.println("output Addedd :" + dataSourceName);
@@ -514,11 +519,67 @@ public class ResultProcessor
 
 	}
 
+	/**
+	 * @param ard
+	 */
 	public static void main(String ard[])
 	{
-		String str = "edu.wustl.geneconnect.domain.EntrezGene";
-		System.out.println(str.substring(str.lastIndexOf(".") + 1));
-
+		String hql = "From edu.wustl.geneconnect.domain.GenomicIdentifierSet as xxTargetAliasxx where xxTargetAliasxx.gene.id in (select id From edu.wustl.geneconnect.domain.Gene where ensemblGeneId = 'ENS1') AND xxTargetAliasxx.protein.id in (select id From edu.wustl.geneconnect.domain.Protein where ensemblPeptideAsOutput = true) AND xxTargetAliasxx.orderOfNodeTraversalCollection.id in (select id From edu.wustl.geneconnect.domain.OrderOfNodeTraversal where sourceDataSource.id in (select id From edu.wustl.geneconnect.domain.DataSource where name = 'EnsemblGene') AND linkType.id in (select id From edu.wustl.geneconnect.domain.LinkType where type = 'DIRECT') AND childOrderOfNodeTraversal.id in (select id From edu.wustl.geneconnect.domain.OrderOfNodeTraversal where sourceDataSource.id in (select id From edu.wustl.geneconnect.domain.DataSource where name = 'EnsemblTranscript') AND linkType.id in (select id From edu.wustl.geneconnect.domain.LinkType where type = 'DIRECT') AND childOrderOfNodeTraversal.id in (select id From edu.wustl.geneconnect.domain.OrderOfNodeTraversal where sourceDataSource.id in (select id From edu.wustl.geneconnect.domain.DataSource where name = 'RefSeqmRNA') AND linkType.id in (select id From edu.wustl.geneconnect.domain.LinkType where type = 'DIRECT')))) AND xxTargetAliasxx.orderOfNodeTraversalCollection.id in (select id From edu.wustl.geneconnect.domain.OrderOfNodeTraversal where sourceDataSource.id in (select id From edu.wustl.geneconnect.domain.DataSource where name = 'EnsemblGene') AND linkType.id in (select id From edu.wustl.geneconnect.domain.LinkType where type = 'DIRECT') AND childOrderOfNodeTraversal.id in (select id From edu.wustl.geneconnect.domain.OrderOfNodeTraversal where sourceDataSource.id in (select id From edu.wustl.geneconnect.domain.DataSource where name = 'EnsemblTranscript') AND linkType.id in (select id From edu.wustl.geneconnect.domain.LinkType where type = 'DIRECT') AND childOrderOfNodeTraversal.id in (select id From edu.wustl.geneconnect.domain.OrderOfNodeTraversal where sourceDataSource.id in (select id From edu.wustl.geneconnect.domain.DataSource where name = 'RefSeqmRNA') AND linkType.id in (select id From edu.wustl.geneconnect.domain.LinkType where type = 'DIRECT')))) AND xxTargetAliasxx.consensusIdentifierDataCollection.id in (select id From edu.wustl.geneconnect.domain.ConsensusIdentifierData where frequency = '0.2' where genomicIdentifier.id in (select id From edu.wustl.geneconnect.domain.GenomicIdentifier where dataSource = 'RefSeqProtein'))";
+		//String hql = "Ad GenomicIdentifierSet dfC  GenomicIdentifierSet  DRGdfFH";
+		List ontIndexList = new ArrayList();
+		int i=0;
+		while(i>=0)
+		{
+			System.out.println("i:" +i);
+			int index = hql.indexOf("orderOfNodeTraversalCollection.id in",i);
+			System.out.println("index " +index);
+			if(index>=0)
+			{
+				ontIndexList.add(new Integer(index));
+			}
+			else if(index<0)
+			{
+				break;
+			}
+			i=index+"orderOfNodeTraversalCollection.id in".length();
+		}
+		System.out.println("list sizew: " +ontIndexList.size());
+		List ontStringList = new ArrayList();
+		int n=hql.length();
+		for(int j=0;j<ontIndexList.size();)
+		{
+			int k = ((Integer)ontIndexList.get(j)).intValue();
+			j++;
+			n=hql.length();
+			if(j<ontIndexList.size())
+			{
+				n=((Integer)ontIndexList.get(j)).intValue();
+			}
+			if(n<hql.length())
+			{
+				
+				ontStringList.add((hql.substring(k,n)));
+			}
+			else if(n==hql.length())
+			{
+				
+				int lastIndex = hql.lastIndexOf("xxTargetAliasxx");
+				if(lastIndex>0)
+				{
+					ontStringList.add(hql.substring(k,lastIndex));
+				}
+				else
+				{
+					ontStringList.add(hql.substring(k,n));
+				}
+			}
+		}
+		for(int listn=0;listn<ontStringList.size();listn++)
+		{
+			System.out.println("ONT: " + ontStringList.get(listn));
+		}	
+		
+		
 	}
 
 	/**

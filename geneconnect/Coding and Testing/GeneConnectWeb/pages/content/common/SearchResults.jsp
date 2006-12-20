@@ -239,7 +239,6 @@
 
 			/// selected query fro advanced search
 			String selectedQueryKey = (String) request.getAttribute(GCConstants.SELECTED_QUERY);
-			System.out.println("selectedQueryKey " + selectedQueryKey);
 			/**Sorting columns*/
 			Collections.sort(columnList);
 			/**remove Confidence score and SET_ID couln header and ad it to end of sorted list*/
@@ -263,7 +262,6 @@
 			{
 
 				disableExportButton = true;
-				System.out.println("disableExportButton " + disableExportButton);
 			}
 
 			List freqColumns = new ArrayList();
@@ -303,8 +301,6 @@
 					}
 				}
 			}
-			//System.out.println("Conf colValue: "+confColumns.size());
-			//System.out.println("Set colValue: "+otherColumns.size());
 			boolean isSpecimenData = false;
 			int IDCount = 0;
 
@@ -325,7 +321,6 @@
 			{
 				
 				String colValue = (String)setMap.get(columnList.get(i));
-				//System.out.println("colValue " +colValue);
 				row.add(colValue);
 			}
 			//List row = (List)dataList.get(xx);
@@ -341,7 +336,6 @@
 			{
 				
 				String colValue = (String)setMap.get(columnList.get(i));
-				//System.out.println("colValue " +colValue);
 				row.add(colValue);
 			}
 	  		int j;
@@ -618,7 +612,7 @@ tr#hiddenCombo
 						<option value="-1"><%=Constants.SELECT_OPTION%></option>
 						<%int selectedIndex = 0;
 					int queryCount = 0;
-					String textAreaValue="";
+					String textAreaValue = "";
 					if (queryList != null)
 					{
 
@@ -632,7 +626,7 @@ tr#hiddenCombo
 							if (queryKey.equalsIgnoreCase(selectedQueryKey))
 							{
 								selectedIndex = queryCount + 1;
-								textAreaValue=displayValue.toString();
+								textAreaValue = displayValue.toString();
 							}
 							queryCount++;
 
@@ -726,6 +720,7 @@ tr#hiddenCombo
 							obj.setColumnHeaderHeight("20px");
 							obj.setAction("click", function(src)
 													{
+													
 														varSelCol = src.getColumnProperty('index'); 
 								    					varSelRow = src.getRowProperty('index'); 
 								    					 if(varSelCol==<%=imgCol%>)
@@ -737,7 +732,32 @@ tr#hiddenCombo
 													}
 												);
 							
-						
+								var _refresh = obj.refresh; 
+								obj.refresh = function(){                     
+								    var scrollbars = this.getTemplate("layout").getContent("scrollbars");                     
+								    var x = scrollbars.element().scrollLeft; 
+								    var y = scrollbars.element().scrollTop;                     
+								    var data = this.getTemplate("layout").getContent("data"); 
+								    var data_x = data.element().scrollLeft; 
+								    var data_y = data.element().scrollTop; 
+								    var top = this.getTemplate("layout").getContent("top"); 
+								    var top_x = top.element().scrollLeft; 
+								    var top_y = top.element().scrollTop; 
+								    _refresh.call(this);                     
+								    this.element().runtimeStyle.visibility = "hidden";                     
+								    var _obj = this;                     
+								    window.setTimeout(function(){ 
+								        scrollbars.element().scrollLeft = x; 
+								        scrollbars.element().scrollTop = y;                     
+								        data.element().scrollLeft = data_x; 
+								        data.element().scrollTop = data_y; 
+								        top.element().scrollLeft = top_x; 
+								        top.element().scrollTop = top_y; 
+								        _obj.element().runtimeStyle.visibility = "visible"; 
+								        _obj.element().focus(); 
+								    }, 0 ); 
+								    }
+												
 							var link = new Active.Templates.Link;
 							link.setAttribute("href","#");
 							obj.setColumnTemplate(link,<%=imgCol%>);

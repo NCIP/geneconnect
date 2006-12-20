@@ -38,20 +38,22 @@ public class SpreadSheetViewTag extends TagSupport
     {
 		try
         {
+			
 			int noOfColumns=attributes.size();
 		
 			Logger.out.debug("No. of columns in SpreadSheetViewTag===>"+noOfColumns);
 			
 //			Logger.out.debug("Name of the CollectionObject on the form==>"+collection);
 		
-			Set columnHeaders = attributes.keySet();
+			//Initializing set of Column Headers
+//			Set columnHeaders = attributes.keySet();
 			
+			//Initializing array of Column Headers
 			Object[]columnHeaderArray = attributes.keySet().toArray();
 		
-//			Logger.out.debug("Arrys of "+columnHeaderArray.length+" --> "+columnHeaderArray);
-			
 			Set inputKeys = inputs.keySet();
 			
+			//Initializing list of the keys of Inputs
 			List inputKeyList = new ArrayList(inputKeys);
 			
 			TreeMap sortedKeys = new TreeMap();
@@ -71,9 +73,10 @@ public class SpreadSheetViewTag extends TagSupport
 			
 //			for(int i=0; i<sortedKeyList.size(); i++)
 //			{
-//				System.out.println("SpreadShet View Tag  SortedKeys-->"+sortedKeyList.get(i));
+//				Logger.out.debug("SpreadShet View Tag  SortedKeys-->"+sortedKeyList.get(i));
 //			}
 			
+			//counting row no. on the basis of already entered rows of Inputs
 			int newRowNo = 2;
 			if(sortedKeyList.size() > 0)
 			{
@@ -81,25 +84,23 @@ public class SpreadSheetViewTag extends TagSupport
 				
 				newRowNo = new Integer(lastKey.substring(lastKey.length()-1, lastKey.length())).intValue() + 1;
 				
-//				System.out.println("LastKey-->"+lastKey.substring(lastKey.length()-1, lastKey.length()));
+//				Logger.out.debug("LastKey-->"+lastKey.substring(lastKey.length()-1, lastKey.length()));
 			}
 			
+			//Initializing Outstream object to write the code replacing the tag
 			JspWriter out = pageContext.getOut();
 			
 			 //Creatin Javascript Function
             out.println("<script language=\"JavaScript\">");
+            
+            //defining global variable for javascript
             out.println("var rowid="+newRowNo+";");
             
+            //writing function to insert Input row
             out.println("function insert"+className+"Row(subdivtag) {");
             
             out.print("var attributes = new Array( ");
-//            for(int i=0; i<columnHeaderArray.length; i++)
-//			{
-//            	if(i<columnHeaderArray.length-1)
-//            		out.print("\""+(String)attributes.get(columnHeaderArray[i])+"\",");
-//            	else
-//            		out.print("\""+(String)attributes.get(columnHeaderArray[i])+"\"");
-//			}
+
             for(int i=0; i<columnHeaderArray.length; i++)
 			{
             	if(i<columnHeaderArray.length-1)
@@ -114,33 +115,34 @@ public class SpreadSheetViewTag extends TagSupport
 			
             out.println("var newcell=newrow.insertCell(0); \n newcell.className=\"formSerialNumberField\";");
             out.println("var newcellname=\"chk_\"+rowid;");
-//            out.println("alert(newcellname);");
+            //out.println("alert(newcellname);");
             out.println("field=\"<input type='checkbox' name='\"+ "+ "newcellname"+ "+" +"\"'>\";");
             out.println("newcell.innerHTML=\"\"+field;");
             
             out.println("for(var i=1; i<="+columnHeaderArray.length+"; i++) {");
             out.println("var newcell=newrow.insertCell(i); \n newcell.className=\"formField\";" );
             out.println("var cellname=\""+collection+"Value("+className+":\""+ "+"+"rowid"+ "+" +"\"_\""+ "+" +"attributes[i-1]+\")\";");
-//            out.println("alert('Inserting==>'+cellname);");
-            out.println("field=\"<input type='text' name='\"+ "+" "+"cellname" + "+" +"\"' class='formFieldSized10' onfocus='setCurrentTextBox(this)' >\";");
+            //out.println("alert('Inserting==>'+cellname);");
+            out.println("field=\"<input type='text' name='\"+ "+" "+"cellname" + "+" +"\"' class='formFieldSized10' onfocus='setCurrentTextBox(this)' onkeyup='checkInputOutput()' >\";");
             out.println("newcell.innerHTML=\"\"+field;");
             out.println("}");//end of for loop
             out.println("rowid=rowid+1;");
             out.println("}");//end of insert function
             
+            //writing funciton to delete Input row
             out.println("function delete"+className+"Row(subdivtag) {");
             out.println("var divObj=document.getElementById(subdivtag);");
             out.println("var rows = new Array(); \n rows = document.getElementById(subdivtag).rows; \n var totalrows = rows.length;");
-//            out.println("alert('No of Rows in delete folder==>'+totalrows);");
+            //out.println("alert('No of Rows in delete folder==>'+totalrows);");
             out.println("var rowIdCounter = 0;");
             out.println("var rowIds = new Array();");
             out.println("var rowsToDelete = \"\";");
             out.println("for(var i=0; i<totalrows; i++) {");
             out.println("var checkbox=divObj.rows[i].cells[0].firstChild;");
-//            out.println("alert('Cell object==>'+checkbox.checked);");
+            //out.println("alert('Cell object==>'+checkbox.checked);");
             out.println("if(checkbox.checked){");
-//            out.println("alert('Row ID to delete==>'+divObj.rows[i].id);");
-//            alert(divObj.rows[i].cells[1].firstChild.name);
+            //out.println("alert('Row ID to delete==>'+divObj.rows[i].id);");
+            //alert(divObj.rows[i].cells[1].firstChild.name);
             out.println("rowIds[rowIdCounter]=divObj.rows[i].id;");
             out.println("rowIdCounter=rowIdCounter+1;");
             out.println("rowsToDelete = rowsToDelete + i +\",\";");
@@ -156,7 +158,7 @@ public class SpreadSheetViewTag extends TagSupport
             out.println("var toggleValue = document.getElementById(\"toggle\");");
             out.println("toggleValue.checked=0;");
             
-//            out.println("alert(\"Rows to Delete-->\"+rowsToDelete)");
+            //out.println("alert(\"Rows to Delete-->\"+rowsToDelete)");
             out.println("if(rowsToDelete != \"\"){");
             out.println("document.forms[0].action = \"AdvancedSearch.do?targetAction=updateMap&rowsToDelete=\"+rowsToDelete;");
             out.println("document.forms[0].submit(); }");
@@ -164,6 +166,7 @@ public class SpreadSheetViewTag extends TagSupport
             out.println("}"); //end of delete function
             
             
+            //writing function to select all Inputs
             out.println("function toggleAll(subdivtag) {");
             out.println("var toggleValue = document.getElementById(\"toggle\");");
             out.println("var divObj=document.getElementById(subdivtag);");
@@ -177,8 +180,6 @@ public class SpreadSheetViewTag extends TagSupport
             out.println("</script>");
             
 
-//			Iterator columnHeadersIterator = columnHeaders.iterator();
-//            out.println("<DIV style=\"-moz-column-width:100px;\">");
             out.println("<DIV class=\"headerDiv\">");
             out.println("<table cellpadding=\"3\" cellspacing=\"0\" border=\"0\" width=\"" + ( (columnHeaderArray.length+1) * 100) +"\">");
             
@@ -188,7 +189,6 @@ public class SpreadSheetViewTag extends TagSupport
 			out.println("<input type=\"checkbox\" name=\"toggle\" id=\"toggle\" value=\"\" onclick=\"toggleAll('"+className+"spreadsheet')\">");
 			out.println("</td>");
 			
-//			out.println("<col width=\"100px\">");
 			//creating column-header row
 			for(int i=0; i<columnHeaderArray.length; i++)
 			{
@@ -199,14 +199,8 @@ public class SpreadSheetViewTag extends TagSupport
            		out.println("</td>");
             }
 			
-//			out.println("<td width=\"100px\" >");
-//			out.println("</td>");
-			
 			out.println("</tr>");
 			out.println("</table>");
-//			out.println("<tr>");
-//			out.println("</DIV>");
-			
 			
 			out.println("<DIV class=\"spreadsheet\" style=\"width:"+(( (columnHeaderArray.length+1) * 100)+20) +"px;\">");
             out.println("<table cellpadding=\"3\" cellspacing=\"0\" border=\"0\"\">");
@@ -217,7 +211,8 @@ public class SpreadSheetViewTag extends TagSupport
             
             if(noOfInputs == 0)
             	noOfInputs = 1;
-            
+           
+            //creating Input rows
             for(int k=1; k<=noOfInputs; k++)
             {
 	            out.println("<tr id=\""+className+":row_"+k+"\">");
@@ -226,32 +221,27 @@ public class SpreadSheetViewTag extends TagSupport
 	            out.println("<input type=\"checkbox\" name=\"chk_"+k+"\" id=\"chk_"+k+"\" value=\"\">");
 	            out.println("</td>");
 
-            
 	            for(int i=0; i<columnHeaderArray.length; i++)
 				{
-	//            	String attributeName = (String)attributes.get(columnHeaderArray[i]);
 	            	String attributeName = (String)columnHeaderArray[i];
 	            	
-	            		out.println("<td class=\"formField\">");
+	            		out.print("<td class=\"formField\">");
 	            	
 	            		if(inputs.size()>0)
 	            		{
-	            			//System.out.println("Entered Value of the Attribute "+(className+":"+k+"_"+ attributeName)+"-->"+inputs.get(className+":"+k+"_"+ attributeName));
-	            			out.println("<input type=\"text\" name=\""+collection+"Value("+(String)sortedKeyList.get(k-1)+"_"+ attributeName +")\" value=\""+inputs.get((String)sortedKeyList.get(k-1)+"_"+ attributeName)+"\" class=\"formFieldSized10\" onfocus=\"setCurrentTextBox(this)\">");
+	            			//Logger.out.debug("Entered Value of the Attribute "+(className+":"+k+"_"+ attributeName)+"-->"+inputs.get(className+":"+k+"_"+ attributeName));
+	            			out.print("<input type=\"text\" name=\""+collection+"Value("+(String)sortedKeyList.get(k-1)+"_"+ attributeName +")\" value=\""+inputs.get((String)sortedKeyList.get(k-1)+"_"+ attributeName)+"\" class=\"formFieldSized10\" onfocus=\"setCurrentTextBox(this)\" onkeyup=\"checkInputOutput()\">");
 	            		}
 	            		else
 	            		{
-	            			out.println("<input type=\"text\" name=\""+collection+"Value("+ className+":"+k+"_"+ attributeName +")\" value=\"\" class=\"formFieldSized10\" onfocus=\"setCurrentTextBox(this)\">");
+	            			out.print("<input type=\"text\" name=\""+collection+"Value("+ className+":"+k+"_"+ attributeName +")\" value=\"\" class=\"formFieldSized10\" onfocus=\"setCurrentTextBox(this)\" onkeyup=\"checkInputOutput()\">");
 	            		}
 	            	
 	            	out.println("</td>");
-	            	
 				}
 	            out.println("</tr>");
             }
             
-            
-
             out.println("</tbody>");
             
             out.println("</table>");
@@ -259,10 +249,8 @@ public class SpreadSheetViewTag extends TagSupport
             
             out.println("</DIV>");
             
-//            out.println("</tr>");
-////			out.println("</table>");
-//            out.println("<tr>");
 			
+            //creating rows of buttons
             out.println("<table cellpadding=\"3\" cellspacing=\"0\" border=\"0\">");
             out.println("<tr>");
             
@@ -273,12 +261,6 @@ public class SpreadSheetViewTag extends TagSupport
             
             out.println("</tr>");
             out.println("</table>");
-            
-            
-            
-            
-//            out.println("</tr>");
-//			out.println("</table>");
             
         }
         catch (Exception e)

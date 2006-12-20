@@ -38,37 +38,87 @@ public class AdvancedSearchForm extends ActionForm
 	 */
 	private String targetAction = "populate";
 	
+	/**
+	 * map to store InputDatasources
+	 */
 	private Map inputDataSources = new HashMap();
 	
+	/**
+	 * map to store OutputDatasources
+	 */
 	private Map outputDataSources = new HashMap();
 	
+	/**
+	 * attribute that contains ConfidenceScore
+	 */
 	private String confidenceScore ="";
 	
-	private String startsWithDataSources;
+	/**
+	 * attribute that contains StartWith Datasource filter option
+	 */
+	private String startsWithDataSources = "-1";
 	
-	private String endsWithDataSources;
+	/**
+	 * attribute that contains EndsWith Datasource filter option
+	 */
+	private String endsWithDataSources = "-1";
 	
-	private String pathTypes;
+	/**
+	 * attribute that contains PathType filter option
+	 */
+	private String pathTypes = "-1";
 	
+	/**
+	 * attribute that contains Path filter option
+	 */
+	private String ontFilterCode ="5";
+	
+	/**
+	 * attribute that contains SelectedPaths (ONTs) by user
+	 */
 	private String selectedPaths;
 	
+	/**
+	 * attribute indicating whether AdvnaceSearch page is called by 
+	 * "Back To Query" selection of AdvanceSearchSelectPath page
+	 */
+	private boolean backFromSelectPath = false;
+	
+	/**
+	 * attribute that contains initial InputOutput Datasources entered by user
+	 */
+	private String initialInputOutput;
+	
+	
+	/**
+	 * Getter method for ConfidenceScore
+	 * @return confidenceScore
+	 */
 	public String getConfidenceScore()
 	{
 		return confidenceScore;
 	}
 	
+	/**
+	 * Setter method for ConfidenceScore
+	 * @param confidenceScore to set
+	 */
 	public void setConfidenceScore(String confidenceScore)
 	{
 		this.confidenceScore = confidenceScore;
 	}
+	
 	/**
+	 * Getter method for TargetACtion
 	 * @return Returns the targetAction.
 	 */
 	public String getTargetAction()
 	{
 		return targetAction;
 	}
+	
 	/**
+	 * Setter method for TargetAction
 	 * @param targetAction The targetAction to set.
 	 */
 	public void setTargetAction(String targetAction)
@@ -76,14 +126,18 @@ public class AdvancedSearchForm extends ActionForm
 		this.targetAction = targetAction;
 	}
 	
+	
 	/**
+	 * Getter method for InputDatasources
 	 * @return Returns the InputDataSources.
 	 */
 	public Map getInputDataSources()
 	{
 		return inputDataSources;
 	}
+	
 	/**
+	 * Setter method for InputDatasources
 	 * @param builds The InputDataSources to set.
 	 */
 	public void setInputDataSources(Map inputDataSources)
@@ -98,7 +152,7 @@ public class AdvancedSearchForm extends ActionForm
      */
     public void setInputDataSourcesValue(String key, Object value)
     {
-    	System.out.println("Setting "+key+" in FormBean setter method...");
+    	Logger.out.debug("Setting "+key+" in FormBean setter method...");
    		inputDataSources.put(key, value);
     }
 
@@ -122,14 +176,17 @@ public class AdvancedSearchForm extends ActionForm
     }
     
     /**
-	 * @return Returns the InputDataSources.
+     * Getter method for OutputDatasources
+	 * @return Returns the OutputDataSources.
 	 */
 	public Map getOutputDataSources()
 	{
 		return outputDataSources;
 	}
+	
 	/**
-	 * @param builds The InputDataSources to set.
+	 * Setter method for OutputDatasources
+	 * @param builds The OutputDataSources to set.
 	 */
 	public void setOutputDataSources(Map outputDataSources)
 	{
@@ -172,6 +229,7 @@ public class AdvancedSearchForm extends ActionForm
 	{
 		return endsWithDataSources;
 	}
+	
 	/**
 	 * @param endsWithDataSources The endsWithDataSources to set.
 	 */
@@ -179,6 +237,7 @@ public class AdvancedSearchForm extends ActionForm
 	{
 		this.endsWithDataSources = endsWithDataSources;
 	}
+	
 	/**
 	 * @return Returns the pathTypes.
 	 */
@@ -186,6 +245,7 @@ public class AdvancedSearchForm extends ActionForm
 	{
 		return pathTypes;
 	}
+	
 	/**
 	 * @param pathTypes The pathTypes to set.
 	 */
@@ -193,6 +253,7 @@ public class AdvancedSearchForm extends ActionForm
 	{
 		this.pathTypes = pathTypes;
 	}
+	
 	/**
 	 * @return Returns the startsWithDataSources.
 	 */
@@ -200,6 +261,7 @@ public class AdvancedSearchForm extends ActionForm
 	{
 		return startsWithDataSources;
 	}
+	
 	/**
 	 * @param startsWithDataSources The startsWithDataSources to set.
 	 */
@@ -215,6 +277,7 @@ public class AdvancedSearchForm extends ActionForm
 	{
 		return selectedPaths;
 	}
+	
 	/**
 	 * @param selectedPaths The selectedPaths to set.
 	 */
@@ -223,12 +286,60 @@ public class AdvancedSearchForm extends ActionForm
 		this.selectedPaths = selectedPaths;
 	}
 	
-    /**
-     * Overrides the validate method of ActionForm.
-     * */
+	/**
+	 * @return Returns the ontFilterCode.
+	 */
+	public String getOntFilterCode()
+	{
+		return ontFilterCode;
+	}
+	
+	/**
+	 * @param ontFilterCode The ontFilterCode to set.
+	 */
+	public void setOntFilterCode(String ontFilterCode)
+	{
+		this.ontFilterCode = ontFilterCode;
+	}
+	
+	/**
+	 * @return Returns the backFromSelectPath.
+	 */
+	public boolean isBackFromSelectPath()
+	{
+		return backFromSelectPath;
+	}
+	
+	/**
+	 * @param backFromSelectPath The backFromSelectPath to set.
+	 */
+	public void setBackFromSelectPath(boolean backFromSelectPath)
+	{
+		this.backFromSelectPath = backFromSelectPath;
+	}
+	
+	/**
+	 * @return Returns the initialInputOutput.
+	 */
+	public String getInitialInputOutput()
+	{
+		return initialInputOutput;
+	}
+	
+	/**
+	 * @param initialInputOutput The initialInputOutput to set.
+	 */
+	public void setInitialInputOutput(String initialInputOutput)
+	{
+		this.initialInputOutput = initialInputOutput;
+	}
+    
+	/**
+	 * Overrides the validate method of ActionForm
+	 */
      public ActionErrors validate(ActionMapping mapping, HttpServletRequest request) 
      {
-     	System.out.println("***********  Form Validate Method  **********");
+     	Logger.out.debug("***********  Form Validate Method  **********");
      	
          ActionErrors errors = new ActionErrors();
          
@@ -266,7 +377,7 @@ public class AdvancedSearchForm extends ActionForm
  					String id = MetadataManager.getDataSourceAttribute(GCConstants.DATASOURCE_NAME,
  							dataSourceName, GCConstants.DATASOURCE_ID);
  					
- 					System.out.println("Entering into InputDataSources->"+key+" "+dataSourceName);
+ 					Logger.out.debug("Entering into InputDataSources->"+key+" "+dataSourceName);
  					
  					inputDataSourcesList.add(id);
  					
@@ -281,7 +392,7 @@ public class AdvancedSearchForm extends ActionForm
  					String id = MetadataManager.getDataSourceAttribute(GCConstants.DATASOURCE_NAME,
  							dataSourceName, GCConstants.DATASOURCE_ID);
  					
- 					System.out.println("Entering into InputDataSources first time->"+key+" "+dataSourceName);
+ 					Logger.out.debug("Entering into InputDataSources first time->"+key+" "+dataSourceName);
  					
  					inputDataSourcesList.add(id);
  					
@@ -289,7 +400,7 @@ public class AdvancedSearchForm extends ActionForm
  					
  				}
  				
-// 				System.out.println("InputDataSource entered on AdvanceSearch page:- "+dataSourceName+" id->"+id);
+// 				Logger.out.debug("InputDataSource entered on AdvanceSearch page:- "+dataSourceName+" id->"+id);
  			}
  		}
  		Collection outputs = new ArrayList();
@@ -308,7 +419,7 @@ public class AdvancedSearchForm extends ActionForm
  					Logger.out.info("Frequency Value==>"
  							+ request.getParameter(bean.getName() + "_FrequenceValue"));
  	
- 					System.out.println("Entering into OutputDataSources->"+bean.getValue()+" "+bean.getName());
+ 					Logger.out.debug("Entering into OutputDataSources->"+bean.getValue()+" "+bean.getName());
  					
  					outputs.add(bean.getValue());
  				}
@@ -323,19 +434,19 @@ public class AdvancedSearchForm extends ActionForm
  		
  		List inputKeys = new ArrayList(inputKeySet);
  		
- 		System.out.println("No. of Output sources entered by User-->"+outputs.size());
+ 		Logger.out.debug("No. of Output sources entered by User-->"+outputs.size());
  		
- 		System.out.println("No. of Input Rows entered by User-->"+inputKeys.size());
+ 		Logger.out.debug("No. of Input Rows entered by User-->"+inputKeys.size());
  		
  		for(int i=0; i<inputKeys.size(); i++)
  		{
  			List inputSourcesList = (List) inputDataSources.get(inputKeys.get(i));
  			
- 			System.out.println("No. of sources for "+inputKeys.get(i)+" "+inputSourcesList.size());
+ 			Logger.out.debug("No. of sources for "+inputKeys.get(i)+" "+inputSourcesList.size());
  			
  			if( (inputSourcesList.containsAll(outputs)) & (inputSourcesList.size() == outputs.size()))
  			{
- 				System.out.println("Input and Output DataSources are same for "+ (String)inputKeys.get(i));
+ 				Logger.out.debug("Input and Output DataSources are same for "+ (String)inputKeys.get(i));
  				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.advanceSeach.sameDataSources",(String)inputKeys.get(i)));
  			}
  		}
@@ -347,14 +458,17 @@ public class AdvancedSearchForm extends ActionForm
          
          return errors;
       }
-     
+ 
+     /**
+      *This method resets attribtues/members of formbean as per the targetaction associated
+      */
      public void reset(ActionMapping mapping, HttpServletRequest request)
      {
      	HttpSession session = request.getSession();
      	
-     	System.out.println("Reset Method-->"+targetAction);
+     	Logger.out.debug("Reset Method-->"+targetAction);
      	
-//     	System.out.println("Paremeter-->"+request.getParameter("targetAction"));
+     	Logger.out.debug("TargetAction Paremeter-->"+request.getParameter("targetAction"));
      	
      	String targetActionParameter = request.getParameter("targetAction");
      	
@@ -362,17 +476,21 @@ public class AdvancedSearchForm extends ActionForm
      	{
      		
      	}
+     	//repopulating formbean object
 		else if(targetAction.equals("populate") || (targetActionParameter != null && targetActionParameter.equals("populate") ))
 		{
-     		System.out.println("Resetting Form values...");
+     		Logger.out.debug("Reseting Form values...");
      		inputDataSources = new HashMap();
      		
      		outputDataSources = new HashMap();
      		
      		confidenceScore ="";
      		
+     		backFromSelectPath = false;
+     		initialInputOutput="";
+     		
+     		//setting repopulated formbean object into Sesstion
 			session.setAttribute("advancedSearchForm", new AdvancedSearchForm());
 		}
      }
-	
 }

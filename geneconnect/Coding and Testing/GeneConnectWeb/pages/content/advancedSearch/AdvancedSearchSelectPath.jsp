@@ -25,24 +25,18 @@
 			List dataSourcesList = (ArrayList) request.getAttribute(GCConstants.DATA_SOURCES_LIST);
 
 			//	List validPathsForDataSources = (ArrayList) request.getAttribute(GCConstants.VALID_PATHS_LIST_FOR_DATA_SOURCES);
-			List validPathsForDataSources = (List) request
-					.getAttribute(GCConstants.PAGINATION_DATA_LIST);
-			Map dataSourcesLinksMap = (HashMap) request
-					.getAttribute(GCConstants.DATA_SOURCES_LINKS_MAP);
+			List validPathsForDataSources = (List) request.getAttribute(GCConstants.PAGINATION_DATA_LIST);
+			Map dataSourcesLinksMap = (HashMap) request.getAttribute(GCConstants.DATA_SOURCES_LINKS_MAP);
 
 			Map dataSourcesMap = (HashMap) request.getAttribute(GCConstants.DATA_SOURCES_MAP);
 
-			Map alreadySelectedPaths = (HashMap) request
-					.getAttribute(GCConstants.ALREADY_SELECTED_PATHS);
+			Map alreadySelectedPaths = (HashMap) request.getAttribute(GCConstants.ALREADY_SELECTED_PATHS);
 
 			int pageNum = Integer.parseInt((String) request.getAttribute(GCConstants.PAGE_NUMBER));
-			int totalResults = Integer.parseInt((String) request
-					.getAttribute(GCConstants.TOTAL_RESULTS));
-			int numResultsPerPage = Integer.parseInt((String) request
-					.getAttribute(GCConstants.RESULTS_PER_PAGE));
+			int totalResults = Integer.parseInt((String) request.getAttribute(GCConstants.TOTAL_RESULTS));
+			int numResultsPerPage = Integer.parseInt((String) request.getAttribute(GCConstants.RESULTS_PER_PAGE));
 			String pageName = "AdvancedSearchSelectPath.do";
 
-			//System.out.println("No. of DataSources entered by User-->"+dataSourcesList.size());
 %>
 <!-- Css and Scripts -->
 <head>
@@ -92,8 +86,8 @@
 
 						listBoxName= i+":"+sourceDataSource+"-"+targetDataSource;
 						
-						//System.out.println("ListBoxName-->"+listBoxName);	
 		%>
+					//alert('ListBoxName-->'+'<%=listBoxName%>');
 					var listBoxValue = document.getElementById('<%=listBoxName%>');
 					selectedPath = selectedPath + listBoxValue.value + "_" + "<%=targetDataSource%>" + "_";
 					//alert("List Box Value-->"+listBoxValue.options[listBoxValue.selectedIndex].text);
@@ -109,8 +103,6 @@
 
 				selectedPathName = selectedPathName.substring(0, selectedPathName.length()-1);
 				
-				//System.out.println("Selected Path DataSources-->"+selectedPathName);				
-	
 		%>	
 		var checkBox = document.getElementById(<%=i%>);
 		
@@ -159,6 +151,9 @@
 		<%		
 			}
 		%>		
+
+		var selectAllPathsCheckBox = document.getElementById('selectAllPaths');
+		selectAllPathsCheckBox.checked = false;
 	}
 
 	function removePath()
@@ -186,6 +181,9 @@
 			var rowObject=document.getElementById(rowIds[i]);
 			divObj.removeChild(rowObject);
 		}
+
+		var removeAllSelectedPathsCheckBox=document.getElementById('removeAllSelectedPaths');
+		removeAllSelectedPathsCheckBox.checked = false;
 	}
 
 	function submitToSearch(action)
@@ -196,10 +194,12 @@
 		var rows = new Array(); 
 		rows = document.getElementById('pathDiv').rows; 
 		var totalrows = rows.length; 
-			
+		var temp = divObj.getElementsByTagName("input");
+
 		for(var i=0; i<totalrows; i++)
 		{
-			selectedPaths = selectedPaths + divObj.rows[i].cells[0].firstChild.id + "#";
+			//selectedPaths = selectedPaths + divObj.rows[i].cells[0].firstChild.id + "$";
+			selectedPaths = selectedPaths + temp[i].id + "$";
 		}
 
 		//alert("selectedPaths-->"+selectedPaths);
@@ -207,6 +207,38 @@
 		var action = action;
 		
 		document.forms[0].selectedPaths.value = selectedPaths;
+
+		document.forms[0].action = action;
+		document.forms[0].submit();
+	}
+
+	function submitToAdvancedSearchPage(action)
+	{
+		var selectedPaths="";
+
+		var divObj = document.getElementById('pathDiv');
+		var rows = new Array(); 
+		rows = document.getElementById('pathDiv').rows; 
+		var totalrows = rows.length; 
+			
+		for(var i=0; i<totalrows; i++)
+		{
+			selectedPaths = selectedPaths + divObj.rows[i].cells[0].firstChild.name + "="+divObj.rows[i].cells[0].firstChild.id+"#";
+		}
+
+		var io = "";
+		for (var i=document.forms[0].startsWithDataSources.options.length-1; i>=0; i--)
+		{
+			io+=document.forms[0].startsWithDataSources.options[i].value+"$";
+			//alert(document.forms[0].startsWithDataSources.options[i].value);
+		}
+		
+		var action = action;
+		
+		document.forms[0].selectedPaths.value = selectedPaths;
+
+		document.forms[0].backFromSelectPath.value = true;
+		document.forms[0].initialInputOutput.value = io;
 
 		document.forms[0].action = action;
 		document.forms[0].submit();
@@ -251,8 +283,8 @@
 
 						listBoxName= i+":"+sourceDataSource+"-"+targetDataSource;
 						
-						//System.out.println("ListBoxName-->"+listBoxName);	
 		%>
+					//alert('ListBoxName-->'+'<%=listBoxName%>');
 					var listBoxValue = document.getElementById('<%=listBoxName%>');
 					selectedPath = selectedPath + listBoxValue.value + "_" + "<%=targetDataSource%>" + "_";
 					//alert("List Box Value-->"+listBoxValue.options[listBoxValue.selectedIndex].text);
@@ -268,8 +300,6 @@
 
 				selectedPathName = selectedPathName.substring(0, selectedPathName.length()-1);
 				
-				//System.out.println("Selected Path DataSources-->"+selectedPathName);				
-	
 		%>	
 		var checkBox = document.getElementById(<%=i%>);
 		
@@ -287,6 +317,7 @@
 			}
 		%>		
 		
+		//alert(selectedPathsForGraph);
 		var url = ".."+"<%=request.getContextPath()%>"+"/GeneConnectGraph.do?selectedPathsForGraph="+selectedPathsForGraph;
 		newwindow=window.open(url,'name','height=600,width=540');
 		if (window.focus) {newwindow.focus()}
@@ -351,6 +382,34 @@
 		}
 	}
 
+	function setAllPaths(element)
+	{
+		<%
+		for(int i=0;i<validPathsForDataSources.size();i++)
+		{
+		%>
+		var checkBox = document.getElementById(<%=i%>);
+	
+		checkBox.checked=element.checked;
+		<%
+		}
+		%>
+	}
+
+	function removeAllPaths(element)
+	{
+		var divObj = document.getElementById('pathDiv');
+		var rows = new Array(); 
+		rows = document.getElementById('pathDiv').rows; 
+		var totalrows = rows.length; 
+				
+		for(var i=0; i<totalrows; i++)
+		{
+			var selectedPath = divObj.rows[i].cells[0].firstChild;
+			selectedPath.checked = element.checked;
+		}
+	}
+
 </script>
 
 </head>
@@ -378,268 +437,288 @@
 	<table summary="" cellpadding="0" cellspacing="0" border="0"
 		class="contentPage" width="800">
 		<tr>
-			<td><html:hidden property="selectedPaths" value="" /> <html:hidden
-				property="targetAction" value="" /></td>
+			<td>
+				<html:hidden property="selectedPaths" value="" /> 
+				<html:hidden property="targetAction" value="" />
+			</td>
 		</tr>
 		<tr>
 			<td valign="top" halign="Left">
-			<table summary="" cellpadding="1" cellspacing="0" border="0"
-				width="800">
-				<tr height="9%">
-					<td class="dataPagingSection1"><custom:test name="Search Results"
-						pageNum="<%=pageNum%>" totalResults="<%=totalResults%>"
-						numResultsPerPage="<%=numResultsPerPage%>"
-						pageName="<%=pageName%>" /> <html:hidden property="isPaging"
-						value="true" /> <html:hidden property="alreadySelectedPaths"
-						value="" /></td>
-				</tr>
-				<tr>
-					<td class="formTitleSmallFont" height="40"><bean:message
-						key="advancedSearchSelectPath.pathType" /> <html:select
-						property="pathTypes" styleClass="formFieldSized10"
-						styleId="pathTypes" size="1" disabled="false">
-						<html:option key="-1" value="-1">All</html:option>
-						<html:option key="0" value="0">Alignment Based</html:option>
-						<html:option key="1" value="1">Non-Alignment</html:option>
-						<html:option key="2" value="2">Shortest</html:option>
-					</html:select> <bean:message
-						key="advancedSearchSelectPath.startsWith" /> <html:select
-						property="startsWithDataSources" styleClass="formFieldSized10"
-						styleId="startsWithDataSources" size="1" disabled="false">
-						<html:option key="0" value="-1">Any </html:option>
-						<html:options collection="<%=GCConstants.DATA_SOURCES_LIST%>"
-							labelProperty="name" property="value" />
-					</html:select> <bean:message
-						key="advancedSearchSelectPath.endsWith" /> <html:select
-						property="endsWithDataSources" styleClass="formFieldSized10"
-						styleId="endsWithDataSources" size="1" disabled="false">
-						<html:option key="0" value="-1">Any </html:option>
-						<html:options collection="<%=GCConstants.DATA_SOURCES_LIST%>"
-							labelProperty="name" property="value" />
-					</html:select> <html:button styleClass="actionButton" property=""
-						onclick="submitToFilter()">
-						<bean:message key="buttons.go" />
-					</html:button> <html:button styleClass="actionButton" property=""
-						onclick="addPath()">
-						<bean:message key="buttons.addToList" />
-					</html:button> <html:button styleClass="actionButton" property=""
-						onclick="showGraph()">
-						<bean:message key="buttons.showGraph" />
-					</html:button></td>
-				</tr>
+				<table summary="" cellpadding="1" cellspacing="0" border="0" width="800">
+					<tr height="9%">
+						<td class="dataPagingSection1" colspan="2">
+							<custom:test name="Search Results" pageNum="<%=pageNum%>" totalResults="<%=totalResults%>" numResultsPerPage="<%=numResultsPerPage%>" pageName="<%=pageName%>" /> 
+							<html:hidden property="isPaging" value="true" /> 
+							<html:hidden property="alreadySelectedPaths" value="" />
+							<html:hidden property="backFromSelectPath" value="" />
+							<html:hidden property="initialInputOutput" value="" />
+						</td>
+					</tr>
+					<tr>
+						<td class="formTitleSmallFont10Sized" rowspan="3" width="2%">		
+							<input type='checkbox' name='selectAllPaths' id='selectAllPaths'onClick='setAllPaths(this)' />	
+						</td>	
+						<td class="formTitleSmallFont" height="20" width="98%" align="center">
+							<bean:message key="advancedSearchSelectPath.path" /> 
+							<html:select property="ontFilterCode" styleClass="formFieldSized60" styleId="ontFilterCode" size="1" disabled="false">
+								<html:option key="1" value="1">All Paths</html:option>
+								<html:option key="2" value="2">Paths with at least 1 input and 1 output</html:option>
+								<html:option key="3" value="3">Paths with all inputs and subset of outputs</html:option>
+								<html:option key="4" value="4">Paths with all inputs and outputs</html:option>
+								<html:option key="5" value="5">Paths with all inputs and outputs starting with an input or output and ending with an input or output</html:option>
+								<html:option key="6" value="6">Paths with all inputs and outputs starting with an input and ending with an output</html:option>
+								<html:option key="7" value="7">Paths with all inputs and outputs only in any order</html:option>
+								<html:option key="8" value="8">Paths with inputs and outputs only traversing all inputs first and then all outputs</html:option>
+							</html:select>
+						</td>
+					</tr>
+					<tr>
+						<td class="formTitleSmallFont" height="20" align="center">
+							<bean:message key="advancedSearchSelectPath.pathType" /> 
+							<html:select property="pathTypes" styleClass="formFieldSized10" styleId="pathTypes" size="1" disabled="false">
+								<html:option key="-1" value="-1">Any</html:option>
+								<html:option key="0" value="0">Alignment Based</html:option>
+								<html:option key="1" value="1">Non-Alignment</html:option>
+							</html:select>
+							<bean:message key="advancedSearchSelectPath.startsWith" /> 
+							<html:select property="startsWithDataSources" styleClass="formFieldSized15" styleId="startsWithDataSources" size="1" disabled="false">
+								<html:option key="0" value="-1">Any </html:option>
+								<html:options collection="<%=GCConstants.DATA_SOURCES_LIST%>" labelProperty="name" property="value" />
+							</html:select>
+							<bean:message key="advancedSearchSelectPath.endsWith" /> 
+							<html:select property="endsWithDataSources" styleClass="formFieldSized15" styleId="endsWithDataSources" size="1" disabled="false">
+								<html:option key="0" value="-1">Any </html:option>
+								<html:options collection="<%=GCConstants.DATA_SOURCES_LIST%>" labelProperty="name" property="value" />
+							</html:select> 
+							
+						</td>
+					</tr>
+					<tr>
+						<td class="formTitleSmallFont" height="20" align="center">
+							<html:button styleClass="actionButton" property="" onclick="submitToFilter()">
+								<bean:message key="buttons.go" />
+							</html:button>
+							<html:button styleClass="actionButton" property="" onclick="addPath()">
+								<bean:message key="buttons.addToList" />
+							</html:button>
+							<html:button styleClass="actionButton" property="" onclick="showGraph()">
+								<bean:message key="buttons.showGraph" />
+							</html:button>
+						</td>
+					</tr>
+					<%String pathType = ""; %>
+					<logic:equal name="advancedSearchForm" property="pathTypes" value="0">
+						<%pathType = "0";%>
+					</logic:equal>
+					<logic:equal name="advancedSearchForm" property="pathTypes" value="1">
+						<%pathType = "1";%>
+					</logic:equal>
+					<tr>
+						<td colspan="3">
+							<DIV class="selectPathColumnDiv">
+								<table summary="" cellpadding="1" cellspacing="0" border="0" width="800">
+									<tbody id="validPathsDiv">
+									<%
+									String tdClassName;
+									String listClassName;
+									for (int i = 0; i < validPathsForDataSources.size(); i++)
+									{
+									%>
+										<tr class="formField800WidthMediumGray">
+										<%String checkBoxName = "" + i; %>
+											<td class="formSerialNumberField10sized">
+												<input type="checkbox" name="<%=checkBoxName%>" id="<%=checkBoxName%>" value="<%=validPathsForDataSources.get(i)%>">
+											</td>
+											<%
+											if ((i % 2) == 0)
+											{
+												tdClassName = "formField800WidthLightGray";
+												listClassName = "formFieldSized8LightGray";
+											}
+											else
+											{
+												tdClassName = "formField800WidthMediumGray";
+												listClassName = "formFieldSized8MediumGray";
+											}
+											%>
+											<td class="<%=tdClassName%>">
+												<%
+												String path;
+												StringTokenizer pathTokenized;
+	
+												path = (String) validPathsForDataSources.get(i);
+	
+												pathTokenized = new StringTokenizer(path, "-");
+	
+												String sourceDataSource = new String();
+												String targetDataSource = new String();
+												String dataSourcesLinksKey;
+												boolean firstToken = true;
+	
+												while (pathTokenized.hasMoreTokens())
+												{
+													boolean linkTypeSelected = false;
+														if (firstToken)
+														{
+															sourceDataSource = pathTokenized.nextToken();
+															firstToken = false;
+														}
+	
+														if (pathTokenized.hasMoreTokens())
+														{
+															targetDataSource = pathTokenized.nextToken();
+															dataSourcesLinksKey = sourceDataSource + "-" + targetDataSource;
+									
+															List links = (ArrayList) dataSourcesLinksMap.get(dataSourcesLinksKey);
+															request.setAttribute("links", links);
+	
+												%> 
+												<%=dataSourcesMap.get(sourceDataSource)%> 
+												<%
+												String listBoxName = i + ":" + sourceDataSource + "-" + targetDataSource;
+												%>
+												<select name="<%=listBoxName%>" id="<%=listBoxName%>" class="<%=listClassName%>">
+												<% 
+												String valueForAnyOption = "";
+												for(int k=0; k<links.size(); k++)
+												{
+													NameValueBean option = (NameValueBean) links.get(k);
+													//Alignment-Based  4,8
+													if(pathType.equals("0") & linkTypeSelected == false)
+													{
+														if(option.getValue().equals("4") || option.getValue().equals("8"))
+														{
+												%>
+													<option value="<%=option.getValue() %>" selected> <%=option.getName()%> </option>
+												<%
+															linkTypeSelected = true;
+														}
+														else
+														{
+												%>
+													<option value="<%=option.getValue() %>"> <%=option.getName()%> </option>
+												<%
+														}
+													}
+													//Non-Alignment  1,2
+													else if (pathType.equals("1") & linkTypeSelected == false)
+													{
+														if(option.getValue().equals("1") || option.getValue().equals("2"))
+														{
+												%>
+													<option value="<%=option.getValue() %>" selected> <%=option.getName()%> </option>
+												<%
+															linkTypeSelected = true;
+														}
+														else
+														{
+												%>
+													<option value="<%=option.getValue() %>"> <%=option.getName()%> </option>
+												<%
+														}
+													}
+													else
+													{
+												%>
+													<option value="<%=option.getValue() %>"> <%=option.getName()%> </option>
+												<%
+													}
+													valueForAnyOption+=option.getValue();
+												}	
+									
+												//valueForAnyOption += "*";
 
-				<%String pathType = "";
-
-			%>
-				<logic:equal name="advancedSearchForm" property="pathTypes"
-					value="0">
-					<%pathType = "0";
-
-			%>
-				</logic:equal>
-				<logic:equal name="advancedSearchForm" property="pathTypes"
-					value="1">
-					<%pathType = "1";
-
-			%>
-				</logic:equal>
-				<%System.out.println("Path Type-->" + pathType);
-
-			%>
-				<tr>
-					<td>
-					<DIV class="selectPathColumnDiv">
-					<table summary="" cellpadding="1" cellspacing="0" border="0"
-						width="800">
-						<tbody id="validPathsDiv">
-							<%String tdClassName;
-			String listClassName;
-			for (int i = 0; i < validPathsForDataSources.size(); i++)
-			{
-
-				%>
-							<tr class="formField800WidthMediumGray">
-								<%String checkBoxName = "" + i;
-
-				%>
-								<td class="formSerialNumberField10sized"><input type="checkbox"
-									name="<%=checkBoxName%>" id="<%=checkBoxName%>"
-									value="<%=validPathsForDataSources.get(i)%>"></td>
-
-								<%if ((i % 2) == 0)
-				{
-					tdClassName = "formField800WidthLightGray";
-					listClassName = "formFieldSized8LightGray";
-				}
-				else
-				{
-					tdClassName = "formField800WidthMediumGray";
-					listClassName = "formFieldSized8MediumGray";
-				}
-
-				%>
-								<td class="<%=tdClassName%>"><%String path;
-				StringTokenizer pathTokenized;
-
-				path = (String) validPathsForDataSources.get(i);
-
-				pathTokenized = new StringTokenizer(path, "-");
-
-				String sourceDataSource = new String();
-				String targetDataSource = new String();
-				String dataSourcesLinksKey;
-				boolean firstToken = true;
-
-				while (pathTokenized.hasMoreTokens())
-				{
-					boolean linkTypeSelected = false;
-					if (firstToken)
-					{
-						sourceDataSource = pathTokenized.nextToken();
-						firstToken = false;
-					}
-
-					if (pathTokenized.hasMoreTokens())
-					{
-						targetDataSource = pathTokenized.nextToken();
-						dataSourcesLinksKey = sourceDataSource + "-" + targetDataSource;
-
-						List links = (ArrayList) dataSourcesLinksMap.get(dataSourcesLinksKey);
-						request.setAttribute("links", links);
-
-						%> <%=dataSourcesMap.get(sourceDataSource)%> <%String listBoxName = i + ":" + sourceDataSource + "-" + targetDataSource;
-
-						%>
-								<select name="<%=listBoxName%>" id="<%=listBoxName%>"
-									class="<%=listClassName%>">
-									<c:forEach var="link" items="${links}">
-										<%//Alignment-Based  4,8
-						if (pathType.equals("0") & linkTypeSelected == false)
-						{
-
-							%>
-										<c:if test="${link.value == '4'}">
-											<option value="<c:out value="${link.value}"/>" selected><c:out
-												value="${link.name}" /></option>
-											<%linkTypeSelected = true;%>
-										</c:if>
-										<c:if test="${link.value == '8'}">
-											<option value="<c:out value="${link.value}"/>" selected><c:out
-												value="${link.name}" /></option>
-											<%linkTypeSelected = true;%>
-										</c:if>
-										<c:if test="${ (link.value ne '4') and (link.value ne '8') }">
-											<option value="<c:out value="${link.value}"/>"><c:out
-												value="${link.name}" /></option>
-										</c:if>
-										<%}
-						//Non-Alignment  1,2
-						else if (pathType.equals("1") & linkTypeSelected == false)
-						{
-
-							%>
-										<c:if test="${link.value == '1'}">
-											<option value="<c:out value="${link.value}"/>" selected><c:out
-												value="${link.name}" /></option>
-											<%linkTypeSelected = true;%>
-										</c:if>
-										<c:if test="${link.value == '2'}">
-											<option value="<c:out value="${link.value}"/>" selected><c:out
-												value="${link.name}" /></option>
-											<%linkTypeSelected = true;%>
-										</c:if>
-										<c:if test="${ (link.value ne '1') and (link.value ne '2') }">
-											<option value="<c:out value="${link.value}"/>"><c:out
-												value="${link.name}" /></option>
-										</c:if>
-										<%}
-						else
-						{
-
-						%>
-										<option value="<c:out value="${link.value}"/>"><c:out
-											value="${link.name}" /></option>
-										<%}%>
-									</c:forEach>
-								</select> <%}
-					sourceDataSource = targetDataSource;
-				}
-
-				%> <%=dataSourcesMap.get(sourceDataSource)%></td>
-							</tr>
-							<%}%>
-						</tbody>
-					</table>
-					</DIV>
-					</td>
-				</tr>
-				<tr>
-					<td height="10"></td>
-				</tr>
-				<tr>
-					<td>
-					<table summary="" cellpadding="3" cellspacing="0" border="1"
-						width="100%">
-						<tr>
-							<td class="formTitle" height="20" nowrap><bean:message
-								key="advancedSearchSelectPath.searchList" /></td>
-							<td align="right" class="formTitle" height="20" nowrap><html:button
-								styleClass="actionButton" property="" onclick="removePath()">
-								<bean:message key="buttons.remove" />
-							</html:button></td>
-						</tr>
-					</table>
-					<div
-						style="overflow:auto;width:100%;height:100px;border:1px solid #336699;padding-left:5px">
-					<table>
-						<tbody id="pathDiv">
-							<%if (alreadySelectedPaths != null)
-			{
-
-				Collection keySet = alreadySelectedPaths.keySet();
-
-				List keys = new ArrayList(keySet);
-
-				String alreadySelectedPathName = "";
-
-				String alreadySelectedPathValue = "";
-
-				for (int i = 0; i < alreadySelectedPaths.size(); i++)
-				{
-					alreadySelectedPathName = (String) keys.get(i);
-
-					alreadySelectedPathValue = (String) alreadySelectedPaths
-							.get(alreadySelectedPathName);
-					System.out.println("alreadySelectedPathValue: "+alreadySelectedPathValue);
-
-					%>
-							<tr id=<%=alreadySelectedPathName%>>
-								<td class="blankFormField"><input type="checkbox"
-									id="<%=alreadySelectedPathValue%>"
-									name="<%=alreadySelectedPathName %>"
-									value="<%=alreadySelectedPathValue%>"> <%=alreadySelectedPathName%>
-								</td>
-							</tr>
-							<%}
-			}
-
-		%>
-						</tbody>
-					</table>
-					</div>
-					</td>
-				</tr>
-				<tr>
-					<td align="right"><html:button styleClass="actionButton"
-						property=""
-						onclick="submitToSearch('AdvancedSearch.do?targetAction=search&pageOf=advancedSearch&isPaging=false')">
-						<bean:message key="buttons.search" />
-					</html:button> <html:button styleClass="actionButton" property=""
-						onclick="submitForm('AdvancedSearch.do?targetAction=nothing&pageOf=advancedSearch&isPaging=false')">
-						<bean:message key="buttons.backToQuery" />
-					</html:button></td>
-				</tr>
-			</table>
+												if(links.size()>1)
+												{
+												%>
+													<option value="<%=valueForAnyOption%>"> ANY </option>
+												<%
+												}
+												%>
+												</select> 
+												<%
+												}
+												sourceDataSource = targetDataSource;
+											}
+											%> 
+											<%=dataSourcesMap.get(sourceDataSource)%>
+											</td>
+										</tr>
+										<%
+										}
+										%>
+									</tbody>
+								</table>
+							</DIV>
+						</td>
+					</tr>
+					<tr>
+						<td height="10" colspan="3"></td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							<table summary="" cellpadding="3" cellspacing="0" border="1" width="100%">
+								<tr>
+									<td class="formTitleSmallFont10Sized">		
+										<input type='checkbox' name='removeAllSelectedPaths' id='removeAllSelectedPaths'onClick='removeAllPaths(this)' />	
+									</td>	
+									<td class="formTitle" height="20" nowrap>
+										<bean:message key="advancedSearchSelectPath.searchList" />
+									</td>
+									<td align="right" class="formTitle" height="20" nowrap>
+										<html:button styleClass="actionButton" property="" onclick="removePath()">
+											<bean:message key="buttons.remove" />
+										</html:button>
+									</td>
+								</tr>
+							</table>
+							<div style="overflow:auto;width:100%;height:100px;border:1px solid #336699;padding-left:5px">
+								<table>
+									<tbody id="pathDiv">
+										<%
+										if (alreadySelectedPaths != null)
+										{
+	
+											Collection keySet = alreadySelectedPaths.keySet();
+					
+											List keys = new ArrayList(keySet);
+							
+											String alreadySelectedPathName = "";
+					
+											String alreadySelectedPathValue = "";
+					
+											for (int i = 0; i < alreadySelectedPaths.size(); i++)
+											{
+												alreadySelectedPathName = (String) keys.get(i);
+					
+												alreadySelectedPathValue = (String) alreadySelectedPaths.get(alreadySelectedPathName);
+										%>
+										<tr id=<%=alreadySelectedPathName%>>
+											<td class="blankFormField">
+												<input type="checkbox" id="<%=alreadySelectedPathValue%>" name="<%=alreadySelectedPathName %>" value="<%=alreadySelectedPathValue%>">
+												<%=alreadySelectedPathName%>
+											</td>
+										</tr>
+										<%
+											}
+										}
+										%>
+									</tbody>
+								</table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td align="right" colspan="3">
+							<html:button styleClass="actionButton" property="" onclick="submitToSearch('AdvancedSearch.do?targetAction=search&pageOf=advancedSearch&isPaging=false')">
+								<bean:message key="buttons.search" />
+							</html:button>
+							<html:button styleClass="actionButton" property="" onclick="submitToAdvancedSearchPage('AdvancedSearch.do?targetAction=nothing&pageOf=advancedSearch&isPaging=false')">
+								<bean:message key="buttons.backToQuery" />
+							</html:button>
+						</td>
+					</tr>
+				</table>
 			</td>
 		</tr>
 	</table>

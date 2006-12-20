@@ -1,8 +1,6 @@
 
 package edu.wustl.geneconnect.domain;
 
-import gov.nih.nci.system.applicationservice.ApplicationService;
-import gov.nih.nci.system.applicationservice.ApplicationServiceProvider;
 
 /**
  * <!-- LICENSE_TEXT_START -->
@@ -104,34 +102,34 @@ public class Gene implements java.io.Serializable
 
 	public java.util.Collection getGenomicIdentifierSetCollection()
 	{
-		try
-		{
-			if (genomicIdentifierSetCollection.size() == 0)
-			{
-			}
-		}
-		catch (Exception e)
-		{
-			ApplicationService applicationService = ApplicationServiceProvider
-					.getApplicationService();
-			try
-			{
-
-				edu.wustl.geneconnect.domain.Gene thisIdSet = new edu.wustl.geneconnect.domain.Gene();
-				thisIdSet.setId(this.getId());
-				java.util.Collection resultList = applicationService.search(
-						"edu.wustl.geneconnect.domain.GenomicIdentifierSet", thisIdSet);
-				genomicIdentifierSetCollection = resultList;
-				return resultList;
-
-			}
-			catch (Exception ex)
-			{
-				System.out
-						.println("Gene:getGenomicIdentifierSetCollection throws exception ... ...");
-				ex.printStackTrace();
-			}
-		}
+//		try
+//		{
+//			if (genomicIdentifierSetCollection.size() == 0)
+//			{
+//			}
+//		}
+//		catch (Exception e)
+//		{
+//			ApplicationService applicationService = ApplicationServiceProvider
+//					.getApplicationService();
+//			try
+//			{
+//
+//				edu.wustl.geneconnect.domain.Gene thisIdSet = new edu.wustl.geneconnect.domain.Gene();
+//				thisIdSet.setId(this.getId());
+//				java.util.Collection resultList = applicationService.search(
+//						"edu.wustl.geneconnect.domain.GenomicIdentifierSet", thisIdSet);
+//				genomicIdentifierSetCollection = resultList;
+//				return resultList;
+//
+//			}
+//			catch (Exception ex)
+//			{
+//				System.out
+//						.println("Gene:getGenomicIdentifierSetCollection throws exception ... ...");
+//				ex.printStackTrace();
+//			}
+//		}
 		return genomicIdentifierSetCollection;
 	}
 
@@ -145,33 +143,33 @@ public class Gene implements java.io.Serializable
 
 	public java.util.Collection getMessengerRNACollection()
 	{
-		try
-		{
-			if (messengerRNACollection.size() == 0)
-			{
-			}
-		}
-		catch (Exception e)
-		{
-			ApplicationService applicationService = ApplicationServiceProvider
-					.getApplicationService();
-			try
-			{
-
-				edu.wustl.geneconnect.domain.Gene thisIdSet = new edu.wustl.geneconnect.domain.Gene();
-				thisIdSet.setId(this.getId());
-				java.util.Collection resultList = applicationService.search(
-						"edu.wustl.geneconnect.domain.MessengerRNA", thisIdSet);
-				messengerRNACollection = resultList;
-				return resultList;
-
-			}
-			catch (Exception ex)
-			{
-				System.out.println("Gene:getMessengerRNACollection throws exception ... ...");
-				ex.printStackTrace();
-			}
-		}
+//		try
+//		{
+//			if (messengerRNACollection.size() == 0)
+//			{
+//			}
+//		}
+//		catch (Exception e)
+//		{
+//			ApplicationService applicationService = ApplicationServiceProvider
+//					.getApplicationService();
+//			try
+//			{
+//
+//				edu.wustl.geneconnect.domain.Gene thisIdSet = new edu.wustl.geneconnect.domain.Gene();
+//				thisIdSet.setId(this.getId());
+//				java.util.Collection resultList = applicationService.search(
+//						"edu.wustl.geneconnect.domain.MessengerRNA", thisIdSet);
+//				messengerRNACollection = resultList;
+//				return resultList;
+//
+//			}
+//			catch (Exception ex)
+//			{
+//				System.out.println("Gene:getMessengerRNACollection throws exception ... ...");
+//				ex.printStackTrace();
+//			}
+//		}
 		return messengerRNACollection;
 	}
 
@@ -184,33 +182,33 @@ public class Gene implements java.io.Serializable
 
 	public java.util.Collection getProteinCollection()
 	{
-		try
-		{
-			if (proteinCollection.size() == 0)
-			{
-			}
-		}
-		catch (Exception e)
-		{
-			ApplicationService applicationService = ApplicationServiceProvider
-					.getApplicationService();
-			try
-			{
-
-				edu.wustl.geneconnect.domain.Gene thisIdSet = new edu.wustl.geneconnect.domain.Gene();
-				thisIdSet.setId(this.getId());
-				java.util.Collection resultList = applicationService.search(
-						"edu.wustl.geneconnect.domain.Protein", thisIdSet);
-				proteinCollection = resultList;
-				return resultList;
-
-			}
-			catch (Exception ex)
-			{
-				System.out.println("Gene:getProteinCollection throws exception ... ...");
-				ex.printStackTrace();
-			}
-		}
+//		try
+//		{
+//			if (proteinCollection.size() == 0)
+//			{
+//			}
+//		}
+//		catch (Exception e)
+//		{
+//			ApplicationService applicationService = ApplicationServiceProvider
+//					.getApplicationService();
+//			try
+//			{
+//
+//				edu.wustl.geneconnect.domain.Gene thisIdSet = new edu.wustl.geneconnect.domain.Gene();
+//				thisIdSet.setId(this.getId());
+//				java.util.Collection resultList = applicationService.search(
+//						"edu.wustl.geneconnect.domain.Protein", thisIdSet);
+//				proteinCollection = resultList;
+//				return resultList;
+//
+//			}
+//			catch (Exception ex)
+//			{
+//				System.out.println("Gene:getProteinCollection throws exception ... ...");
+//				ex.printStackTrace();
+//			}
+//		}
 		return proteinCollection;
 	}
 

@@ -7,7 +7,6 @@
 package edu.wustl.geneconnect.action;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.logging.Log;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -91,7 +89,7 @@ public class SearchResultViewAction extends Action
 			ResultDataInterface resultData = (ResultDataInterface) session
 			.getAttribute(GCConstants.RESULT_DATA_LIST);
 			
-			System.out.println("pageOf " +pageOf);
+			Logger.out.debug("pageOf " +pageOf);
 			if (resultData != null||pageOf!=null)
 			{
 				//List columnList = resultData.getColumnHeader();
@@ -131,7 +129,7 @@ public class SearchResultViewAction extends Action
 								NameValueBean bean = (NameValueBean)queryList.get(0);
 								queryKey = bean.getValue();
 								
-							//	System.out.println("Break : " +queryKey);
+							//	Logger.out.debug("Break : " +queryKey);
 							}
 						}
 						Logger.out.info("Seleted query for advance result page : "+queryKey);
@@ -171,8 +169,8 @@ public class SearchResultViewAction extends Action
 					Logger.out.info("getting data and column from resultdata of simple search");
 					columnList = (List)resultData.getValue(GCConstants.COLUMN_HEADERS);
 					dataList = (List)resultData.getValue(GCConstants.RESULT_LIST);
-					//System.out.println("SIMPLE: " +columnList);
-					//System.out.println("SIMPLE: " +dataList);
+					//Logger.out.debug("SIMPLE: " +columnList);
+					//Logger.out.debug("SIMPLE: " +dataList);
 				}	
 				
 				session.setAttribute(GCConstants.SPREADSHEET_COLUMN_LIST, columnList);
@@ -190,7 +188,7 @@ public class SearchResultViewAction extends Action
 			forwardTo=GCConstants.FORWARD_TO_SIMPLE_SEARCH_RESULT_PAGE;
 		}
 		Logger.out.info("forwardTo " +forwardTo);
-		System.out.println("forwardTo " +forwardTo);
+		Logger.out.debug("forwardTo " +forwardTo);
 		int pageNum = GCConstants.START_PAGE;
 		List paginationDataList = null, dataList = null, columnList = null;
 
@@ -201,7 +199,7 @@ public class SearchResultViewAction extends Action
 		if (request.getParameter(GCConstants.PAGE_NUMBER) != null)
 		{
 			pageNum = Integer.parseInt(request.getParameter(GCConstants.PAGE_NUMBER));
-			System.out.println("IN pageNum action " + pageNum);
+			Logger.out.debug("IN pageNum action " + pageNum);
 		}
 
 		if (dataList != null)

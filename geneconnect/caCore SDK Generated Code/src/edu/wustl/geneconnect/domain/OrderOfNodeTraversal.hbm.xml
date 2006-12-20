@@ -9,15 +9,15 @@
     </id>
 	<property name="childPathId" type="java.lang.Long" column="NEXT_PATH_ID" insert="false" update="false"/>
 	<property name="parentPathid" type="java.lang.Long" column="PREV_PATH_ID" insert="false" update="false"/>
-    <set name="genomicIdentifierSetCollection" table="SET_ONT" lazy="true">
+    <!--set name="genomicIdentifierSetCollection" table="SET_ONT" lazy="false">
       <cache usage="read-write" />
       <key column="PATH_ID" />
       <many-to-many class="edu.wustl.geneconnect.domain.GenomicIdentifierSet" column="SET_ID" />
-    </set>
+    </set-->
     <many-to-one name="sourceDataSource" class="edu.wustl.geneconnect.domain.DataSource" column="SOURCE_DS_ID" lazy="false" fetch="join" />
     <many-to-one name="linkType" class="edu.wustl.geneconnect.domain.LinkType" column="LINKTYPE_ID" lazy="false" fetch="join" />
     <many-to-one name="childOrderOfNodeTraversal" class="edu.wustl.geneconnect.domain.OrderOfNodeTraversal" column="NEXT_PATH_ID" unique="true" lazy="true" />
-    <many-to-one name="parentOrderOfNodeTraversal" class="edu.wustl.geneconnect.domain.OrderOfNodeTraversal" column="PREV_PATH_ID" unique="true" lazy="true" />
+    <many-to-one name="parentOrderOfNodeTraversal" class="edu.wustl.geneconnect.domain.OrderOfNodeTraversal" column="PREV_PATH_ID" unique="true" lazy="false" />
   </class>
 </hibernate-mapping>
 

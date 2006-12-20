@@ -294,8 +294,6 @@
 					}
 				}
 			}
-			//System.out.println("Conf colValue: "+confColumns.size());
-			//System.out.println("Set colValue: "+otherColumns.size());
 			boolean isSpecimenData = false;
 			int IDCount = 0;
 			
@@ -316,7 +314,6 @@
 			{
 				
 				String colValue = (String)setMap.get(columnList.get(i));
-				//System.out.println("colValue " +colValue);
 				row.add(colValue);
 			}
 			//List row = (List)dataList.get(xx);
@@ -332,7 +329,6 @@
 			{
 				
 				String colValue = (String)setMap.get(columnList.get(i));
-				//System.out.println("colValue " +colValue);
 				row.add(colValue);
 			}
 	  		int j;

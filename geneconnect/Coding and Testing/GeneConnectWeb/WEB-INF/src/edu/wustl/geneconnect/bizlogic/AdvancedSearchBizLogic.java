@@ -5,7 +5,6 @@
  */
 package edu.wustl.geneconnect.bizlogic;
 
-import java.awt.Stroke;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.geneconnect.GenomicIdentifierSolution;
 import edu.wustl.geneconnect.actionForm.AdvancedSearchForm;
 import edu.wustl.geneconnect.cacore.CaCoreClient;
+import edu.wustl.geneconnect.cacore.caCoreThread;
 import edu.wustl.geneconnect.domain.ConsensusIdentifierData;
 import edu.wustl.geneconnect.domain.DataSource;
 import edu.wustl.geneconnect.domain.Gene;
@@ -37,7 +37,7 @@ import edu.wustl.geneconnect.domain.OrderOfNodeTraversal;
 import edu.wustl.geneconnect.domain.Protein;
 import edu.wustl.geneconnect.metadata.MetadataManager;
 import edu.wustl.geneconnect.util.global.GCConstants;
-import edu.wustl.geneconnect.utility.Constants;
+import edu.wustl.geneconnect.util.global.Utility;
 
 /**
  * Advnaced Serach Business Logic
@@ -97,10 +97,9 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 		
 		/**
 		 * Genrate ONT objects and set in setMAP
-		 * 
 		 */
-		
 		List ontList = generateOntObjects(inputData);
+
 		if(ontList!=null&&ontList.size()>0)
 		{
 			Set setKeys = setMap.keySet();
@@ -118,19 +117,59 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 		 * Iterate over Map and call caCOre API to query
 		 */
 		Set setKeys = setMap.keySet();
+		int counter=0;
 		if(setKeys!=null)
 		{
+			List threadList = new ArrayList();
+			long t1 = System.currentTimeMillis();
 			for(Iterator setIter=setKeys.iterator();setIter.hasNext();)
 			{
 				String key = (String)setIter.next();
 				GenomicIdentifierSet querySet = (GenomicIdentifierSet)setMap.get(key);
-				System.out.println("'querySet :" +querySet);
+				Logger.out.debug("'querySet :" +querySet);
+
+//				caCoreThread thread = new caCoreThread(querySet,key);
+//				threadList.add(thread);
+//				thread.start();
+				
 				resultList = CaCoreClient.appServiceQuery(GenomicIdentifierSet.class.getName(),querySet);
 				prepareResult(resultList,key);
-				removeRedundant(resultList,key);
-				System.out.println("Result Size: " + resultList.size());
+				removeRedundant(key);
+				Logger.out.debug("Result Size: " + resultList.size());
 			}
-			 
+//			counter=0;
+//			//Logger.out.debug("threadList.size(): "+threadList.size());
+//			while(true)
+//			{
+//				for(Iterator threaditer=threadList.iterator();threaditer.hasNext();)
+//				{
+//					caCoreThread thread = (caCoreThread)threaditer.next();
+//					resultList = thread.getResult();
+//					String key = thread.getName();
+//					Exception ex = thread.getExp();
+//					if(ex!=null)
+//					{
+//						throw new BizLogicException(ex.getMessage(),ex);
+//					}
+//					//Logger.out.debug(key+"---"+resultList);
+//					if(resultList!=null)
+//					{
+//						prepareResult(resultList,key);
+//						removeRedundant(key);
+//						threaditer.remove();
+//						counter++;
+//					}
+//				}
+//				if(counter>=setKeys.size())
+//				{	
+//					Logger.out.info("Got all results:"+counter);
+//					break;
+//				}	
+//			} 
+			long t2 = System.currentTimeMillis();
+			Logger.out.debug("Time required to get resu;t: "+(t2-t1)/1000);
+			Logger.out.info("Time required to get resu;t: "+(t2-t1)/1000);
+			
 		}
 		return resultData;
 	}
@@ -243,20 +282,20 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 				List columnHeaders = new ArrayList();
 				Map tempMap = new HashMap();
 				String key = (String)it.next();
-				//System.out.println("Key " + key);
+				//Logger.out.debug("Key " + key);
 				List l = (List)inputDsMap.get(key);
-				//System.out.println("input sisise----"+l.size());
+				//Logger.out.debug("input sisise----"+l.size());
 				for(int i=0;i<l.size();i++)
 				{
 					String dsName = (String)l.get(i);
 					if(tempMap.get(dsName)==null)
 					{
 						columnHeaders.add(dsName);
-						//System.out.println("I DSNAME : " +dsName);
+						//Logger.out.debug("I DSNAME : " +dsName);
 						tempMap.put(dsName,dsName);
 					}
 				}
-				//System.out.println("outputDsList sisise----"+outputDsList.size());
+				//Logger.out.debug("outputDsList sisise----"+outputDsList.size());
 				for(int i=0;i<outputDsList.size();i++)
 				{
 					String dsName = (String)outputDsList.get(i);
@@ -265,7 +304,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 						columnHeaders.add(dsName);
 						columnHeaders.add(dsName+GCConstants.FREQUENCY_KEY_SUFFIX);
 						tempMap.put(dsName,dsName);
-						//System.out.println("O DSNAME : " +dsName);
+						//Logger.out.debug("O DSNAME : " +dsName);
 					}
 				}
 				columnHeaders.add(GCConstants.CONF_SCORE_KEY);
@@ -273,12 +312,52 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 				/**
 				 * Add column headers w.r.t to query
 				 */
-				//System.out.println("KEy--coluimn " + key+"----"+columnHeaders);
+				//Logger.out.debug("KEy--coluimn " + key+"----"+columnHeaders);
 				columnHeaderMap.put(key,columnHeaders);
 			}
 		}
 	}
+	public List threading()
+	{
+		try
+		{
+			for(int i=0;i<6;i++)
+			{
+				caCoreThread t = new caCoreThread(null,""+i);
+				t.start();
+				
+			}
+			while(true)
+			{
+				if(caCoreThread.getCounter()>=6)
+					break;
+			}
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		Logger.out.debug("return");
+		return null;
+	}
 	public static void main(String ap[])
+	{
+		
+		try
+		{
+			AdvancedSearchBizLogic b = new AdvancedSearchBizLogic();
+			b.threading();
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		Logger.out.debug("END");
+	}
+	public static void main1(String ap[])
 	{
 		try
 		{
@@ -296,7 +375,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 			
 			for(int i=0;i<l.size();i++)
 			{
-				System.out.println("New ONn \n");
+				Logger.out.debug("New ONn \n");
 				OrderOfNodeTraversal ont = (OrderOfNodeTraversal)l.get(i);
 				List innerOntList = new ArrayList();
 				OrderOfNodeTraversal tempont = ont;
@@ -318,11 +397,11 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 					
 					if(ds!=null&&ds.getName()!=null)
 					{
-						System.out.println("DS: " +ds.getName()); 
+						Logger.out.debug("DS: " +ds.getName()); 
 					}
 					if(link!=null&&link.getType()!=null)
 					{
-						System.out.println("LInk : " +link.getType());				
+						Logger.out.debug("LInk : " +link.getType());				
 					}
 					roleName = "childOrderOfNodeTraversal";
 					field = OrderOfNodeTraversal.class.getDeclaredField(roleName);
@@ -345,7 +424,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 	 * @throws BizLogicException
 	 * @throws DAOException
 	 */
-	private void removeRedundant(List resultList,String key) throws BizLogicException, DAOException
+	private void removeRedundant(String key) throws BizLogicException, DAOException
 	{
 //		List columnList = resultData.getColumnHeader();
 //		List dataList = resultData.getResult();
@@ -392,8 +471,8 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 				oldSetMap.put(GCConstants.SET_ID_KEY,combineSetID);
 				dataMap.remove(mapKey);
 				dataMap.put(mapKey,oldSetMap);
-				System.out.println("Added combine Set " + combineSetID);
-				System.out.println("Removing redundant Set " + mapKey);
+				Logger.out.debug("Added combine Set " + combineSetID);
+				Logger.out.debug("Removing redundant Set " + mapKey);
 				Logger.out.info("Removing redundant Set " + mapKey);
 				iter.remove();
 			}
@@ -417,7 +496,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 		{
 			List inputDsList = (List) inputDsMap.get(setMapkey);
 			List columnHeader = (List)columnHeaderMap.get(setMapkey);
-			//System.out.println(setMapkey+"----"+columnHeader);
+			//Logger.out.debug(setMapkey+"----"+columnHeader);
 			List result = new ArrayList();
 			int counter = 0;
 			Map frequency = new HashMap();
@@ -433,7 +512,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 
 				GenomicIdentifierSolution solution = set.getGenomicIdentifierSolution();
 				Collection coll = solution.getConsensusIdentifierDataCollection();
-				//System.out.println("Genomic Identifer\tFrequency");
+				//Logger.out.debug("Genomic Identifer\tFrequency");
 				for (Iterator iter1 = coll.iterator(); iter1.hasNext();)
 				{
 					//OrderOfNodeTraversal ont = (OrderOfNodeTraversal)iter1.next();
@@ -441,7 +520,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 					GenomicIdentifier g = freqData.getGenomicIdentifier();
 					if (g != null)
 					{
-//						System.out.println("\t" + g.getGenomicIdentifier() + "\t\t\t"
+//						Logger.out.debug("\t" + g.getGenomicIdentifier() + "\t\t\t"
 //								+ freqData.getFrequency());
 						/**
 						 * If genomicIdentifier is Null the add key as GenomicIdentifierClass + '_NULL'
@@ -487,7 +566,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 					 */
 					String className = MetadataManager.getDataSourceAttribute(
 							GCConstants.DATASOURCE_NAME, column, GCConstants.CLASS);
-					//System.out.println("className : " + className);
+					//Logger.out.debug("className : " + className);
 
 					temp.append(MetadataManager.getRoleName("GenomicIdentifierSet", className));
 
@@ -509,7 +588,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 							+ classAttribute.substring(0, 1).toUpperCase()
 							+ classAttribute.substring(1, classAttribute.length());
 
-					//System.out.println("methodForClassAttribute: " + methodForClassAttribute);
+					//Logger.out.debug("methodForClassAttribute: " + methodForClassAttribute);
 					Logger.out.info("methodForClassAttribute: " + methodForClassAttribute);
 					Class genomicClass = Class.forName("edu.wustl.geneconnect.domain." + className);
 
@@ -528,12 +607,12 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 					method = genomicClass.getDeclaredMethod(methodForClassAttribute, null);
 					Object value = method.invoke(genomicObject, null);
 
-					//System.out.println("Resutl : " + methodForClassAttribute + "------" + value);
-					//System.out.println("Freq : " + value.toString());
+					//Logger.out.debug("Resutl : " + methodForClassAttribute + "------" + value);
+					//Logger.out.debug("Freq : " + value.toString());
 					/**
 					 * Add entry in Map to strore data w.r.t column
 					 */
-					//System.out.println("value1: "+ value);
+					//Logger.out.debug("value1: "+ value);
 					String key="";
 					/**
 					 * If genoimicIdentifier is null the set key = GenomicIdentifier class + '_NULL'
@@ -541,7 +620,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 					 */
 					if (value == null || value.equals("NULL"))
 					{
-						//System.out.println("value: " + value);
+						//Logger.out.debug("value: " + value);
 						value = new String(GCConstants.NO_MATCH_FOUND);
 						StringBuffer genomicIDClass = new StringBuffer("edu.wustl.geneconnect.domain.");
 						
@@ -554,7 +633,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 					{
 						key=value.toString();
 					}
-					//System.out.println(column+"===="+value.toString());
+					//Logger.out.debug(column+"===="+value.toString());
 					setMap.put(column, value.toString());
 					Float freq = (Float) frequency.get(key);
 					String freqValue = "";
@@ -581,7 +660,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 			innerData.put(GCConstants.RESULT_LIST,result);
 			innerData.put(GCConstants.GENOMICIDENTIIER_SET_RESULT_LIST,resultList);
 			
-			System.out.println("ResultData key "+setMapkey);
+			Logger.out.debug("ResultData key "+setMapkey);
 			if(queryData==null)
 			{
 				queryData = new HashMap();
@@ -642,7 +721,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 			dataSourcesWithFrequency = new ArrayList();
 			
 			Set keySets = frequencyMap.keySet();
-			System.out.println("keySets : " +keySets);
+			Logger.out.debug("keySets : " +keySets);
 			
 			//Generating list of Output DataSource submitted by User.
 			for (Iterator setIter = keySets.iterator();setIter.hasNext();)
@@ -799,7 +878,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 					
 					//Putting DataSource Object into the map of GenomicIdentifierSet
 					giSetObjectsMap.put(className, dataSourceObject);
-					//System.out.println("Sachin L " +dataSourceName);
+					//Logger.out.debug("Sachin L " +dataSourceName);
 					
 					inputDsList.add(dataSourceName);
 					
@@ -945,14 +1024,17 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 		AdvancedSearchForm advanceSearchForm = (AdvancedSearchForm)data.get(GCConstants.FORM);
 		
 		String selectedOnt = advanceSearchForm.getSelectedPaths();
-		System.out.println("selectedOnt--" +selectedOnt);
-		// path selected is delimeted by '#' 
+		Logger.out.debug("selectedOnt--" +selectedOnt);
+		// path selected is delimeted by '$' 
 		if(selectedOnt==null||selectedOnt.length()==0)
 		{
-			System.out.println("return null selected ont");
+			Logger.out.debug("return null selected ont");
 			return null;
 		}	
-		StringTokenizer selectedOntList = new StringTokenizer(selectedOnt,"#",false);
+		
+		selectedOnt = Utility.parseAnyOption(selectedOnt);
+		
+		StringTokenizer selectedOntList = new StringTokenizer(selectedOnt,"$",false);
 		while(selectedOntList.hasMoreTokens())
 		{
 			String stringONT = (String)selectedOntList.nextToken();
@@ -1009,5 +1091,4 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 		}
 		return ontList;
 	}
-
 }
