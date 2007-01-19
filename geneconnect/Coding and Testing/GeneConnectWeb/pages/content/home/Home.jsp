@@ -23,7 +23,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td class="formSerialNumberFieldHome" width="60%">
+								<td class="formSerialNumberFieldHome" width="55%">
 									<p align="justify">The NCI caBIG<sup>TM</sup> project is creating a common, extensible informatics platform that 
 										integrates diverse data types and supports interoperable analytic tools. This 
 										platform will allow research groups to tap into the rich collection of emerging 
@@ -51,22 +51,27 @@
 										all-to-all relationships have been calculated by traversing all possible combinations 
 										of edges in the graph (See <b>Figure</b>) using every node as the starting point. For each query, 
 										composed of one or more input identifiers and a set of paths that may be traversed, 
-										the <b>confidence score</b> and <b>frequency</b> are calculated.  These are defined as:</p>
+										the <b>Path Score</b> and <b>Frequency</b> are calculated.  These are defined as:</p>
 									<p align="justify">
 										<ul>
-											<li><b>Confidence:</b>  Confidence is calculated for each set of genomic identifiers in 
-												the result set.  The confidence score is the frequency that a given set of genomic identifiers 
+											<li><b>Path Score:</b>  Path Score is calculated for each set of genomic identifiers in 
+												the result set.  The Path Score is the frequency that a given set of genomic identifiers 
 												was obtained across all traversed paths, given the query criteria composed of one or more input 
 												identifiers and a set of paths that may be traversed. </li>
 											<li><b>Frequency:</b>  Frequency is calculated for each genomic identifier in the result set.  
-												The frequency denotes how often a given genomic identifier was obtained from a given data 
+												The Frequency denotes how often a given genomic identifier was obtained from a given data 
 												source across all traversed paths, given the query criteria composed of one or more input 
 												identifiers and a set of paths that may be traversed.</li>
 										</ul>
 									</p>
 								</td>
-								<td class="formSerialNumberFieldHome" width="*">
+								<td class="formSerialNumberFieldHome" width="45%">
 									<table summary="" cellpadding="3" cellspacing="0" border="0" width="100%" height="100%">
+										<tr>
+											<td >
+						                  		<img src="images/GCGraph.gif" alt="ApplicationProperties.getValue("app.name")" border="0" />
+			            			      	</td>
+										</tr>
 										<tr>
 											<td>
 												<table summary="" cellpadding="3" cellspacing="0" border="0" width="100%">
@@ -76,7 +81,7 @@
 														</td>
 													</tr>
 													<tr>
-														<td class="formSerialNumberField" width="60%">Number of pairwise links</td>
+														<td class="formSerialNumberField" width="50%">Number of pairwise links</td>
 														<td class="formField"><%=request.getAttribute(GCConstants.NO_OF_PARIWISE_LINKS)%></td>	
 													</tr>	
 													<tr>
@@ -99,7 +104,7 @@
 														</td>
 													</tr>
 													<tr>
-														<td class="formSerialNumberField" width="60%">Ensembl</td>
+														<td class="formSerialNumberField" width="50%">Ensembl</td>
 														<td class="formField">Version 40</td>	
 													</tr>
 													<tr>
@@ -128,11 +133,6 @@
 													</tr>
 												</table>
 											</td>
-										</tr>
-										<tr height="20%">
-											<td height="200">
-						                  		<img src="images/GCGraph.gif" alt="ApplicationProperties.getValue("app.name")" border="0" />
-			            			      	</td>
 										</tr>
 									</table>
 								</td>

@@ -47,18 +47,14 @@
 <script language="JavaScript" type="text/javascript"
 	src="jss/javaScript.js"></script>
 <script src="jss/script.js"></script>
-
 <script>
 		var currentTextbox;
-		
+		var safariClipBoardData=null;
 		// Check all output data source
 		function checkAll(element)
-		{			
+		{	
+			
 			var checkbox2=element;
-			if(checkbox2.checked==true)
-			{
-				alert("Please be noted alignment based data is not available. Thus selecting all data sources may lead to empty results.");
-			}
 			var checkBox;
 			<%
 				for(int i=0;i<dataSourceList.size();i++)
@@ -108,10 +104,25 @@
 				field.value = field.value.replace(/[^\d.]+/g, ''); 
 			}
 		}
+			// paste event for safari works on CTRL+V
+		function pasteForSafari(event)
+		{
+			if(event.clipboardData!=null&&safariClipBoardData==null)
+			{
+				// prevent the browser to invoke default paste functionality
+				event.preventDefault();
+				// get clipboard data
+				safariClipBoardData = event.clipboardData.getData("Text");
+				// call paste functionality
+				pasteData();
+				safariClipBoardData=null;
+			}
+		}
 		
+		//paste functionality
 		function pasteData()
 		{
-		//	alert(currentTextbox.name);
+			// if user has not foccused on any of text box start pasting from the top-left text box
 			if(currentTextbox==null)
 			{
 				var tbodytemp = document.getElementById("Inputspreadsheet");
@@ -132,11 +143,12 @@
 				alert("Select texbox from where to start the paste");
 				return;
 			}
-			
+			// get the data source name from current selected textbox name
 			var text = currentTextbox.name ;
 			var ind = text.indexOf("_",0)
 			var startdsName= text.substr(ind+1,text.length-2);
 			//alert(startdsName);
+			// call function to get clipboard data and retun a array
 			var rows = splitGenomicIds();
 			var pastedCell=new Array();
 			var pastedCellCount=0;
@@ -144,7 +156,6 @@
 			var lastPastedTextbox;
 			if(rows.length>0)
 			{
-				//alert("rows.length "+rows.length);
 				var isTopaste=false;
 				var j=0;
 				var prevj=0;
@@ -152,14 +163,12 @@
 				var innerRowLen=0;
 				for (var i=0; i<rows.length; )
 				{
-					//alert("i " +i);
 					var innerRow=rows[i];	
-					//alert("innerRow.length "+innerRow.length);	
 					innerRowCount=0;
 					innerRowLen=innerRow.length;
 					var tbody = document.getElementById("Inputspreadsheet");
 					var t = tbody.getElementsByTagName("input");
-					
+					// loop over the spearsheet and start form the text box whose data source name is same as first selected
 					var isTopaste=false;
 					if(i==0)
 					{
@@ -180,8 +189,8 @@
 					}
 					for(j=prevj;j<t.length;j++)
 					{
-						//if(t[i].name==("inputDataSourcesValue(Input:2_Ensembl Transcript)"||isTopaste)
-						//if(currentTextbox!=null&&t[j].name==currentTextbox.name)
+						// if the tag is chek box mean new row started and there is more data to paste so break
+						// and strt with new row
 						if(t[j].type=="checkbox"&&innerRowCount>0)
 						{
 							innerRowCount=innerRowLen;
@@ -197,7 +206,7 @@
 								ispasted=true;
 							}
 						}
-						
+						// chek if curretn data source name is same as starting one
 						if(t[j].name.indexOf(startdsName,0)>0)
 						{
 							//alert("isTopaste " +t[j].name)
@@ -209,22 +218,18 @@
 						
 						pastedCell[pastedCellCount]=t[j].name;
 						pastedCellCount++;
-						//alert("isTo " +t[j].name)
-						
+
+						// set the value of textbox
 						if(t[j].type!="checkbox"&&isTopaste)
 						{
-							//alert("pasete" +i);
-							//alert("isTopaste1 " +t[j].name)
 							t[j].value= innerRow[innerRowCount];
 							lastPastedTextbox=t[j];
 							//isTopaste=true;
 							
 							innerRowCount++;
-							//alert(innerRowCount+"--"+innerRow.length);
+							// if the row data is competed then break
 							if(innerRowCount==innerRow.length)
 							{
-								//alert(innerRowCount+"--"+innerRow.length);
-								//alert("pastedRowsCount--"+pastedRowsCount);
 								pastedRowsCount++;
 								break;
 							}
@@ -236,27 +241,32 @@
 					//alert("i  "+i+"==="+rows.length);
 					if(i==rows.length)
 					{	
-						//alert("break");
-						break;
+					//	alert("break");
+					//	break;
 					}
 					else if(i<rows.length)
 					{
-					
+						// chek if from current row there is more rows availble
+						// if not then add one more row
 						if(hasNextRow(lastPastedTextbox)==false)
 						{
+							//alert("insert");
 							insertInputRow('Inputspreadsheet');
 						}
 					}
 				}	
 			}	
+
 		}
 		//method to check is there any more row from cuurently seleted row
 		function hasNextRow(lastPastedTextbox)
 		{
+			// get rownumber in temp of cuurent textbox
 			var text = lastPastedTextbox.name;
 			var ind = text.indexOf("_",0);
 			var colind = text.indexOf(":",0);
 			var temp = text.substr(colind+1,((ind-colind)-1));
+			//alert(temp);
 			var tbody = document.getElementById("Inputspreadsheet");
 			var t = tbody.getElementsByTagName("input");
 			var rowAvail = new Array();
@@ -270,33 +280,35 @@
 					//alert(t[j].name);
 					ind = text.indexOf("_",0);
 					var rownum = text.substr(ind+1,text.length); 
-					
-					if(temp.indexOf(rownum,0)>=0)
-					{
-						//alert("rownum"+temp+"--"+rownum);
-						rowAvailCount++;
-						//alert("rowAvailCount " +rowAvailCount);
-					}
+					//alert("rownum: "+rownum);
 					if(rowAvailCount>0)
 					{	
 						rowAvailCount=rowAvailCount+1;
 						//alert("v1 "+rowAvailCount);
+					}
+					// comape teh row number of current tag with textbox row number
+					// if the tag row number is greter means more rows available
+					if(temp.length==rownum.length &&temp.indexOf(rownum,0)>=0)
+					{
+						//alert("rownum11"+temp+"--"+rownum);
+						rowAvailCount++;
+						//alert("rowAvailCount " +rowAvailCount);
 					}
 				}
 				
 			}
 			rowAvailCount--;
 			//alert("v "+rowAvailCount);
-			if(rowAvailCount>1)
+			// retun true row available
+			if(rowAvailCount>=1)
 			{
+				
 				//alert("true");
 				return true;
 			}
+			//alert("v "+rowAvailCount);
 			//alert("false");
 			return false;
-			//alert(temp);
-			
-
 		} 
 		//get the data from clipboard and  split in a form of matrix.
 		function splitGenomicIds()
@@ -306,8 +318,12 @@
 			var rowCount=0;
 			var rows ;
 			// get data from clipboard
-		
-			if(window.clipboardData)
+			if(safariClipBoardData!=null)
+			{
+				copiedData=safariClipBoardData;
+				//alert("copiedData: "+copiedData);
+			}
+			else if(window.clipboardData)
 			{
 		
 				copiedData = clipboardData.getData('Text');
@@ -517,53 +533,33 @@
 <!-- Css and Scripts -->
 
 <!-- Displays Title -->
-<table summary="" cellpadding="0" cellspacing="0" border="0"
-	width="100%" height="6%">
-
-	<tr height="5%">
-		<td class="formTitle" width="100%"><bean:message
-			key="advancedSearch.title" /></td>
+<table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" height="30">
+	<tr >
+		<td class="formTitle" width="100%">
+			<bean:message key="advancedSearch.title" />
+		</td>
 	</tr>
-
 </table>
 <!-- Displays Title -->
 <!-- Content of page -->
 <!-- action="AdvancedSearch.do?targetAction=search"-->
 <html:form action="AdvancedSearchResults.do?targetAction=search">
-	<table summary="" cellpadding="0" cellspacing="0" border="0"
-		class="contentPage" width="800">
+	<table summary="" cellpadding="0" cellspacing="0" border="0" class="contentPage" width="100%">
 		<tr>
 			<td valign="top" halign="Left">
-			<table summary="" cellpadding="1" cellspacing="0" border="0" width="800">
+			<table summary="" cellpadding="1" cellspacing="0" border="0" width="100%">
 				<tr>
 					<td>
-<!-- Paste Button-->					
-					<table summary="" cellpadding="0" cellspacing="0" border="1">
-						<tr>
-							<td class="formTitle" height="20">
-								<bean:message key="simpleSearch.input" />
-							</td>
-							<td class="formTitle" height="20" align="right">
-								<html:button property="" styleClass="actionButton" onclick="pasteData()">
-									<bean:message key="buttons.pasteMultipleIds" />
-								</html:button>
-							</td>
-						</tr>
-						<tr>
-<!-- Spread sheet view-->						
-							<td colspan="2" class="formField">
-								<spreadsheet:sheetview className="Input" attributes="<%=attributesMap%>" collection="inputDataSources" inputs="<%=inputSources%>" />
-							</td>
-						</tr>
-						<tr>
-<!--Confidence score textbo x-->						
-							<td class="formLeftTopSubTableTitle" colspan="2">
-								<bean:message key="advancedSearch.confidenceScore" /> 
-								<html:text styleId="confidenceScore" property="confidenceScore" styleClass="formFieldSized10" onkeypress="intOnly(this);" 
-											onchange="intOnly(this);" onkeyup="intOnly(this);" />
-							</td>
-						</tr>
-					</table>
+	<!-- Spread sheet view-->
+						<spreadsheet:sheetview className="Input" attributes="<%=attributesMap%>" collection="inputDataSources" inputs="<%=inputSources%>" />
+					</td>
+				</tr>
+				<tr>
+	<!--Confidence score textbox-->						
+					<td class="formLeftTopSubTableTitle" style="width:100%">
+						<bean:message key="advancedSearch.pathScore" />
+						<html:text styleId="confidenceScore" property="confidenceScore" styleClass="formFieldSized10" onkeypress="intOnly(this);" 
+									onchange="intOnly(this);" onkeyup="intOnly(this);" />
 					</td>
 				</tr>
 				<tr>
@@ -571,8 +567,7 @@
 				</tr>
 				<tr>
 					<td valign="top" width="250">
-					<table summary="" cellpadding="3" cellspacing="0" border="1"
-						width="400">
+					<table summary="" cellpadding="3" cellspacing="0" border="1" width="400">
 						<tr>
 <!--Output data sources-->						
 							<td class="formTitle" height="20" colspan="3" nowrap>
@@ -581,7 +576,7 @@
 						</tr>
 						<tr>
 							<td class="formLeftTopSubTableTitle" width="10%">
-								<input type='checkbox' name='checkAll2' id='checkAll2'onClick='checkAll(this)' />
+								<input type='checkbox' name='checkAll2' id='checkAll2'onClick='checkAll(this);checkInputOutput()'/>
 							</td>
 							<td class="formRightTopSubTableTitle" width="40%">
 								<span class="formField"> 
@@ -595,9 +590,8 @@
 							</td>
 						</tr>
 					</table>
-					<DIV class="spreadsheet200">
-					<table summary="" cellpadding="3" cellspacing="0" border="1"
-						width="400">
+
+					<table summary="" cellpadding="3" cellspacing="0" border="1" width="400">
 						<%for (int i = 0; i < dataSourceList.size(); i++)
 			{
 				
@@ -645,7 +639,6 @@
 			}
 		%>
 					</table>
-					</DIV>
 					</td>
 				</tr>
 			</table>
@@ -688,6 +681,9 @@
 					<%
 					}
 					%>
+				</tr>
+				<tr>
+					<td></td>
 				</tr>
 			</table>
 			<!-- action buttons end --></td>

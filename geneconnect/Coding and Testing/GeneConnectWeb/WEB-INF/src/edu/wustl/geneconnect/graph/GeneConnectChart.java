@@ -13,6 +13,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Paint;
 import java.awt.Shape;
@@ -26,9 +27,14 @@ import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
@@ -37,9 +43,11 @@ import javax.swing.JApplet;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -119,6 +127,8 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     
     private Map highlightPathsMap = null;
     
+    private Map highlightPathsSortedKeys = null;
+    
     private Vertex[] v; 
     
     private boolean isHighlight;
@@ -133,6 +143,7 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     
     protected JButton initialGraphButton;
     protected JCheckBox grayedPathsCheckBox;
+    protected JLabel pathCountMessage;
     
     protected Color pathListBackgroundColor = new Color(-4665371);
     
@@ -213,7 +224,7 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 	    
 	    vv.updateUI();
 	    
-	    setSize(500, 550);
+	    //setSize(500, 500);
 	    
 	    setLocation(0,0);
 	    
@@ -250,18 +261,32 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 		c.fill = GridBagConstraints.HORIZONTAL;
         
 		//adding different components of the graph into container of the graph
+		URL url = this.getClass().getResource("/GraphHeader.JPG"); 
+		ImagePanel headerPanel = new ImagePanel(new ImageIcon(url).getImage());
 		
-		
-        c.ipadx = 500;
-		c.ipady = 450;
-//		c.anchor = GridBagConstraints.FIRST_LINE_START; 
+		c.ipadx = 0;
+		c.ipady = 10;
+		c.anchor = GridBagConstraints.FIRST_LINE_START; 
 //		c.weightx = 0.0;
 		c.gridwidth = 1;
 		c.gridx = 0;
 		c.gridy = 0;
 		c.insets = new Insets(0,0,0,0);
+		content.add(headerPanel, c);
+		
+		
+//        c.ipadx = 500;
+		c.ipady = 475;
+//		c.weightx = 0.0;
+		c.weighty = 0.0;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.gridx = 0;
+		c.gridy = 1;
+		c.insets = new Insets(0,0,0,0);
 		content.add(panel, c);
 
+		
 		if(highlightPathList != null)
 		{
 			highlightList = new JList(highlightPathList);
@@ -276,27 +301,33 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 		highlightList.addMouseListener(this);
 		
 		JScrollPane pathScrollPane = new JScrollPane(highlightList, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		pathScrollPane.setSize(450, 20);
+//		pathScrollPane.setSize(450, 20);
 		
-		c.ipadx = 0;
+		c.ipadx = 10;
 		c.ipady = 65;
 		c.gridx = 0;
-		c.gridy = 1;
-		c.gridwidth = 1;
+		c.gridy = 2;
+		c.gridwidth = 3;
 		c.insets = new Insets(0,0,0,0);
 		content.add(pathScrollPane, c);
-		
+
 		
 		JPanel centerPanel = new JPanel();
 		
+		centerPanel.setBackground(Color.white);
+		
 		centerPanel.setSize(300, 20);
+		
+		
 		
 		final ScalingControl scaler = new CrossoverScalingControl();
 		
-		URL url = this.getClass().getResource("/ZoomOut.gif"); 
+		url = this.getClass().getResource("/ZoomOut.gif"); 
 		
 		Icon zoomOutIcon = new ImageIcon(url);
 		JButton plus = new JButton(zoomOutIcon);
+		plus.setBackground(Color.white);
+		plus.setBorder(new EmptyBorder(0,0,0,0));
 		
         plus.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -310,6 +341,8 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
         Icon zoomInIcon = new ImageIcon(url);
         
         JButton minus = new JButton(zoomInIcon);
+        minus.setBackground(Color.white);
+        minus.setBorder(new EmptyBorder(0,0,0,0));
         minus.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 scaler.scale(vv, 0.9f, vv.getCenter());
@@ -323,21 +356,50 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
         
         
 		grayedPathsCheckBox = new JCheckBox("Show Paths in Gray", true);
+		grayedPathsCheckBox.setBackground(Color.white);
 		grayedPathsCheckBox.addActionListener(this);
 		centerPanel.add(grayedPathsCheckBox);
 		
 		initialGraphButton=new JButton("Draw initial graph");
+		initialGraphButton.setBackground(Color.white);
 		initialGraphButton.addActionListener(this);
 		centerPanel.add(initialGraphButton);
 		
-		c.ipadx = 0;
-		c.ipady = 10;
+		c.ipadx = 10;
+		c.ipady = 20;
 		c.gridx = 0;
-		c.gridy = 2;
+		c.gridy = 3;
 		c.gridwidth = 1;
 		c.insets = new Insets(0,0,0,0);
 		content.add(centerPanel, c);
 		
+		JPanel messagePanel = new JPanel();
+		
+		messagePanel.setBackground(Color.white);
+		
+		messagePanel.setSize(300, 20);
+		
+		pathCountMessage = new JLabel("{#} = No. of times ONT traversed to obtain the result");
+		pathCountMessage.setBackground(Color.white);
+		messagePanel.add(pathCountMessage);
+		
+		c.ipadx = 10;
+		c.ipady = 20;
+		c.gridx = 0;
+		c.gridy = 4;
+		c.gridwidth = 1;
+		c.insets = new Insets(0,0,0,0);
+		content.add(messagePanel, c);
+		
+		content.setSize(600, 1000);
+		
+    }
+    
+    public void setSize(int width, int height)
+    {
+    	System.out.println("setSize method of Applet ******************************");
+       super.setSize(width,height);
+       validate();
     }
     
     /**
@@ -413,6 +475,8 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	
     	highlightPathsMap = new HashMap();
     	
+    	highlightPathsSortedKeys = new TreeMap();
+    	
     	if(this.getParameter("noOfHighlightPaths") != null)
     	{
 	    	int noOfHighlightPaths = Integer.parseInt(this.getParameter("noOfHighlightPaths"));
@@ -421,6 +485,7 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 	    	
 	    	String highlightNodeList;
 	    	String highlightLinkTypes;
+	    	String highlightPathCount;
 	    	
 	    	for(int i=0; i<noOfHighlightPaths; i++)
 	    	{
@@ -430,6 +495,8 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 	    		highlightNodeList = this.getParameter("highlightNodeList_"+(i+1));
 	    		
 	    		highlightLinkTypes = this.getParameter("highlightLinkTypes_"+(i+1));
+	    		
+	    		highlightPathCount = this.getParameter("highlightPathCount_"+ (i+1));
 	    		
 //	    		Logger.out.debug("Highlight Path-->"+highlightNodeList+"  "+highlightLinkTypes);
 	    		
@@ -451,7 +518,10 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 //	    			Logger.out.debug("NodeName to Highlight-->"+vertexStringerImpl.getLabel(v));
 	    		}
 	    		
-	    		highlightPathList[i]=highlightPathString.substring(0, highlightPathString.length()-5);
+	    		if(highlightPathCount.equals("0"))
+	    			highlightPathList[i]=highlightPathString.substring(0, highlightPathString.length()-5);
+	    		else
+	    			highlightPathList[i]=highlightPathString.substring(0, highlightPathString.length()-5) + " {"+highlightPathCount+"}";
 	    		
 //	    		Logger.out.debug("Size of highlightVertexList==>"+highlightVertexList.size());
 	    		
@@ -468,6 +538,25 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 	    		}
 	    		highlightPathsMap.put(new Integer(i),highlightLinksList);
 	    	}
+	    	
+	    	//will have to implement logic here only.,.,.,.,.,.,..,.,.,..,.,.,..,.,..,.,.,.,..,.,.,.,.,..,.,.,.,.,.,..,
+	    	for(int i=0; i<highlightPathList.length; i++)
+			{
+	    		highlightPathsSortedKeys.put(highlightPathList[i], new Integer(i));
+			}
+	    	
+	    	Object [] sortedKeysObjs = highlightPathsSortedKeys.keySet().toArray();
+	    	
+	    	String[] sortedKeys = new String[sortedKeysObjs.length];
+	    	
+	    	for(int i=0; i<sortedKeysObjs.length; i++)
+			{
+				sortedKeys[i] = (String)sortedKeysObjs[i];
+			}
+	    	
+	    	highlightPathList = sortedKeys;
+	    	
+	    	
     	}
     }
     
@@ -482,7 +571,11 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	
     	intialGraph = false;
     	
-    	highlightPathNo = highlightList.getSelectedIndex();
+    	String selectedValue = (String)highlightList.getSelectedValue();
+    	
+//    	highlightPathNo = highlightList.getSelectedIndex();
+    	
+    	highlightPathNo = ((Integer)highlightPathsSortedKeys.get(selectedValue)).intValue();
     	
     	if(highlightList.getSelectionBackground() == Color.white)
     	{
@@ -569,7 +662,11 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	
     	intialGraph = false;
     	
-    	highlightPathNo = highlightList.getSelectedIndex();
+    	String selectedValue = (String)highlightList.getSelectedValue();
+    	
+    	//highlightPathNo = highlightList.getSelectedIndex();
+    	
+    	highlightPathNo = ((Integer)highlightPathsSortedKeys.get(selectedValue)).intValue();
     	
     	if(highlightList.getSelectionBackground() == Color.white)
     	{
@@ -801,8 +898,8 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     		
 //    		Logger.out.debug("Inside InitializeLocation==>"+cv.getDataSource().getName()+ "  "+cv.getDataSource().getRow()+ " "+cv.getDataSource().getCol());
     	   	
-    	   	int xPosition = cv.getDataSource().getCol() * rowSize;
-    	   	int yPosition = cv.getDataSource().getRow() * colSize;
+    	   	double xPosition = (cv.getDataSource().getCol() - 0.5 )* rowSize;
+    	   	double yPosition = (cv.getDataSource().getRow() - 0.5 )* colSize;
     	   	
 //    	   	Logger.out.debug("Drawing at ==>"+xPosition+" - "+yPosition);
     	   	
@@ -1019,10 +1116,36 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
         }
 	}
 	
+    private class ImagePanel extends JPanel
+	{
+    	private Image img;
+
+    	  public ImagePanel(String img) 
+    	  {
+    	    this(new ImageIcon(img).getImage());
+    	  }
+
+    	  public ImagePanel(Image img) 
+    	  {
+    	    this.img = img;
+    	    Dimension size = new Dimension(img.getWidth(null), img.getHeight(null));
+    	    setPreferredSize(size);
+    	    setMinimumSize(size);
+    	    setMaximumSize(size);
+    	    setSize(size);
+    	    setLayout(null);
+    	  }
+
+    	  public void paintComponent(Graphics g) 
+    	  {
+    	    g.drawImage(img, 0, 0, null);
+    	  }
+	}
+    
     public static void main(String[] args)
     {
     	JFrame frame = new JFrame();
-    	frame.setSize(new Dimension(500, 500));
+    	frame.setSize(new Dimension(500, 1000));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container content = frame.getContentPane();
         

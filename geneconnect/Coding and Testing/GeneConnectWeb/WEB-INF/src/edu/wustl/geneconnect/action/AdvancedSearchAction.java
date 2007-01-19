@@ -7,7 +7,6 @@
 package edu.wustl.geneconnect.action;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +40,7 @@ import edu.wustl.geneconnect.bizlogic.InputDataInterface;
 import edu.wustl.geneconnect.bizlogic.ResultDataInterface;
 import edu.wustl.geneconnect.metadata.MetadataManager;
 import edu.wustl.geneconnect.util.global.GCConstants;
+import edu.wustl.geneconnect.util.global.Utility;
 
 /**
  * Action class for advanced search operations. This class will work as redirector and will 
@@ -86,13 +86,12 @@ public class AdvancedSearchAction extends Action
 		
 		//setting formbean instance into request object  
 		request.setAttribute("advancedSearchForm", advancedSearchActionForm);
-		
 		//logging attributes if this request is called by clicking "Back To Query" from AdvancedSearchSelectPath page
 		Logger.out.debug("@@@@@@@@@@@@@@@@@@@@@@@ Back from SelectPath-->"+advancedSearchActionForm.isBackFromSelectPath());
 		if(advancedSearchActionForm.isBackFromSelectPath())
 		{
 			Logger.out.debug("InputDataSources size-->"+advancedSearchActionForm.getInputDataSources().size());
-			Logger.out.debug("OutputDataSources size-->"+advancedSearchActionForm.getOutputDataSources().size());
+			Logger.out.debug("OutputDataSources size-->"+advancedSearchActionForm.getInputDataSources().size());
 			Logger.out.debug("AlreadySelectedPaths-->"+advancedSearchActionForm.getSelectedPaths());
 			Logger.out.debug("Initial IO-->"+advancedSearchActionForm.getInitialInputOutput());
 		}
@@ -292,7 +291,12 @@ public class AdvancedSearchAction extends Action
 		List queryKeyList = new ArrayList();
 		Set keySet = allresultMap.keySet();
 		List keyList = new ArrayList(keySet);
-		Collections.sort(keyList);
+		//Collections.sort(keyList);
+		Utility.sortInputQueryKeys(keyList);
+		NameValueBean  allbean = new NameValueBean();
+		allbean.setName(GCConstants.QUERY_KEY_ALL);
+		allbean.setValue(GCConstants.QUERY_KEY_ALL);
+		queryKeyList.add(allbean);
 		for(Iterator iter=keyList.iterator();iter.hasNext();)
 		{
 			String k = (String)iter.next();
@@ -318,7 +322,42 @@ public class AdvancedSearchAction extends Action
 		return (mapping.findForward(GCConstants.FORWARD_TO_RESULT_PAGE));
 	}
 	
-	//this method populates map of Output Datasources selected by user on AdvancedSearch page
+	public static void main(String a[])
+	{
+		List l = new ArrayList();
+		for(int i=0;i<=21;i++)
+		{
+			l.add("Input:"+i+"_");
+		}
+		Utility.sortInputQueryKeys(l);
+//		for(int i=0;i<l.size();i++)
+//		{
+//			for(int j=0;j<l.size()-1;j++)
+//			{
+//				String k1 = (String)l.get(j);
+//				int k = j;
+//				k++;
+//				String k2 = (String)l.get(k);
+//				String i1 = k1.substring(k1.indexOf(":")+1,k1.indexOf("_"));
+//				String i2 = k2.substring(k2.indexOf(":")+1,k2.indexOf("_"));
+//				if(Integer.decode(i1).intValue()>Integer.decode(i2).intValue())
+//				{
+//					l.remove(j);
+//					l.remove(k);
+//					l.add(j,k2);
+//					l.add(k,k1);
+//					
+//				}
+//			}
+//		}
+		//Collections.sort(l);
+		System.out.println(l);
+	}
+	
+	/**
+	 * this method populates map of Output Datasources selected by user on AdvancedSearch page
+	 * The map contains data source name as key and frequency as value 
+	 */
 	private Map createOutputDataSources(HttpServletRequest request) throws Exception
 	{
 		//initializing list of datasources

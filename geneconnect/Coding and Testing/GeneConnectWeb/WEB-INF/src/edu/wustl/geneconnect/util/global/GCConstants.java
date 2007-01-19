@@ -50,6 +50,7 @@ public interface GCConstants
 	String FORWARD_TO_GRAPH_PAGE = "geneconnectGraph";
 	String FORWARD_TO_ADVANCED_SEARCH_RESULT_PAGE = "advancedSearchresults";
 	String FORWARD_TO_SIMPLE_SEARCH_RESULT_PAGE = "simpleSearchresults";
+	String FORWARD_TO_ADVANCED_SEARCH_FOR_BATCH = "batchSearch";
 	/********************************************************/
 	
 	/**************** Constants for Action forms*********/
@@ -69,7 +70,7 @@ public interface GCConstants
 	public static final String ADVANCED_SEARCH = "advancedSearch";
 	
 	public static final String FREQUENCY_MAP = "FREQUENCY_MAP";
-	
+	public static final String ADVANCED_FORM_OUTPUTDS_SUFIX_KEY="_FrequenceValue";
 	/**
 	 * Constants for Search result view
 	 */
@@ -77,6 +78,7 @@ public interface GCConstants
 	public static final String RESULT_DATA_LIST = "RESULT_DATA_LIST";
 	public static final String SELECTED_DATASOURCES= "SELECTED_DATASOURCES";
 	public static final String COLUMN_HEADERS = "COLUMN_HEADERS";
+	public static final String COLUMN_HEADERS_REMOVED = "COLUMN_HEADERS_REMOVED";
 	public static final String RESULT_LIST = "RESULT_LIST";
 	public static final String GENOMICIDENTIIER_SET_RESULT_LIST = "GENOMICIDENTIIER_SET_RESULT_LIST";
 	public static final String DATA_SOURCES_LIST = "DATA_SOURCES_LIST";
@@ -89,13 +91,15 @@ public interface GCConstants
 	public static final String FREQUENCY_DISPLAY_SUFFIX = " (Frequency)";
 	public static final String FREQUENCY_KEY_SUFFIX = " (Frequency)";
 	public static final String SET_ID_KEY = "SET_ID";
-	public static final String CONF_SCORE_KEY = "Confidence Score";
-	public static final String CONF_SCORE_DISPLAY = "Confidence Score";	
+	public static final String SET_ID_DELIM = "_";
+	public static final String CONF_SCORE_KEY = "Path Score";
+	public static final String CONF_SCORE_DISPLAY = "Path Score";	
 	public static final String SELECTED_DATA_SOURCES = "SELECTED_DATA_SOURCES";
 	
 	
 	public static final String DELEMITER = "_";
 	public static final String SEARCH_RESULT = "SearchResult.csv";
+	public static final String QUERY_KEY_ALL= "All";
 	
 	/**
 	 * Column Names for DATASOURCE TABLE
@@ -106,7 +110,8 @@ public interface GCConstants
 	public static final String DATASOURCE_ATTRIBUTES = "DATASOURCE_ATTRIBUTES"; 
 	public static final String GRAPH_DATASOURCES = "GRAPH_DATASOURCES";
 	public static final String GRAPH_DATASOURCES_LINKS = "GRAPH_DATASOURCES_LINKS";
-	public static final String GRAPH_HIGHLIGHT_PATHS = "GRAPH_HIGHLIGHT_PATHS"; 
+	public static final String GRAPH_HIGHLIGHT_PATHS = "GRAPH_HIGHLIGHT_PATHS";
+	public static final String GRAPH_HIGHLIGHT_PATHS_COUNTS = "GRAPH_HIGHLIGHT_PATHS_COUNTS";
 	public static final String OUTPUT_ATTRIBUTE = "OUTPUT_ATTRIBUTE";
 	public static final String ATTRIBUTE = "ATTRIBUTE";
 	public static final String CLASS = "CLASS";
@@ -153,16 +158,21 @@ public interface GCConstants
 	public static final String CONFIDENCE = "confidenceScore";
 	public static final String FREQUENCY = "frequency";
 	public static final String SORTED_COLUMN = "sortedColumn";
+	public static final String SORTED_COLUMN_INDEX = "sortedColumnIndex";
 	public static final String SORTED_COLUMN_DIRECTION = "sortedColumnDirection";
+	public static final String SORTED_COLUMN_ASC_ORDER = "asc";
 	/**
 	 * Values for null genomicIdentifier
 	 */
 	public static final String NO_MATCH_FOUND = "No Match Found";
+	public static final String NO_MATCH_FOUND_MESSAGE = "NO_MATCH_FOUND_MESSAGE";
 	public static final String NA = "N/A";
 	
 	public static final String DOAMIN_CLASSNAME_PREFIX = "edu.wustl.geneconnect.domain";
 	public static final String FREQUENCY_VALUE= "FrequenceValue";
 	
+	public static final String SINGLE_QUERY_VALUE="Single";
+	public static final String BACTH_QUERY_VALUE="Batch";
 	/*********** Constants for Home page ***************/
 	String NO_OF_PARIWISE_LINKS = "NoOfPariwiseLinks";
 	String NO_OF_GI_SETS = "NoOfGISets";

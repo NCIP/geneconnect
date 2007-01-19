@@ -113,10 +113,12 @@
 			rows = document.getElementById('pathDiv').rows; 
 			var totalrows = rows.length; 
 			var isPathAlreadySelected = false;
-				
+			//var temp = divObj.getElementsByTagName("input");
+	
 			for(var i=0; i<totalrows; i++)
 			{
 				var checkbox=document.getElementById('pathDiv').rows[i].cells[0].firstChild.id;
+				//var checkbox=temp[i].id;
 				//alert("Already Selected rows-->"+checkbox);
 				if(checkbox == selectedPath)
 				{
@@ -158,20 +160,25 @@
 
 	function removePath()
 	{
+		//alert("In RemovePath()...");
 		var divObj=document.getElementById('pathDiv');
 		var rows = new Array(); 
 		rows = document.getElementById('pathDiv').rows; 
 		var totalrows = rows.length;
 		var rowIdCounter = 0;
 		var rowIds = new Array();
+		var temp = divObj.getElementsByTagName("input");
 		
 		for(var i=0; i<totalrows; i++) 
 		{
-			var checkbox=divObj.rows[i].cells[0].firstChild;
+			//var checkbox=divObj.rows[i].cells[0].firstChild;
+			var checkbox=temp[i];
 			if(checkbox.checked)
 			{
 				//alert("To Delete-->"+divObj.rows[i].id);
-				rowIds[rowIdCounter]=divObj.rows[i].id;
+				//rowIds[rowIdCounter]=divObj.rows[i].id;
+				//alert("To Delete-->"+temp[i].name);
+				rowIds[rowIdCounter]=temp[i].name;
 				rowIdCounter=rowIdCounter+1;
 			}
 		}
@@ -220,10 +227,12 @@
 		var rows = new Array(); 
 		rows = document.getElementById('pathDiv').rows; 
 		var totalrows = rows.length; 
+		var temp = divObj.getElementsByTagName("input");
 			
 		for(var i=0; i<totalrows; i++)
 		{
-			selectedPaths = selectedPaths + divObj.rows[i].cells[0].firstChild.name + "="+divObj.rows[i].cells[0].firstChild.id+"#";
+			//selectedPaths = selectedPaths + divObj.rows[i].cells[0].firstChild.name + "="+divObj.rows[i].cells[0].firstChild.id+"#";
+			selectedPaths = selectedPaths + temp[i].name + "="+temp[i].id+"#";
 		}
 
 		var io = "";
@@ -236,6 +245,7 @@
 		var action = action;
 		
 		document.forms[0].selectedPaths.value = selectedPaths;
+		//alert("Paths selected-->"+selectedPaths);
 
 		document.forms[0].backFromSelectPath.value = true;
 		document.forms[0].initialInputOutput.value = io;
@@ -319,7 +329,7 @@
 		
 		//alert(selectedPathsForGraph);
 		var url = ".."+"<%=request.getContextPath()%>"+"/GeneConnectGraph.do?selectedPathsForGraph="+selectedPathsForGraph;
-		newwindow=window.open(url,'name','height=600,width=540');
+		newwindow=window.open(url,'name','height=750,width=545,left=20, top=0, screenX=20, screenY=0');
 		if (window.focus) {newwindow.focus()}
 		
 		//alert("Paths Selected for Graph-->"+selectedPathsForGraph);
@@ -334,10 +344,12 @@
 		var rows = new Array(); 
 		rows = document.getElementById('pathDiv').rows; 
 		var totalrows = rows.length; 
+		var temp = divObj.getElementsByTagName("input");
 
 		for(var i=0; i<totalrows; i++)
 		{
-			selectedPaths = selectedPaths + divObj.rows[i].cells[0].firstChild.name + "="+divObj.rows[i].cells[0].firstChild.id+"#";
+			//selectedPaths = selectedPaths + divObj.rows[i].cells[0].firstChild.name + "="+divObj.rows[i].cells[0].firstChild.id+"#";
+			selectedPaths = selectedPaths + temp[i].name + "="+temp[i].id+"#";
 		}
 
 		document.forms[0].alreadySelectedPaths.value = selectedPaths;
@@ -368,11 +380,13 @@
 			var divObj = document.getElementById('pathDiv');
 			var rows = new Array(); 
 			rows = document.getElementById('pathDiv').rows; 
-			var totalrows = rows.length; 
+			var totalrows = rows.length;
+			var temp = divObj.getElementsByTagName("input"); 
 				
 			for(var i=0; i<totalrows; i++)
 			{
-				selectedPaths = selectedPaths + divObj.rows[i].cells[0].firstChild.name + "="+divObj.rows[i].cells[0].firstChild.id+"#";
+				//selectedPaths = selectedPaths + divObj.rows[i].cells[0].firstChild.name + "="+divObj.rows[i].cells[0].firstChild.id+"#";
+				selectedPaths = selectedPaths + temp[i].name + "="+temp[i].id+"#";
 			}
 	
 			document.forms[0].alreadySelectedPaths.value = selectedPaths;
@@ -402,10 +416,12 @@
 		var rows = new Array(); 
 		rows = document.getElementById('pathDiv').rows; 
 		var totalrows = rows.length; 
+		var temp = divObj.getElementsByTagName("input");
 				
 		for(var i=0; i<totalrows; i++)
 		{
-			var selectedPath = divObj.rows[i].cells[0].firstChild;
+			//var selectedPath = divObj.rows[i].cells[0].firstChild;
+			var selectedPath = temp[i];
 			selectedPath.checked = element.checked;
 		}
 	}
@@ -423,9 +439,9 @@
 
 <!-- Displays Title -->
 <table summary="" cellpadding="0" cellspacing="0" border="0"
-	width="100%" height="6%">
+	width="100%" height="30">
 
-	<tr height="5%">
+	<tr>
 		<td class="formTitle" width="100%"><bean:message
 			key="advancedSearchSelectPath.title" /></td>
 	</tr>
@@ -672,7 +688,7 @@
 									</td>
 								</tr>
 							</table>
-							<div style="overflow:auto;width:100%;height:100px;border:1px solid #336699;padding-left:5px">
+							<div style="overflow:auto;width:100%;height:100px;border:1px solid #336699;padding-left:5px; float:left">
 								<table>
 									<tbody id="pathDiv">
 										<%
@@ -693,7 +709,7 @@
 					
 												alreadySelectedPathValue = (String) alreadySelectedPaths.get(alreadySelectedPathName);
 										%>
-										<tr id=<%=alreadySelectedPathName%>>
+										<tr id="<%=alreadySelectedPathName%>">
 											<td class="blankFormField">
 												<input type="checkbox" id="<%=alreadySelectedPathValue%>" name="<%=alreadySelectedPathName %>" value="<%=alreadySelectedPathValue%>">
 												<%=alreadySelectedPathName%>

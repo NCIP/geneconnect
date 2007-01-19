@@ -695,7 +695,7 @@ tr#hiddenCombo
 								    					 if(varSelCol==<%=imgCol%>)
 								    					 {
 															var url = ".."+"<%=request.getContextPath()%>"+"/GeneConnectGraph.do?setid="+myData[varSelRow][<%=columnForSetId%>];
-								    						newwindow=window.open(url,'name','height=600,width=600');
+								    						newwindow=window.open(url,'name','height=600,width=600,resizable=yes');
 															if (window.focus) {newwindow.focus()}
 								    					 }
 													    

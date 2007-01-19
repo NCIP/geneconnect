@@ -91,7 +91,7 @@ public class SpreadsheetExportAction  extends Action
     	for(int cnt=0;cnt<(columnList.size()-idColCount) ;cnt++  )
     	{
     		String colName = (String)columnList.get(cnt);
-			if(!colName.equalsIgnoreCase(GCConstants.SET_ID_KEY))
+			if(!colName.equalsIgnoreCase(GCConstants.SET_ID_KEY)&&!colName.equalsIgnoreCase(GCConstants.QUERY_KEY))
 				tmpColumnList.add(columnList.get(cnt)  ); 
     	}
     	
@@ -107,7 +107,7 @@ public class SpreadsheetExportAction  extends Action
 			for(int i=0;i<columnList.size();i++)
 			{
 				String colName = (String)columnList.get(i);
-				if(!colName.equalsIgnoreCase(GCConstants.SET_ID_KEY))
+				if(!colName.equalsIgnoreCase(GCConstants.SET_ID_KEY)&&!colName.equalsIgnoreCase(GCConstants.QUERY_KEY))
 					tmpNewList.add(setMap.get(colName));
 			}
         	tmpDataList.add(tmpNewList ); 

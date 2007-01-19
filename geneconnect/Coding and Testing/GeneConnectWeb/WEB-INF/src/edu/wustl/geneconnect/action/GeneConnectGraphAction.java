@@ -12,7 +12,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,6 +28,7 @@ import org.apache.struts.action.ActionMapping;
 
 import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.geneconnect.bizlogic.ResultDataInterface;
 import edu.wustl.geneconnect.cacore.CaCoreClient;
 import edu.wustl.geneconnect.domain.GenomicIdentifierSet;
 import edu.wustl.geneconnect.domain.LinkType;
@@ -72,6 +76,12 @@ public class GeneConnectGraphAction extends Action
 		HttpSession session = request.getSession();
 		
 		List selectedInputOutputList = (List)session.getAttribute(GCConstants.SELECTED_DATASOURCES);
+		
+		String queryKey=null;
+
+		queryKey=(String)request.getParameter(GCConstants.QUERY_KEY);
+		Logger.out.debug("sachin queryKey: " +queryKey);
+		
 		
 		//Initializing list of datasources 
 		List dataSources = MetadataManager.getDataSourcesToDisplay();
@@ -131,7 +141,7 @@ public class GeneConnectGraphAction extends Action
 		request.setAttribute(GCConstants.GRAPH_DATASOURCES_LINKS, graphDataSourcesLinks);
 		
 		//Initializing map object for ONTs
-		HashMap ontMap = new HashMap();
+		Map ontMap = new TreeMap();
 		
 		int ontMapCounter=0;
 		
@@ -142,17 +152,34 @@ public class GeneConnectGraphAction extends Action
 		//populating map of ONTs for selected GenomicIdentifierSets
 		if(setIds != null)
 		{
-			StringTokenizer setIdsTokenizer = new StringTokenizer(setIds, ",");
+			StringTokenizer setIdsTokenizer = new StringTokenizer(setIds, "_");
 			
 			Logger.out.info("No. of Set Tokens->"+setIdsTokenizer.countTokens());
 			Logger.out.debug("No. of Set Tokens->"+setIdsTokenizer.countTokens());
 			if(setIdsTokenizer.countTokens() > 0)
 			{
+				Map pathCount = new HashMap();
+				
 				while(setIdsTokenizer.hasMoreTokens())
 				{
-					GenomicIdentifierSet gset = new GenomicIdentifierSet();
+//					GenomicIdentifierSet gset = new GenomicIdentifierSet();
 					Long setID = new Long(setIdsTokenizer.nextToken());
-					List resultList = (List)session.getAttribute(GCConstants.GENOMICIDENTIIER_SET_RESULT_LIST);
+					List resultList=null;
+					if(queryKey!=null)
+					{
+						ResultDataInterface resultData = (ResultDataInterface) session
+						.getAttribute(GCConstants.RESULT_DATA_LIST);
+						if (resultData != null)
+						{
+							Map allresultMap = resultData.getData();
+							Map queryresultMap = (Map)allresultMap.get(queryKey);
+							resultList = (List)queryresultMap.get(GCConstants.GENOMICIDENTIIER_SET_RESULT_LIST);
+						}
+					}
+					else
+					{
+						resultList = (List)session.getAttribute(GCConstants.GENOMICIDENTIIER_SET_RESULT_LIST);
+					}
 					
 					Logger.out.debug("curretnt serach for :" +setID);
 					
@@ -216,15 +243,42 @@ public class GeneConnectGraphAction extends Action
 								
 								tempont = nextont;
 							}
-							
+
 							Logger.out.info("________________________________________________________");
-							ontMapCounter+=1;
 							
-							ontMap.put("highlightNodeList_"+ontMapCounter, highlightNodes);
-							ontMap.put("highlightLinkTypes_"+ontMapCounter, highlightLinkTypes);
 							
-							Logger.out.info("NodeList==> "+highlightNodes+"  LinkTypeIds==>"+highlightLinkTypes);
+							Logger.out.debug("Repeated list of Nodes-->"+ontMap.containsValue(highlightNodes));
+							Logger.out.debug("Repeated list of LinkTypes-->"+ontMap.containsValue(highlightLinkTypes));
+							
+							if(ontMap.containsValue(highlightNodes) & ontMap.containsValue(highlightLinkTypes))
+							{
+								Logger.out.debug("Checking-->"+highlightNodes+"="+highlightLinkTypes);
+								Logger.out.debug(""+pathCount.containsKey( (highlightNodes+"="+highlightLinkTypes) ));
+								if(pathCount.containsKey( (highlightNodes+"="+highlightLinkTypes) ))
+								{
+									Integer count = (Integer)pathCount.get(highlightNodes+"="+highlightLinkTypes);
+									
+									pathCount.put(highlightNodes+"="+highlightLinkTypes, new Integer(count.intValue() + 1) );
+									
+									Logger.out.debug("Increasing-->"+highlightNodes+"="+highlightLinkTypes);
+								}
+							}
+							else
+							{
+								pathCount.put( (highlightNodes+"="+highlightLinkTypes), new Integer(1));
+								
+								ontMapCounter+=1;
+								ontMap.put("highlightNodeList_"+ontMapCounter, highlightNodes);
+								ontMap.put("highlightLinkTypes_"+ontMapCounter, highlightLinkTypes);
+								
+								
+								Logger.out.debug("Entering-->"+highlightNodes+"="+highlightLinkTypes);
+							}
+							
+							Logger.out.debug("NodeList==> "+highlightNodes+"  LinkTypeIds==>"+highlightLinkTypes);
 						}
+						
+						request.setAttribute(GCConstants.GRAPH_HIGHLIGHT_PATHS_COUNTS, pathCount);
 					}		
 					Logger.out.debug("Returning ontMap of size==>"+ontMap.size());
 				}
@@ -235,7 +289,6 @@ public class GeneConnectGraphAction extends Action
 		{
 			String selectedPathsForGraph = request.getParameter("selectedPathsForGraph");
 			Logger.out.debug("SelectedPathsForGraph-->"+selectedPathsForGraph);
-			
 			//calling Utility method to parse possible multiple links for a selected ONT by user 
 			selectedPathsForGraph = Utility.parseAnyOption(selectedPathsForGraph);
 			

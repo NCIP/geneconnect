@@ -76,7 +76,11 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 		/**
 		 * Apply logic to validate the inputs given by user
 		 */
-		if (readAndValidateInputs(inputData))
+		Map data = inputData.getData();
+		SimpleSearchForm simpleSearchForm = (SimpleSearchForm) data.get("Form");
+		inputDsList = simpleSearchForm.getInputDsList();
+		outputDsList = simpleSearchForm.getOutputDsList();
+//		if (readAndValidateInputs(inputData))
 		{
 			/**
 			 * Prepare GenomicIdentifierSet object from the input query given by user 
@@ -126,7 +130,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 			for (int i = 0; i < columnList.size(); i++)
 			{
 				String colName = (String) columnList.get(i);
-
+					
 				if (colName.endsWith(GCConstants.SET_ID_KEY))
 				{
 					setID = (String) setMap.get(columnList.get(i));
@@ -148,7 +152,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 			{
 				Map oldSetMap = (Map) dataMap.get(mapKey);
 				String combineSetID = (String) oldSetMap.get(GCConstants.SET_ID_KEY);
-				combineSetID = combineSetID + "," + setID;
+				combineSetID = combineSetID + GCConstants.SET_ID_DELIM + setID;
 				oldSetMap.remove(GCConstants.SET_ID_KEY);
 				oldSetMap.put(GCConstants.SET_ID_KEY, combineSetID);
 				dataMap.remove(mapKey);
@@ -512,7 +516,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 			Logger.out.debug("dataSourceName " + dataSourceName);
 			Logger.out.info("size: " + dsName.size());
 			/**
-			 * Logic to check whther user has enter more tahn one genomicId for same input data source
+			 * Logic to check whther user has enter more than one genomicId for same input data source
 			 */
 			for (int j = 0; j < dsName.size(); j++)
 			{

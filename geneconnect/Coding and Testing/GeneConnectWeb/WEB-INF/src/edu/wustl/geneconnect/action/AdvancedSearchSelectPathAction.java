@@ -512,7 +512,7 @@ public class AdvancedSearchSelectPathAction extends Action
 			//putting Name and Value of the selected path into map 
 			alreadySelectedPathsMap.put(alreadySelectedPathName, alreadySelectedPathValue);
 			
-//			Logger.out.debug("PathName==>"+alreadySelectedPathName+" PathValue==>"+alreadySelectedPathValue);
+			Logger.out.debug("PathName==>"+alreadySelectedPathName+" PathValue==>"+alreadySelectedPathValue);
 		}
 		
 		//returning map of selected paths

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -120,56 +121,20 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 		int counter=0;
 		if(setKeys!=null)
 		{
-			List threadList = new ArrayList();
 			long t1 = System.currentTimeMillis();
 			for(Iterator setIter=setKeys.iterator();setIter.hasNext();)
 			{
 				String key = (String)setIter.next();
 				GenomicIdentifierSet querySet = (GenomicIdentifierSet)setMap.get(key);
 				Logger.out.debug("'querySet :" +querySet);
-
-//				caCoreThread thread = new caCoreThread(querySet,key);
-//				threadList.add(thread);
-//				thread.start();
-				
 				resultList = CaCoreClient.appServiceQuery(GenomicIdentifierSet.class.getName(),querySet);
 				prepareResult(resultList,key);
 				removeRedundant(key);
 				Logger.out.debug("Result Size: " + resultList.size());
 			}
-//			counter=0;
-//			//Logger.out.debug("threadList.size(): "+threadList.size());
-//			while(true)
-//			{
-//				for(Iterator threaditer=threadList.iterator();threaditer.hasNext();)
-//				{
-//					caCoreThread thread = (caCoreThread)threaditer.next();
-//					resultList = thread.getResult();
-//					String key = thread.getName();
-//					Exception ex = thread.getExp();
-//					if(ex!=null)
-//					{
-//						throw new BizLogicException(ex.getMessage(),ex);
-//					}
-//					//Logger.out.debug(key+"---"+resultList);
-//					if(resultList!=null)
-//					{
-//						prepareResult(resultList,key);
-//						removeRedundant(key);
-//						threaditer.remove();
-//						counter++;
-//					}
-//				}
-//				if(counter>=setKeys.size())
-//				{	
-//					Logger.out.info("Got all results:"+counter);
-//					break;
-//				}	
-//			} 
 			long t2 = System.currentTimeMillis();
 			Logger.out.debug("Time required to get resu;t: "+(t2-t1)/1000);
 			Logger.out.info("Time required to get resu;t: "+(t2-t1)/1000);
-			
 		}
 		return resultData;
 	}
@@ -212,15 +177,10 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 			throw new BizLogicException("Select atleast one Output data source.");
 		}
 		
-		
-		
-		
 		/**
 		 * Confidence Score validation
 		 */
 		String conf = advancedSearchActionForm.getConfidenceScore();
-		
-
 		if(conf.length()>0 && !validator.isDouble(conf))
 		{
 			String arg[] = new String[]{"Confidence Score"};
@@ -309,6 +269,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 				}
 				columnHeaders.add(GCConstants.CONF_SCORE_KEY);
 				columnHeaders.add(GCConstants.SET_ID_KEY);
+				columnHeaders.add(GCConstants.QUERY_KEY);
 				/**
 				 * Add column headers w.r.t to query
 				 */
@@ -426,8 +387,6 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 	 */
 	private void removeRedundant(String key) throws BizLogicException, DAOException
 	{
-//		List columnList = resultData.getColumnHeader();
-//		List dataList = resultData.getResult();
 		Map queryMap = (Map)resultData.getValue(key);
 		
 		List columnList = (List)queryMap.get(GCConstants.COLUMN_HEADERS);
@@ -450,7 +409,8 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 				}
 				if ((!colName.endsWith(GCConstants.FREQUENCY_KEY_SUFFIX))
 						&& (!colName.endsWith(GCConstants.CONF_SCORE_KEY))
-						&& (!colName.endsWith(GCConstants.SET_ID_KEY)))
+						&& (!colName.endsWith(GCConstants.SET_ID_KEY))
+						&& (!colName.endsWith(GCConstants.QUERY_KEY)))
 				{
 
 					
@@ -466,7 +426,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 			{
 				Map oldSetMap = (Map)dataMap.get(mapKey);
 				String combineSetID = (String)oldSetMap.get(GCConstants.SET_ID_KEY); 
-				combineSetID = combineSetID +","+setID;
+				combineSetID = combineSetID +GCConstants.SET_ID_DELIM+setID;
 				oldSetMap.remove(GCConstants.SET_ID_KEY);
 				oldSetMap.put(GCConstants.SET_ID_KEY,combineSetID);
 				dataMap.remove(mapKey);
@@ -492,10 +452,20 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 	 */
 	private void prepareResult(List resultList,String setMapkey) throws BizLogicException, DAOException
 	{
+		// list of column header to remove as part of no macth found message
+		Set columnHeaderToRemove = new HashSet();
 		try
 		{
 			List inputDsList = (List) inputDsMap.get(setMapkey);
+			 
 			List columnHeader = (List)columnHeaderMap.get(setMapkey);
+			// prepare column headers to remove only select output data sources
+			columnHeaderToRemove.addAll(columnHeader);
+			columnHeaderToRemove.removeAll(inputDsList);
+			columnHeaderToRemove.remove(GCConstants.CONF_SCORE_KEY);
+			columnHeaderToRemove.remove(GCConstants.SET_ID_KEY);
+			columnHeaderToRemove.remove(GCConstants.QUERY_KEY);
+			
 			//Logger.out.debug(setMapkey+"----"+columnHeader);
 			List result = new ArrayList();
 			int counter = 0;
@@ -512,16 +482,12 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 
 				GenomicIdentifierSolution solution = set.getGenomicIdentifierSolution();
 				Collection coll = solution.getConsensusIdentifierDataCollection();
-				//Logger.out.debug("Genomic Identifer\tFrequency");
 				for (Iterator iter1 = coll.iterator(); iter1.hasNext();)
 				{
-					//OrderOfNodeTraversal ont = (OrderOfNodeTraversal)iter1.next();
 					ConsensusIdentifierData freqData = (ConsensusIdentifierData) iter1.next();
 					GenomicIdentifier g = freqData.getGenomicIdentifier();
 					if (g != null)
 					{
-//						Logger.out.debug("\t" + g.getGenomicIdentifier() + "\t\t\t"
-//								+ freqData.getFrequency());
 						/**
 						 * If genomicIdentifier is Null the add key as GenomicIdentifierClass + '_NULL'
 						 * else genomicIdentifier
@@ -559,7 +525,8 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 					String column = (String) columnHeader.get(i);
 					if (column.endsWith(GCConstants.FREQUENCY_KEY_SUFFIX)
 							|| column.endsWith(GCConstants.CONF_SCORE_KEY)
-							|| column.endsWith(GCConstants.SET_ID_KEY))
+							|| column.endsWith(GCConstants.SET_ID_KEY)
+							|| column.endsWith(GCConstants.QUERY_KEY))
 						continue;
 					/**
 					 * get CLASS of data source i.e Gene or MessengerRNA or Protein
@@ -632,6 +599,10 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 					else 
 					{
 						key=value.toString();
+						// if value is ata least on value is not null for current output data source remove it add it to 
+						//disply as result 
+						columnHeaderToRemove.remove(column);
+						columnHeaderToRemove.remove(column + GCConstants.FREQUENCY_KEY_SUFFIX);
 					}
 					//Logger.out.debug(column+"===="+value.toString());
 					setMap.put(column, value.toString());
@@ -648,6 +619,7 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 				counter++;
 				setMap.put(GCConstants.SET_ID_KEY, setId.toString());
 				setMap.put(GCConstants.CONF_SCORE_KEY, confScore.toString());
+				setMap.put(GCConstants.QUERY_KEY, setMapkey);
 
 				result.add(setMap);
 			}
@@ -657,6 +629,31 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 			
 			Map innerData = new HashMap();
 			innerData.put(GCConstants.COLUMN_HEADERS,columnHeader);
+			/**
+			 * remove the list of column not to display as hresult header but to display as 
+			 * no match found message
+			 */
+			for(Iterator coulmnIter=columnHeader.iterator();coulmnIter.hasNext();)
+			{
+				String col = (String)coulmnIter.next();
+				if(columnHeaderToRemove.contains(col))
+				{
+					coulmnIter.remove();
+				}
+			}
+			if(columnHeaderToRemove!=null&&columnHeaderToRemove.size()>0)
+			{
+				for(Iterator it=columnHeaderToRemove.iterator();it.hasNext();)
+				{
+					String val = (String )it.next();
+					if(val.indexOf(GCConstants.FREQUENCY_KEY_SUFFIX)>0)
+					{
+						it.remove();
+					}
+				}
+				
+				innerData.put(GCConstants.COLUMN_HEADERS_REMOVED,columnHeaderToRemove);
+			}
 			innerData.put(GCConstants.RESULT_LIST,result);
 			innerData.put(GCConstants.GENOMICIDENTIIER_SET_RESULT_LIST,resultList);
 			
@@ -672,9 +669,6 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 				queryData.put(setMapkey,innerData);
 				
 			}
-			
-			
-			
 		}
 		catch (Exception e)
 		{

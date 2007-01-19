@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,9 +24,12 @@ import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
 import org.apache.struts.action.ActionMapping;
 
+import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.exception.BizLogicException;
 import edu.wustl.common.util.dbManager.DAOException;
+import edu.wustl.common.util.global.Constants;
 import edu.wustl.common.util.logger.Logger;
+import edu.wustl.geneconnect.actionForm.AdvancedSearchForm;
 import edu.wustl.geneconnect.actionForm.SimpleSearchForm;
 import edu.wustl.geneconnect.bizlogic.BizLogicInterface;
 import edu.wustl.geneconnect.bizlogic.GeneConnectBizLogicFactory;
@@ -34,6 +38,7 @@ import edu.wustl.geneconnect.bizlogic.InputDataInterface;
 import edu.wustl.geneconnect.bizlogic.ResultDataInterface;
 import edu.wustl.geneconnect.metadata.MetadataManager;
 import edu.wustl.geneconnect.util.global.GCConstants;
+import edu.wustl.geneconnect.util.global.Utility;
 
 /**
  * Action class for simple search operations. This class will work as redirector and will 
@@ -75,15 +80,23 @@ public class SimpleSearchAction extends Action
 		{
 			
 			SimpleSearchForm simpleSearchActionForm = (SimpleSearchForm) form;
-
+				
 			//Obtain target action which needs to be performed
 			String targetAction = simpleSearchActionForm.getTargetAction();
 			Logger.out.info("targetAction is :" + targetAction);
-
+			
 			if (targetAction.equals(GCConstants.TARGET_ACTION_SEARCH))
 			{
-				//Search operation.
-				return executeDisplayResults(mapping, form, request, response);
+				if(simpleSearchActionForm.getQueryType().equalsIgnoreCase(GCConstants.SINGLE_QUERY_VALUE))
+				{
+					//Single Search operation.
+					return executeDisplayResults(mapping, form, request, response);
+				}
+				else if(simpleSearchActionForm.getQueryType().equalsIgnoreCase(GCConstants.BACTH_QUERY_VALUE))
+				{
+					// if batch search forward to advavanced bizlogic
+					return forwardTtoAdvance(mapping, form, request, response);
+				}
 			}
 
 		}
@@ -108,7 +121,7 @@ public class SimpleSearchAction extends Action
 
 		Logger.out.info("Setting data source list in request object");
 		request.setAttribute(GCConstants.DATA_SOURCES_KEY, dataSources);
-
+		request.setAttribute("queryType", "Single");	
 		Logger.out.info("Forwarding to SimpleSearch.jsp");
 		return (mapping.findForward(GCConstants.FORWARD_TO_SIMPLE_PAGE));
 	}
@@ -168,6 +181,101 @@ public class SimpleSearchAction extends Action
 		Logger.out.info("Forwarding to SimpleResult page");
 		
 		// forward to SimpleSearch result page
+		return (mapping.findForward(GCConstants.FORWARD_TO_RESULT_PAGE));
+	}
+	/**
+	 * This method prepares teh advancedsearch form from simplesearchform and invoke advancedsearchbizlogic
+	 * @param mapping
+	 * @param form
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	private ActionForward forwardTtoAdvance(ActionMapping mapping, ActionForm form,
+			HttpServletRequest request, HttpServletResponse response) throws Exception
+	{
+		HttpSession session = request.getSession();
+		//Get the instance of business logic factory
+		GeneConnectBizLogicFactory geneConnectBizLogicFactory = GeneConnectBizLogicFactory
+				.getInstance();
+		//Get the instance of required business logic 
+		BizLogicInterface advancedSearchBizLogic = geneConnectBizLogicFactory
+				.getBizLogic(GCConstants.ADVANCED_SEARCH_BIZLOGIC);
+		
+		SimpleSearchForm simpleSearchActionForm = (SimpleSearchForm) form;
+		AdvancedSearchForm advancedForm = new AdvancedSearchForm();
+		// stores selected input data source list
+		List inputList = simpleSearchActionForm.getInputDsList();
+		// stores selected output data source list
+		List outputList = simpleSearchActionForm.getOutputDsList();
+		
+		// input and outout data source mao to store in AdvancedSearch form
+		Map inputDataSource = new HashMap();
+		Map outputDataSource = new HashMap();
+		for(int i=0;i<inputList.size();i++)
+		{
+			NameValueBean bean = (NameValueBean )inputList.get(i);
+			String key = "Input:"+(i+1)+"_"+bean.getName();
+	//		System.out.println("KEY:" +key);
+			inputDataSource.put(key,bean.getValue());
+		}
+		for(int i=0;i<outputList.size();i++)
+		{
+			String key = outputList.get(i)+GCConstants.ADVANCED_FORM_OUTPUTDS_SUFIX_KEY;
+			outputDataSource.put((String)outputList.get(i),new Float("0"));
+		}
+		// store the input ans output data sources
+		advancedForm.setInputDataSources(inputDataSource);
+		advancedForm.setOutputDataSources(outputDataSource);
+		InputDataInterface inputData = new InputData();
+		Map data = new HashMap();
+		
+		data.put(GCConstants.FORM, advancedForm);
+		
+		inputData.setData(data);
+		/**
+		 * call bizliogc method to build domain objects and query the system
+		 */
+		ResultDataInterface resultData = advancedSearchBizLogic.getResult(inputData);
+		
+		/**
+		 * Prepare Query list that os to be listed on search page in view display result combo box.
+		 */
+		Map allresultMap = resultData.getData();
+		List queryKeyList = new ArrayList();
+		Set keySet = allresultMap.keySet();
+		List keyList = new ArrayList(keySet);
+		
+		// sort the query list as per the input order to display in combo box on result page 
+		Utility.sortInputQueryKeys(keyList);
+		NameValueBean  allbean = new NameValueBean();
+		allbean.setName(GCConstants.QUERY_KEY_ALL);
+		allbean.setValue(GCConstants.QUERY_KEY_ALL);
+		queryKeyList.add(allbean);
+		for(Iterator iter=keyList.iterator();iter.hasNext();)
+		{
+			String k = (String)iter.next();
+			Logger.out.debug("Key :" +k);
+			int ind = k.indexOf("_");
+			if(ind>0)
+			{
+				String displayKey = k.substring(ind+1);
+				NameValueBean  bean = new NameValueBean();
+				bean.setName(displayKey);
+				bean.setValue(k);
+				queryKeyList.add(bean);
+				
+			}
+		}
+		/**
+		 * Set the result in session and forward to SearchResultView Action
+		 */
+		
+		session.setAttribute(GCConstants.RESULT_DATA_LIST, resultData);
+		session.setAttribute(GCConstants.QUERY_KEY_MAP, queryKeyList);
+		request.setAttribute(Constants.PAGEOF, GCConstants.ADVANCED_SEARCH);
+		
 		return (mapping.findForward(GCConstants.FORWARD_TO_RESULT_PAGE));
 	}
 }

@@ -1,6 +1,7 @@
 package edu.wustl.geneconnect.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,8 +50,10 @@ public class SpreadSheetViewTag extends TagSupport
 //			Set columnHeaders = attributes.keySet();
 			
 			//Initializing array of Column Headers
-			Object[]columnHeaderArray = attributes.keySet().toArray();
-		
+			//Object[]columnHeaderArray = attributes.keySet().toArray();
+			List l = new ArrayList(attributes.keySet());
+			Collections.sort(l);
+			Object[]columnHeaderArray =l.toArray();
 			Set inputKeys = inputs.keySet();
 			
 			//Initializing list of the keys of Inputs
@@ -123,7 +126,7 @@ public class SpreadSheetViewTag extends TagSupport
             out.println("var newcell=newrow.insertCell(i); \n newcell.className=\"formField\";" );
             out.println("var cellname=\""+collection+"Value("+className+":\""+ "+"+"rowid"+ "+" +"\"_\""+ "+" +"attributes[i-1]+\")\";");
             //out.println("alert('Inserting==>'+cellname);");
-            out.println("field=\"<input type='text' name='\"+ "+" "+"cellname" + "+" +"\"' class='formFieldSized10' onfocus='setCurrentTextBox(this)' onkeyup='checkInputOutput()' >\";");
+            out.println("field=\"<input type='text' name='\"+ "+" "+"cellname" + "+" +"\"' class='formFieldSized10' onfocus='setCurrentTextBox(this)' onkeyup='checkInputOutput()' onpaste='pasteForSafari(event)' >\";");
             out.println("newcell.innerHTML=\"\"+field;");
             out.println("}");//end of for loop
             out.println("rowid=rowid+1;");
@@ -180,8 +183,27 @@ public class SpreadSheetViewTag extends TagSupport
             out.println("</script>");
             
 
+            out.println("<DIV style=\"width:100%\">");
+            out.println("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" width=\"100%\">");
+            out.println("<tr>");
+            out.println("<td class=\"formTitle\" height=\"20\"> Select Input Data Sources </td>");
+            out.println("<td class=\"formTitle\" height=\"20\" align=\"right\">");
+			//out.println("<html:button property=\"\" styleClass=\"actionButton\" onclick=\"pasteData()\"> Paste ID </html:button>");
+			out.println("<input type=\"button\" name=\"add"+className+" \" value=\"Add More\" onclick=\"insert"+className+"Row('"+ className+"spreadsheet" +"')\" class=\"actionButton\" >");
+			out.println("<input type=\"button\" name=\"delete"+className+" \" value=\"Delete\" onclick=\"delete"+className+"Row('"+ className+"spreadsheet" +"')\" class=\"actionButton\" >");
+			out.println("<input type=\"button\" name=\"\" value=\"Paste ID\" onclick=\"pasteData()\" class=\"actionButton\" >");
+			out.println("&nbsp;&nbsp;");
+            out.println("</td>");
+//            out.println("<td>");
+//            out.println("&nbsp;");
+//            out.println("</td>");
+			out.println("</tr>");
+			out.println("</table>");
+			out.println("</DIV>");
+            
             out.println("<DIV class=\"headerDiv\">");
-            out.println("<table cellpadding=\"3\" cellspacing=\"0\" border=\"0\" width=\"" + ( (columnHeaderArray.length+1) * 100) +"\">");
+//            out.println("<table cellpadding=\"3\" cellspacing=\"0\" border=\"0\" width=\"" + ( (columnHeaderArray.length+1) * 71) +"\">");
+            out.println("<table cellpadding=\"3\" cellspacing=\"0\" border=\"0\" width=\"98.8%\">");
             
             out.println("<tr>");
             
@@ -202,8 +224,11 @@ public class SpreadSheetViewTag extends TagSupport
 			out.println("</tr>");
 			out.println("</table>");
 			
-			out.println("<DIV class=\"spreadsheet\" style=\"width:"+(( (columnHeaderArray.length+1) * 100)+20) +"px;\">");
-            out.println("<table cellpadding=\"3\" cellspacing=\"0\" border=\"0\"\">");
+			
+//			out.println("<DIV class=\"spreadsheet\" style=\"width:"+(( (columnHeaderArray.length+1) * 72.5)) +"\">");
+			out.println("<DIV class=\"spreadsheet\">");
+//            out.println("<table cellpadding=\"3\" cellspacing=\"0\" border=\"0\"\" width=\"" + ( ((columnHeaderArray.length+1) * 68)) +"\">");
+			out.println("<table cellpadding=\"3\" cellspacing=\"0\" border=\"0\" width=\"100%\">");
             
             out.println("<tbody id=\""+ className +"spreadsheet\">");
             
@@ -230,11 +255,11 @@ public class SpreadSheetViewTag extends TagSupport
 	            		if(inputs.size()>0)
 	            		{
 	            			//Logger.out.debug("Entered Value of the Attribute "+(className+":"+k+"_"+ attributeName)+"-->"+inputs.get(className+":"+k+"_"+ attributeName));
-	            			out.print("<input type=\"text\" name=\""+collection+"Value("+(String)sortedKeyList.get(k-1)+"_"+ attributeName +")\" value=\""+inputs.get((String)sortedKeyList.get(k-1)+"_"+ attributeName)+"\" class=\"formFieldSized10\" onfocus=\"setCurrentTextBox(this)\" onkeyup=\"checkInputOutput()\">");
+	            			out.print("<input type=\"text\" name=\""+collection+"Value("+(String)sortedKeyList.get(k-1)+"_"+ attributeName +")\" value=\""+inputs.get((String)sortedKeyList.get(k-1)+"_"+ attributeName)+"\" class=\"formFieldSized10\" onfocus=\"setCurrentTextBox(this)\" onkeyup=\"checkInputOutput()\" onpaste=\"pasteForSafari(event)\" >");
 	            		}
 	            		else
 	            		{
-	            			out.print("<input type=\"text\" name=\""+collection+"Value("+ className+":"+k+"_"+ attributeName +")\" value=\"\" class=\"formFieldSized10\" onfocus=\"setCurrentTextBox(this)\" onkeyup=\"checkInputOutput()\">");
+	            			out.print("<input type=\"text\" name=\""+collection+"Value("+ className+":"+k+"_"+ attributeName +")\" value=\"\" class=\"formFieldSized10\" onfocus=\"setCurrentTextBox(this)\" onkeyup=\"checkInputOutput()\" onpaste=\"pasteForSafari(event)\">");
 	            		}
 	            	
 	            	out.println("</td>");
@@ -245,22 +270,23 @@ public class SpreadSheetViewTag extends TagSupport
             out.println("</tbody>");
             
             out.println("</table>");
+            
             out.println("</DIV>");
             
             out.println("</DIV>");
             
 			
             //creating rows of buttons
-            out.println("<table cellpadding=\"3\" cellspacing=\"0\" border=\"0\">");
-            out.println("<tr>");
-            
-            out.println("<td  colspan=\""+ (columnHeaderArray.length +1 )+"\" >");
-            out.println("<input type=\"button\" name=\"delete"+className+" \" value=\"Delete\" onclick=\"delete"+className+"Row('"+ className+"spreadsheet" +"')\" class=\"actionButton\" >");
-            out.println("<input type=\"button\" name=\"add"+className+" \" value=\"Add More\" onclick=\"insert"+className+"Row('"+ className+"spreadsheet" +"')\" class=\"actionButton\" >");
-            out.println("</td>");
-            
-            out.println("</tr>");
-            out.println("</table>");
+//            out.println("<table cellpadding=\"3\" cellspacing=\"0\" border=\"0\">");
+//            out.println("<tr>");
+//            
+//            out.println("<td  colspan=\""+ (columnHeaderArray.length +1 )+"\" >");
+//            out.println("<input type=\"button\" name=\"delete"+className+" \" value=\"Delete\" onclick=\"delete"+className+"Row('"+ className+"spreadsheet" +"')\" class=\"actionButton\" >");
+//            out.println("<input type=\"button\" name=\"add"+className+" \" value=\"Add More\" onclick=\"insert"+className+"Row('"+ className+"spreadsheet" +"')\" class=\"actionButton\" >");
+//            out.println("</td>");
+//            
+//            out.println("</tr>");
+//            out.println("</table>");
             
         }
         catch (Exception e)

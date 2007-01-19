@@ -7,6 +7,8 @@
 package edu.wustl.geneconnect.action;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +29,7 @@ import edu.wustl.common.util.logger.Logger;
 import edu.wustl.geneconnect.actionForm.AdvancedSearchForm;
 import edu.wustl.geneconnect.bizlogic.ResultDataInterface;
 import edu.wustl.geneconnect.util.global.GCConstants;
+import edu.wustl.geneconnect.util.global.Utility;
 
 /**
  * Action class for simple search result. This class will work as for showing result 
@@ -70,33 +73,48 @@ public class SearchResultViewAction extends Action
 		String pageOf="";
 		pageOf =request.getParameter(Constants.PAGEOF);
 		String pagination = request.getParameter("isPaging");
+		String isSorting = request.getParameter("isSorting");
 		String isConfidenceChecked = request.getParameter(GCConstants.CONFIDENCE);
 		
 		String isFrequencyCheched = request.getParameter(GCConstants.FREQUENCY);
+		
+		// Get the value of sorted column and sorting order.
 		String sortedColumn = request.getParameter(GCConstants.SORTED_COLUMN);
+		String sortedColumnIndex = request.getParameter(GCConstants.SORTED_COLUMN_INDEX);
 		String sortedColumnDirection = request.getParameter(GCConstants.SORTED_COLUMN_DIRECTION);
+		
+		// Strores query key selected  by user to display results  
 		String queryKey = request.getParameter(GCConstants.QUERY_KEY);
+		// stores list of data soruce not found seperated by ',' 
+		StringBuffer noMatchFoundMessage=null;
 		
-		
+		// if request to sotr the column
+		if(sortedColumn!=null&&sortedColumnDirection!=null&&pagination.equals("true")&&isSorting!=null)
+		{
+			List colList = (List) session.getAttribute(GCConstants.SPREADSHEET_COLUMN_LIST);
+			if(colList.contains(sortedColumn))
+			{
+				List dslistToSort = (List) session.getAttribute(GCConstants.SPREADSHEET_DATA_LIST);
+				Utility.sortDataList(dslistToSort,sortedColumn,sortedColumnDirection);
+				session.setAttribute(GCConstants.SPREADSHEET_DATA_LIST, dslistToSort);
+			}
+		}
 		/**
 		 * If the action is forwarded  from SimpleSearchAction class 
 		 */
 		if (pagination == null || pagination.equals("false"))
 		{
+			
 			// get Resultdata and store it in session for pagenation
-//			ResultDataInterface resultData = (ResultDataInterface) request
-//					.getAttribute(GCConstants.RESULT_DATA_LIST);
 			ResultDataInterface resultData = (ResultDataInterface) session
 			.getAttribute(GCConstants.RESULT_DATA_LIST);
 			
 			Logger.out.debug("pageOf " +pageOf);
 			if (resultData != null||pageOf!=null)
 			{
-				//List columnList = resultData.getColumnHeader();
-
-				//List dataList = resultData.getResult();
 				List columnList=null;
 				List dataList = null;
+				Set columnHeaderRemoved = null;
 				/**
 				 * IF request from advanced search
 				 */
@@ -115,8 +133,9 @@ public class SearchResultViewAction extends Action
 					queryKey = request.getParameter(GCConstants.QUERY_KEY);
 					
 						Map allresultMap = resultData.getData();
+						
 						/**
-						 * If the selected query is null i.e. if it is first time display then selecet first query   
+						 * If the selected query is null i.e. if it is first time display then selecet first query  default 'All' 
 						 */
 						if(queryKey==null)
 						{
@@ -129,6 +148,7 @@ public class SearchResultViewAction extends Action
 								NameValueBean bean = (NameValueBean)queryList.get(0);
 								queryKey = bean.getValue();
 								
+								
 							//	Logger.out.debug("Break : " +queryKey);
 							}
 						}
@@ -138,27 +158,70 @@ public class SearchResultViewAction extends Action
 						{
 							String s = (String)iter.next();
 						}
-
-						Map queryresultMap = (Map)allresultMap.get(queryKey);
-						columnList = (List)queryresultMap.get(GCConstants.COLUMN_HEADERS);
-						List selectInputOutputList= new ArrayList();
-						List columnHeaders = columnList;
-//						for(Iterator iter=columnHeaders.iterator();iter.hasNext();)
-//						{
-//							String colName = (String)iter.next();
-//							if ((!colName.endsWith(GCConstants.FREQUENCY_KEY_SUFFIX))
-//									&& (!colName.endsWith(GCConstants.CONF_SCORE_KEY))
-//									&& (!colName.endsWith(GCConstants.SET_ID_KEY)))
-//							{
-//								selectInputOutputList.add(colName);
-//							}
-//						}
-//						session.setAttribute(GCConstants.SELECTED_DATASOURCES,selectInputOutputList);
-						
-						// set result list on session so taht it can be used for pagenation and is user selects differnt query to view 
-						dataList = (List)queryresultMap.get(GCConstants.RESULT_LIST);
-						List resultList = (List)queryresultMap.get(GCConstants.GENOMICIDENTIIER_SET_RESULT_LIST);
-						session.setAttribute(GCConstants.GENOMICIDENTIIER_SET_RESULT_LIST,resultList);
+						/**
+						 * If all to display result of all query
+						 * merge the column list and data list of all query
+						 */
+						if(queryKey.equalsIgnoreCase(GCConstants.QUERY_KEY_ALL))
+						{
+							List queryList = (List)session.getAttribute(GCConstants.QUERY_KEY_MAP);
+							List tempColumn = new ArrayList();
+							Set tempColumnRemoved = new HashSet();
+							List tempData = new ArrayList();
+							columnList = new ArrayList();
+							dataList = new ArrayList();
+							columnHeaderRemoved= new HashSet();
+							for(int i=1;i<queryList.size();i++)
+							{
+								NameValueBean bean= (NameValueBean)queryList.get(i);
+								Map queryresultMap = (Map)allresultMap.get(bean.getValue());
+								tempColumn = (List)queryresultMap.get(GCConstants.COLUMN_HEADERS);
+								columnList.addAll(tempColumn);
+								// get the column header removed as part of no match found 
+								tempColumnRemoved = (Set)queryresultMap.get(GCConstants.COLUMN_HEADERS_REMOVED);
+								if(tempColumnRemoved!=null)
+								{
+									columnHeaderRemoved.addAll(tempColumnRemoved);
+								
+								}	
+								tempData = (List)queryresultMap.get(GCConstants.RESULT_LIST);
+								dataList.addAll(tempData);
+							}
+							// remove redundant column list
+							List temp = new ArrayList();
+							for(Iterator i = columnList.iterator();i.hasNext();)
+							{
+								String col = (String)i.next();
+								if(temp.contains(col))
+								{
+									i.remove();
+								}
+								else
+								{
+									temp.add(col);
+								}	
+								
+								
+							}
+						}
+						else
+						{
+							/**
+							 * if to display result selected query
+							 */
+							
+							Map queryresultMap = (Map)allresultMap.get(queryKey);
+							// get list of columns to display
+							columnList = (List)queryresultMap.get(GCConstants.COLUMN_HEADERS);
+							
+							//get the column header removed as part of no match found 
+							columnHeaderRemoved = (Set)queryresultMap.get(GCConstants.COLUMN_HEADERS_REMOVED);
+							// get data list
+							dataList = (List)queryresultMap.get(GCConstants.RESULT_LIST);
+							// get result list of GenomicIdentifierSet object
+							List resultList = (List)queryresultMap.get(GCConstants.GENOMICIDENTIIER_SET_RESULT_LIST);
+							session.setAttribute(GCConstants.GENOMICIDENTIIER_SET_RESULT_LIST,resultList);
+						}	
 						session.setAttribute("advancedSearchForm", new AdvancedSearchForm());
 				}
 				else
@@ -169,12 +232,72 @@ public class SearchResultViewAction extends Action
 					Logger.out.info("getting data and column from resultdata of simple search");
 					columnList = (List)resultData.getValue(GCConstants.COLUMN_HEADERS);
 					dataList = (List)resultData.getValue(GCConstants.RESULT_LIST);
-					//Logger.out.debug("SIMPLE: " +columnList);
-					//Logger.out.debug("SIMPLE: " +dataList);
 				}	
+				/**
+				 * prepare list of data source as a part of no match found message
+				 */
 				
+				if(columnHeaderRemoved!=null&&columnHeaderRemoved.size()>0)
+				{
+					noMatchFoundMessage= new StringBuffer();
+					int i=0;
+					 
+					for(Iterator it=columnHeaderRemoved.iterator();it.hasNext();)
+					{
+						String val = (String)it.next();
+						if(noMatchFoundMessage.indexOf(val)<0)
+						{
+							if(it.hasNext())
+							{
+								noMatchFoundMessage.append(val+",");
+							}
+							else
+							{
+								noMatchFoundMessage.append(val);
+							}
+							
+						}	
+						
+					}
+					Logger.out.info("noMatchFoundMessage :" +noMatchFoundMessage);
+				}
+				session.setAttribute(GCConstants.NO_MATCH_FOUND_MESSAGE, noMatchFoundMessage);
+				/**Sorting columns*/
+				Collections.sort(columnList);
+				/**remove Confidence score and SET_ID couln header and ad it to end of sorted list*/
+				for (java.util.Iterator iter = columnList.iterator(); iter.hasNext();)
+				{
+					String colValue = (String) iter.next();
+					if ((colValue.endsWith(GCConstants.CONF_SCORE_KEY))
+							|| (colValue.endsWith(GCConstants.SET_ID_KEY)))
+					{
+						iter.remove();
+
+					}
+				}
+				columnList.add(GCConstants.CONF_SCORE_KEY);
+				columnList.add(GCConstants.SET_ID_KEY);
 				session.setAttribute(GCConstants.SPREADSHEET_COLUMN_LIST, columnList);
 				session.setAttribute(GCConstants.SPREADSHEET_DATA_LIST, dataList);
+				/**
+				 * If the column is sorted on previous selected query tehn sort agin on same column if exists on
+				 * current selected query
+				 */
+				if(sortedColumn!=null&&sortedColumn.length()>0&&sortedColumnDirection!=null)
+				{
+					if(columnList.contains(sortedColumn))
+					{
+						sortedColumnIndex = ""+columnList.indexOf(sortedColumn);
+						List dslistToSort = (List) session.getAttribute(GCConstants.SPREADSHEET_DATA_LIST);
+						Utility.sortDataList(dslistToSort,sortedColumn,sortedColumnDirection);
+						session.setAttribute(GCConstants.SPREADSHEET_DATA_LIST, dslistToSort);
+					}
+					else
+					{
+						sortedColumn=null;
+						sortedColumnDirection=null;
+					}
+				}
 			}
 		}
 		if(pageOf!=null&&pageOf.equalsIgnoreCase(GCConstants.ADVANCED_SEARCH))
@@ -229,7 +352,8 @@ public class SearchResultViewAction extends Action
 
 		//Set the columnList in the request to be shown by grid control.
 		request.setAttribute(GCConstants.SPREADSHEET_COLUMN_LIST, columnList);
-
+		
+		
 		//Set the current pageNum in the request to be uesd by pagination Tag.
 		request.setAttribute(GCConstants.PAGE_NUMBER, Integer.toString(pageNum));
 
@@ -242,8 +366,15 @@ public class SearchResultViewAction extends Action
 		request.setAttribute(GCConstants.CONFIDENCE,isConfidenceChecked);
 		request.setAttribute(GCConstants.FREQUENCY,isFrequencyCheched);
 		request.setAttribute(GCConstants.SORTED_COLUMN,sortedColumn);
+		request.setAttribute(GCConstants.SORTED_COLUMN_INDEX,sortedColumnIndex);
 		request.setAttribute(GCConstants.SORTED_COLUMN_DIRECTION,sortedColumnDirection);
 		request.setAttribute(GCConstants.SELECTED_QUERY,queryKey);
 		return (mapping.findForward(forwardTo));
 	}
+	public static void main(String a[])
+	{
+		String  s= "<DIV>Ens tartn</DIV>";
+			System.out.println(s.substring(s.indexOf(">")+1,s.indexOf("</")));
+	}
+
 }

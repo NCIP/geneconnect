@@ -10,7 +10,6 @@ import edu.wustl.common.beans.NameValueBean;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
-import edu.wustl.geneconnect.domain.Gene;
 import edu.wustl.geneconnect.domain.GenomicIdentifierSet;
 import edu.wustl.geneconnect.metadata.MetadataManager;
 import edu.wustl.geneconnect.util.global.GCConstants;
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Restrictions;
 
 /**
  * caCOre Client provides method to access caCore Api and also provides implements the methods to 

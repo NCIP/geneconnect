@@ -74,7 +74,7 @@ public class GeneConnectServletContextListener implements ServletContextListener
 		 * Configuring the Logger class so that it can be utilized by
 		 * the entire application
 		 */
-		Logger.configure(applicationResourcesPath);
+		Logger.configure("geneconnect.logger");
 
 		Variables.applicationName = ApplicationProperties.getValue("app.name");
 		Variables.applicationVersion = ApplicationProperties.getValue("app.version");

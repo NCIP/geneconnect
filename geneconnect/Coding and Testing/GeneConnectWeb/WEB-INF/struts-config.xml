@@ -43,9 +43,22 @@ PUBLIC
 		name="simpleSearchForm"
 		validate="false"
 		scope="request">
-		<forward name="simpleSearch" path=".geneConnect.SimpleSearch"/>
+		<forward name="simpleSearch" path=".geneConnect.SimpleSearch"></forward>
+		<forward name="batchSearch" path="/AdvancedSearch.do"/>
 		<forward name="results" path="/SearchResultView.do"/>
 	</action>
+	<action path="/SimpleSearchResult"
+		type="edu.wustl.geneconnect.action.SimpleSearchAction"
+		name="simpleSearchForm"
+		input="/SimpleSearch.do?targetAction=populate"
+		validate="true"
+		scope="request">
+		<forward name="failure" path=".geneConnect.SimpleSearch"/>
+		<forward name="simpleSearch" path=".geneConnect.SimpleSearch"></forward>
+		<forward name="batchSearch" path="/AdvancedSearch.do"/>
+		<forward name="results" path="/SearchResultView.do"/>
+	</action>
+
 	
 	<action path="/SearchResultView"
 		type="edu.wustl.geneconnect.action.SearchResultViewAction"

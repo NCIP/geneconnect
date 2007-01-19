@@ -328,7 +328,7 @@
 	  		//Bug 700: changed the variable name for the map values as it was same in both AdvanceSearchForm and SimpleQueryInterfaceForm
 			String chkName = "value1(CHK_" + xx + ")";
 		%>
-			[<%for (j=0;j < (row.size()-1);j++){%>"<%=row.get(j)%>",<%}%>"<%=row.get(j)%>","","1"],<%}%>
+			[<%for (j=0;j < (row.size()-1);j++){ if(row.get(j)==null){%>"<%=" "%>",<%}else{%>"<%=row.get(j)%>",<%}}if(row.get(j)==null){%>"<%=" "%>"<%}else{%>"<%=row.get(j)%>","","1"],<%}}%>
 		<%
 			HashMap setMap = (HashMap)dataList.get(xx);
 			List row =new ArrayList();	
@@ -342,7 +342,7 @@
 	  		//Bug 700: changed the variable name for the map values as it was same in both AdvanceSearchForm and SimpleQueryInterfaceForm
 			String chkName = "value1(CHK_" + xx + ")";
 		%>
-			[<%for (j=0;j < (row.size()-1);j++){%>"<%=Utility.toGridFormat(row.get(j))%>",<%}%>"<%=Utility.toGridFormat(row.get(j))%>","","1"]
+			[<%for (j=0;j < (row.size()-1);j++){if(row.get(j)==null){%>"<%=" "%>",<%}else{%>"<%=row.get(j)%>",<%}}if(row.get(j)==null){%>"<%=" "%>"<%}else{%>"<%=row.get(j)%>","","1"]<%}%>
 			];
 <%}
 
@@ -359,8 +359,6 @@
 <%int imgCol = ((columnList.size() - IDCount));
 
 			%>
-
-
 
 <!-- Construc css for hide / unhide frequency and /or confidenc column -->
 <style type="text/css">
@@ -726,7 +724,7 @@ tr#hiddenCombo
 								    					 if(varSelCol==<%=imgCol%>)
 								    					 {
 															var url = ".."+"<%=request.getContextPath()%>"+"/GeneConnectGraph.do?setid="+myData[varSelRow][<%=columnForSetId%>];
-								    						newwindow=window.open(url,'name','height=600,width=540');
+								    						newwindow=window.open(url,'name','height=750,width=545,resizable=yes');
 															if (window.focus) {newwindow.focus()}
 								    					 }
 													}

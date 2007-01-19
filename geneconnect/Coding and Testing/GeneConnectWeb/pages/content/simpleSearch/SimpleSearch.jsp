@@ -20,7 +20,9 @@
 	import="edu.wustl.common.util.global.Constants"
 	import="edu.wustl.geneconnect.util.global.GCConstants"%>
 <!-- Imports -->
-<%List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
+<%
+SimpleSearchForm simpleform = (SimpleSearchForm )request.getAttribute("simpleSearchForm");
+List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 
 			Object obj = request.getAttribute("simpleSearchForm");
 			int noOfRows = 0;
@@ -32,6 +34,9 @@
 				SimpleSearchForm form = (SimpleSearchForm) obj;
 				map = form.getValues();
 				noOfRows = form.getCounter();
+
+				if(noOfRows > dataSourceList.size())
+					noOfRows = dataSourceList.size();
 			
 				targetAction=form.getTargetAction();
 
@@ -45,13 +50,33 @@
 <script src="jss/script.js"></script>
 
 <script>
+		// to store clipoard data on;y for safari browser
+		var safariClipBoardData=null;
 		var currentTextbox;
 		var seletedInputDataSource = new Array(<%=noOfRows%>);
 		var lasttrid=1;
+		// Only batch search for Simple funcionality
+		var isbatchSearch=true;
+		function setQueryType()
+		{
+			isbatchSearch=false;
+			var radio = document.getElementsByName("queryType");
+				if(radio!=null)
+				{
+					var c=0;
+					for(c=0;c<radio.length;c++)
+					{
+						if(radio[c].value=="Batch"&&radio[c].checked==true)
+						{
+							isbatchSearch=true;
+						}	
+					}
+				}
+		}		
 		//Add More functionality
 		function insRow(subdivtag)
 		{
-			disableAllOutputDataSource()
+			disableAllOutputDataSource();
 			
 			var val = parseInt(document.forms[0].counter.value);
 			
@@ -64,7 +89,9 @@
 			r = document.getElementById(subdivtag).rows;
 			
 			var q = r.length;
-			if(q==10)
+			
+			// this if condiftion is not get call because batch serarch wiil always be true
+			if(q==10&&isbatchSearch==false)
 			{
 				alert('The Number Input data source is limited to 10');
 				return;
@@ -77,6 +104,7 @@
 			spreqno.className="formField";
 		//	sname=(q+1);
 			var identifier = "value(Input:" + lasttrid +"_systemIdentifier)";
+			
 			sname="";
 			sname = sname + "<input type='checkbox' name='chk_" + (q+1) + "' id='chk_" + lasttrid + "'/>";
 			spreqno.innerHTML="" + sname;
@@ -116,8 +144,16 @@
 		
 			name = "value(Input:" + lasttrid + "_Genomic_Id)";
 			sname= "";
-			sname="<input type='text' name='" + name + "' size='30' maxlength='50'  class='formFieldSized15' id='" + name + "' onfocus='setCurrentTextBox(this)'>";
+			sname="<input type='text' name='" + name + "' size='30' maxlength='50'  class='formFieldSized15' id='" + name + "' onfocus='setCurrentTextBox(this)' onpaste='pasteForSafari(event);'>";
 			spreqsubtype.innerHTML="" + sname;
+			// set the value of newly added data source as selected before
+			previd = lasttrid-1;
+			var combo = document.getElementById("value(Input:" + previd + "_DataSource_Id)");
+			if(combo!=null)
+			{
+				selectValueforAllInputDataSource(combo);
+				disableOutputDataSource(combo,lasttrid)
+			}
 		}
 		
 		//validate int field
@@ -132,11 +168,6 @@
 		function checkAll(element)
 		{			
 			var checkbox2=element;
-			if(checkbox2.checked==true)
-			{
-				alert("Please be noted alignment based data is not available. Thus selecting all data sources may lead to empty results.");
-			}
-			
 			var checkBox;
 			<%
 				for(int i=0;i<dataSourceList.size();i++)
@@ -159,11 +190,39 @@
 			%>		
 		
 		}
+		
+		// function to check all input data source
+		function checkAllInput(checkallBox)
+		{
+			
+			var divObj=document.getElementById("addMore");
+			var rows = new Array(); 
+			rows = document.getElementById("addMore").rows; 
+			var totalrows = rows.length;
+			for(var i=0; i<totalrows; i++) 
+			{
+				var checkbox=divObj.rows[i].cells[0].firstChild;
+				
+				if(checkbox!=null)
+				{
+					if(checkallBox.checked==true)
+					{
+						checkbox.checked=true;
+					}
+					else
+					{
+						checkbox.checked=false;
+					}	
+					//alert("checkbox "+checkbox.name);
+				}
+				//alert("Input Value-->"+combo.value);
+			}
+		}
 		// function to disable selected ouput data source which is selected as input 
 		function disableOutputDataSource(ele,i)
 		{
 			//alert("In disableOutputDataSource()...");
-
+			var batchSearch=true;
 			if(ele.options[ele.selectedIndex].value == "-- Select --" || ele.options[ele.selectedIndex].value == "-1")
 			{
 				disableAllOutputDataSource();
@@ -198,10 +257,30 @@
 					}	
 					
 				}
+				//acth serach wil always be true
+				if(isbatchSearch==true)
+				{
+					for(j=1;j<seletedInputDataSource.length;j++)
+					{
+						//alert("select : "+seletedInputDataSource[j]);
+						chk = "value(Output:DataSource_Id_"+seletedInputDataSource[j]+")";
+						checkBox = document.getElementById(chk);
+						if(checkBox!=null)
+						{
+						
+							checkBox.disabled=false;
+						}
+						seletedInputDataSource[j]=ele.options[ele.selectedIndex].value;	
+					}
+					
+				}
 				seletedInputDataSource[i]=ele.options[ele.selectedIndex].value;
 				var j=1;
+			
+				
 				for(j=1;j<=seletedInputDataSource.length;j++)
 				{
+					
 					if(seletedInputDataSource[j]!=null)
 					{
 						chk = "value(Output:DataSource_Id_"+seletedInputDataSource[j]+")";
@@ -212,17 +291,77 @@
 						}	
 					}	
 				}
+				
+				
 			}
+			/// if batch search then on one combo selection select all other
+			if(isbatchSearch==true)
+			{
+					selectValueforAllInputDataSource(ele);
+			}	
 			
 			checkAllInputDataSourceValues();
 		}
+		function setSeletedInputDataSource(ele)
+		{
+			var divObj=document.getElementById("addMore");
+			var rows = new Array(); 
+			rows = document.getElementById("addMore").rows; 
+			var totalrows = rows.length;
+			var seletedInputDataSource = new Array(totalrows);
+			var ind=ele.options[ele.selectedIndex].value;
+			for(var i=0; i<totalrows; i++) 
+			{
+				seletedInputDataSource[i]=ind;
+				
+			}
+			
+		}
+		// for bacth search if user changes any of combo value then apply same value to 
+		//all other combo
+		function selectValueforAllInputDataSource(ele)
+		{
+			
+			var divObj=document.getElementById("addMore");
+			var rows = new Array(); 
+			rows = document.getElementById("addMore").rows; 
+			var totalrows = rows.length;
+			var seletedInputDataSource = new Array(totalrows);
+			var ind=ele.selectedIndex;
+			
+			tbodyRows = divObj.getElementsByTagName("select");
+			for(var n=0;n<tbodyRows.length;n++)
+			{
+				var combo=tbodyRows[n];
+				combo.selectedIndex=ind;
+				seletedInputDataSource[n]=ind;
+			}	
+	
+		}
+		// paste event for safari works on CTRL+V
+		function pasteForSafari(event)
+		{
+			if(event.clipboardData!=null&&safariClipBoardData==null)
+			{
+				// prevent the browser to invoke default paste functionality
+				event.preventDefault();
+				// get clipboard data
+				safariClipBoardData = event.clipboardData.getData("Text");
+				// call paste functionality
+				pasteData();
+				safariClipBoardData=null;
+			}
+		}
+		
 		//paste functionality
 		function pasteData()
 		{
+			// if user has not foccused on any of text box start pasting from first row
 			if(currentTextbox==null)
 			{
 				currentTextbox=document.getElementById( "value(Input:1_Genomic_Id)");
 			}
+			// get clipboard data and split it
 			var rows = splitGenomicIds();
 			// get row number from currently selected text box id
 			var stringObject = currentTextbox.id;
@@ -251,9 +390,10 @@
 					var tbodyRows = tbody.getElementsByTagName("input");
 					var isToselect=false;
 					var currentRowNum=0;
-					
+					// loop for each row
 					for(var n=0;n<tbodyRows.length;n++)
 					{
+						// get the row number of current text box(value pated in last text box)
 						if(tbodyRows[n].id==currentTextbox.id)
 						{
 							currentRowNum=n;
@@ -261,10 +401,12 @@
 							//isToselect=true;
 						}
 					}
+					// check if has more rows after current text box if not then insert one row
 					if(currentRowNum+1==tbodyRows.length)
 					{
 						insRow('addMore');
 					}
+					// set the currenttext box to next row
 					currentTextbox=tbodyRows[currentRowNum+2];
 					if(currentTextbox==null)
 						return;
@@ -277,11 +419,15 @@
 		{
 			var copiedData;
 			var rows ;
-			// get data from clipboard
-		
-			if(window.clipboardData)
+			// get data from clipboard for safari it is store in paste event
+			if(safariClipBoardData!=null)
 			{
-		
+				copiedData=safariClipBoardData;
+				//alert("copiedData: "+copiedData);
+			}
+			else if(window.clipboardData)
+			{
+				//alert("in IE");
 				copiedData = clipboardData.getData('Text');
 			}
 			else	
@@ -311,7 +457,11 @@
 				if (str1) copiedData = str1.data.substring(0,strLength.value / 2); 
 				
 			}
-
+			if(copiedData==null)
+			{
+				rows="";
+				return rows;
+			}
 			// split data with delima as \n
 			rows = copiedData.split("\n");
 			if(rows.length<=1)
@@ -328,6 +478,7 @@
 			}
 			var formattedRows=new Array();
 			var formattedRowCount=0;
+		//	alert("rows.length : "+rows.length);
 			for(var n=0;n<rows.length;n++)
 			{
 				if(rows[n]!="")
@@ -343,6 +494,7 @@
 		{
 			currentTextbox=t;
 		}
+
 		// delete the selected input data source
 		function deleteInputRow(subdivtag) 
 		{
@@ -352,37 +504,81 @@
 			var totalrows = rows.length;
 			var rowIdCounter = 0;
 			var rowIds = new Array();
-					for(var i=0; i<totalrows; i++) 
+			var deletecounter=0;
+			var selectOptionExists = false;
+			var tbodyRows = divObj.getElementsByTagName("input");
+			var tbodyRowsCounter=0;
+			// loop for each row and if that row is selected then add the rowid 
+			// in a list
+			for(var n=0;n<tbodyRows.length;n++)
 			{
-				var checkbox=divObj.rows[i].cells[0].firstChild;
-
-				if(checkbox.checked)
+				if(tbodyRows[n].type=="checkbox")
 				{
-					rowIds[rowIdCounter]=divObj.rows[i];
-					rowIdCounter=rowIdCounter+1;
-					
+					if(tbodyRows[n].checked==true)
+					{
+						rowIds[rowIdCounter]=rows[tbodyRowsCounter];
+						rowIdCounter=rowIdCounter+1;
+					}
+					tbodyRowsCounter++;
 				}
 			}
+			// loop on added row id to delete
+			var selectOptionToDelete = false;
 			for(var i=0; i<rowIds.length; i++) 
 			{
 				var rowObject=document.getElementById(rowIds[i].id);
-				var combo=rowIds[i].cells[1].firstChild;
+				//var combo=rowIds[i].cells[1].firstChild;
 				var j=0;
-				for(j=1;j<=seletedInputDataSource.length;j++)
+				selectOptionToDelete = true;
+				//alert("Deleting-->"+combo.options[combo.selectedIndex].value);
+
+			//	if(combo.options!=null & (combo.options[combo.selectedIndex].value == "-- Select --" || combo.options[combo.selectedIndex].value == "-1"))
+			//	{
+			//		selectOptionToDelete = true;
+			//	}
+				// set selected input data source as null and disable teh corresponding 
+				// ouput data source
+				if(seletedInputDataSource.length>0&&seletedInputDataSource[1]!=null)
 				{
-					if(combo.options!=null && seletedInputDataSource[j]==combo.options[combo.selectedIndex].value)
-					{
-//						disableOutputDataSource(combo,j)
-						chk = "value(Output:DataSource_Id_"+seletedInputDataSource[j]+")";
-						checkBox = document.getElementById(chk);
-						checkBox.disabled=false;
-						seletedInputDataSource[j]=null;
-					}
+					chk = "value(Output:DataSource_Id_"+seletedInputDataSource[1]+")";
+					checkBox = document.getElementById(chk);
+					checkBox.disabled=false;
+					seletedInputDataSource[j]=null;
 				}
 				divObj.removeChild(rowObject);
 				var value = document.forms[0].counter.value
 				value=value-1;
 				document.forms[0].counter.value=value;
+			}
+			tbodyRows = divObj.getElementsByTagName("select");
+			// after deleting rows loop again for each row and check if any combo is not selected
+			// if yes then disable all output data sources checkbox 
+			// else diable only correspoding ouput check box
+			for(var n=0;n<tbodyRows.length;n++)
+			{
+				var combo=tbodyRows[n];
+				if(combo.options!=null & (combo.options[combo.selectedIndex].value == "-- Select --" || combo.options[combo.selectedIndex].value == "-1"))
+				{
+					disableAllOutputDataSource();
+					break;
+				}
+				else
+				{
+					chk = "value(Output:DataSource_Id_"+combo.options[combo.selectedIndex].value+")";
+					checkBox = document.getElementById(chk);
+					checkBox.disabled=true;
+					
+				}
+			}
+			// if all rows are deleted then add one row	
+			if(rowIdCounter==totalrows)
+			{
+				insRow('addMore');
+				checkBox = document.getElementById("checkAllinput");
+				if(checkBox!=null)
+				{
+					checkBox.checked=false;
+				}
 			}
 		}
 
@@ -410,6 +606,7 @@
 			%>		
 
 		}
+		
 
 		function checkAllInputDataSourceValues()
 		{
@@ -445,26 +642,27 @@
 
 
 <!-- Displays Title -->
-<table summary="" cellpadding="0" cellspacing="0" border="0"
-	width="100%" height="6%">
-	<tr height="5%">
-		<td class="formTitle" width="100%"><bean:message
-			key="simpleSearch.title" /></td>
+<table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" height="30">
+	<tr>
+		<td class="formTitle" width="100%">
+			<bean:message key="simpleSearch.title" />
+		</td>
 	</tr>
 </table>
 <!-- Content of page -->
 
-<html:form action="SimpleSearch.do?targetAction=search">
-	<table summary="" cellpadding="0" cellspacing="0" border="0"
-		class="contentPage" width="800">
+<html:form action="SimpleSearchResult.do?targetAction=search">
+	<table summary="" cellpadding="0" cellspacing="0" border="0" class="contentPage" width="800">
+		
 		<tr>
 			<td valign="top" halign="Left">
 			<table summary="" cellpadding="1" cellspacing="0" border="0"
 				width="500">
+					
 				<tr>
 					<td><html:hidden property="counter" /></td>
 				</tr>
-				<tr>
+			<tr>
 <!-- Input data source title -->
 					<td class="formTitle" height="20" colspan="2"><bean:message
 						key="simpleSearch.input" /></td>
@@ -482,7 +680,8 @@
 				</tr>
 				<tr>
 
-					<td class="formLeftSubTableTitle" width="5%"></td>
+					<td class="formLeftSubTableTitle" width="5%"><input type="checkbox" id="checkAllinput"
+							name="checkAllinput" onClick="checkAllInput(this)"/></td>
 					<td class="formLeftSubTableTitle"><bean:message
 						key="simple.input.dataSource" /></td>
 					<td class="formRightSubTableTitle"><bean:message
@@ -511,9 +710,8 @@
 							<html:options collection="<%=GCConstants.DATA_SOURCES_KEY%>"
 								labelProperty="name" property="value" />
 						</html:select><html:hidden property="<%=identifier%>" /></td>
-						<td class="formField"><html:text styleClass="formFieldSized15"
-							maxlength="50" size="30" styleId="<%=genomicId%>"
-							property="<%=genomicId%>" onfocus="setCurrentTextBox(this)" /></td>
+						<td class="formField"><input type='text' name="<%=genomicId%>" size="30" maxlength="50"  class="formFieldSized15" id="<%=genomicId%>" onfocus="setCurrentTextBox(this)" onpaste="pasteForSafari(event);" />
+						</td>
 					</tr>
 					<%}
 
@@ -584,6 +782,20 @@
 
 <script>
 	var i=0;
+	<%
+		for (int i = 0; i < dataSourceList.size(); i++)
+		{
+			NameValueBean bean = (NameValueBean) dataSourceList.get(i);
+			String dsid=bean.getValue();
+	%>
+			var checkBox = document.getElementById("value(Output:DataSource_Id_"+<%=dsid%>+")");
+			if(checkBox!=null)
+			{
+				checkBox.disabled=false;
+			}	
+	<%
+		}
+	%>
 		for(i=1;i<=<%=noOfRows%>;i++)
 		{
 			var id ="value(Input:" + i + "_DataSource_Id)";
@@ -592,6 +804,11 @@
 			if(combo!=null)
 			{
 				//alert(combo.value);
+				if(combo.value == "-- Select --")
+				{
+					disableAllOutputDataSource();
+					break;
+				}
 				var checkBox = document.getElementById("value(Output:DataSource_Id_"+combo.value+")");
 				if(checkBox!=null)
 				{
@@ -602,5 +819,34 @@
 				
 			}	
 		}
+		<%
+		if(simpleform!=null&&simpleform.getOutputDsList()!=null)
+		{
+			List outputlist = simpleform.getOutputDsList();
+			for(int cnt=0;cnt<outputlist.size();cnt++)
+			{
+				String dsname = (String)outputlist.get(cnt);
+				String dsid="";
+				for (int i = 0; i < dataSourceList.size(); i++)
+				{
+					NameValueBean bean = (NameValueBean) dataSourceList.get(i);
+					if(bean.getName().equalsIgnoreCase(dsname))
+					{
+						dsid = bean.getValue();
+					}
+				}	
+		%>		
+				var dsvalue="<%=dsid%>";
+				var checkBox = document.getElementById("value(Output:DataSource_Id_"+dsvalue+")");
+				if(checkBox!=null)
+				{
+					checkBox.disabled=false;
+					checkBox.checked=true;
+				}	
+		<%		
+			}
+		}
+		%>
+		
 	</script>
 <!-- GeneConnect Simple Search page -->

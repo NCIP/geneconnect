@@ -22,7 +22,7 @@
 		<put name="content" value="/pages/content/simpleSearch/SimpleSearch.jsp" />
 	</definition>
 	<definition name=".geneConnect.SimpleSearchResult" extends=".geneConnect.homePageDef">
-		<put name="content" value="/pages/content/common/SearchResults.jsp" />
+		<put name="content" value="/pages/content/common/NewSearchResults.jsp" />
 	</definition>	
 
 	<definition name=".geneConnect.AdvancedSearch" extends=".geneConnect.homePageDef">
@@ -32,7 +32,7 @@
 		<put name="content" value="/pages/content/advancedSearch/AdvancedSearchSelectPath.jsp" />
 	</definition>
 	<definition name=".geneConnect.AdvancedSearchResult" extends=".geneConnect.homePageDef">
-		<put name="content" value="/pages/content/common/SearchResults.jsp" />
+		<put name="content" value="/pages/content/common/NewSearchResults.jsp" />
 	</definition>
 	<definition name=".geneConnect.Graph" path="/pages/content/graph/GeneConnectGraph.jsp">
 		<put name="content" value="/pages/content/graph/GeneConnectGraph.jsp" />

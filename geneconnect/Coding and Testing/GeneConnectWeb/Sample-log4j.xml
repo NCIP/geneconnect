@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<!-- ===================================================================== -->
+<!--                                                                       -->
+<!--  Log4j Configuration                                                  -->
+<!--                                                                       -->
+<!-- ===================================================================== -->
+
+<!-- $Id: Sample-log4j.xml,v 1.1 2007-01-19 17:55:29 nagarajr Exp $ -->
+
+<!--
+   | For more configuration infromation and examples see the Jakarta Log4j
+   | owebsite: http://jakarta.apache.org/log4j
+ -->
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/" debug="false">
+
+   <!-- ================================= -->
+   <!-- Preserve messages in a local file -->
+   <!-- ================================= -->
+
+   <!-- A time/date based rolling appender -->
+  
+   
+   <appender name="GENECONNECT_LOGGER" class="org.apache.log4j.FileAppender">
+         	<param name="File" value="${catalina.home}/logs/geneconnect.log" />
+         	<param name="Append" value="true" />
+         	<layout class="org.apache.log4j.PatternLayout">
+         		<param name="ConversionPattern" value="%d{dd MMM yyy HH:mm:ss}, %-6p %C:%M:%L %m %n" />
+         	</layout>
+   </appender>
+
+   <!-- ====================== -->
+   <!-- More Appender examples -->
+   <!-- ====================== -->
+
+ 
+   <!-- ================ -->
+   <!-- Limit categories -->
+   <!-- ================ -->
+
+  
+   <category name="geneconnect.logger">
+         	<priority value="DEBUG" />
+         	<appender-ref ref="GENECONNECT_LOGGER" />
+   </category>
+
+   <!-- Limit apache axis to INFO as its DEBUG is even more verbose -->
+ 
+
+</log4j:configuration>
