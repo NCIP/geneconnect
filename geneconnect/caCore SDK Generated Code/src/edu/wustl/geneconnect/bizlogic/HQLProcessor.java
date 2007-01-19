@@ -19,7 +19,11 @@ import edu.wustl.geneconnect.domain.LinkType;
 import edu.wustl.geneconnect.domain.OrderOfNodeTraversal;
 import edu.wustl.geneconnect.utility.Constants;
 import edu.wustl.geneconnect.utility.MetadataManager;
-
+/**
+ * This class interprets trhe HQL string from caGrid data service and creates teh domain object 
+ * @author sachin_lale
+ *
+ */
 public class HQLProcessor
 {
 

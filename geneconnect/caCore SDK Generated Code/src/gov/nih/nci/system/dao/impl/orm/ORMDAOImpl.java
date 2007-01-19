@@ -216,7 +216,8 @@ public class ORMDAOImpl
 							}
 							else
 							{
-								hCriteria.setMaxResults(resultsPerQuery.intValue());
+								//hCriteria.setMaxResults(resultsPerQuery.intValue());
+								hCriteria.setMaxResults(recordsPerQuery);
 							}
 						}
 						else
@@ -276,7 +277,8 @@ public class ORMDAOImpl
 							}
 							else
 							{
-								query.setMaxResults(resultsPerQuery.intValue());
+								//query.setMaxResults(resultsPerQuery.intValue());
+								query.setMaxResults(recordsPerQuery);
 							}
 						}
 						else
@@ -285,7 +287,10 @@ public class ORMDAOImpl
 
 						}
 					//	System.out.println("QUERY "+query.getQueryString());
+						
 						rs = query.list();
+						
+						
 						
 					}
 				}
@@ -293,6 +298,7 @@ public class ORMDAOImpl
 			else if (obj instanceof HQLCriteria)
 			{
 				Query hqlQuery = session.createQuery(((HQLCriteria) obj).getHqlString());
+				log.info("HQL: " +hqlQuery.getQueryString());
 				boolean isToprocessGC=false;
 				GenomicIdentifierSet gset =null;
 				if(isGenomicIdSet)
@@ -336,7 +342,8 @@ public class ORMDAOImpl
 						}
 						else
 						{
-							hqlQuery.setMaxResults(resultsPerQuery.intValue());
+							//hqlQuery.setMaxResults(resultsPerQuery.intValue());
+							hqlQuery.setMaxResults(recordsPerQuery);
 						}
 					}
 					else
@@ -442,7 +449,6 @@ public class ORMDAOImpl
 			{
 				maxRecordsPerQuery = new Integer(maxResultsPerQuery).intValue();
 			}
-
 		}
 		catch (IOException e)
 		{

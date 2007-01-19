@@ -4,8 +4,10 @@ package edu.wustl.geneconnect.bizlogic;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -54,12 +56,8 @@ public class GCBizLogic
 		float totalScore = 0.0f;
 
 		/**
-		 * Calculate Total score
+		 * If ONT is selected by user Calculate Total score based on ONT selected
 		 */
-		//		if (rs.size() > 0)
-		//		{
-		//			totalScore = totalScore + rs.size();
-		//		}
 		if (ontList.size() > 0 && rs.size() > 0)
 		{
 			//System.out.println("ontList---" +ontList);
@@ -68,18 +66,14 @@ public class GCBizLogic
 			log.info("ONT list :" + ontList.size());
 			log.info("ONT list selected :" + ontList.get(0));
 			setONTcountMap(rs, ontList);
-			//totalScore = totalScore + rs.size();
-			//			for(int i=0;i<rs.size();i++)
-			//			{
-			//				GenomicIdentifierSet set = (GenomicIdentifierSet)rs.get(i);
-			//				set.setConfidenceScore(new Float(1));
-			//			}
 		}
+		/**
+		 * else calulate score based on default ont criteria
+		 */
 		else
 		{
 			log.info("calculating total score without ONT list");
-
-			setONTcountMap(rs, selectedInput, selectedOutput);
+			setONTcountMap(rs, selectedInput, selectedOutput, Constants.DEFAULT_ONT_SELECTION_LOGIC);
 
 		}
 		if (ontCountMapForSet != null)
@@ -218,6 +212,8 @@ public class GCBizLogic
 	void processFrequency(List rs, List freqList, float totalScore, boolean isFreqGreaterThanEqual)
 			throws Exception
 	{
+		long t1 = System.currentTimeMillis();
+
 		GenomicIdentifierSolution sol = new GenomicIdentifierSolution();
 
 		//System.out.println("freqList.size() :" +freqList.size());
@@ -483,6 +479,9 @@ public class GCBizLogic
 			log.error("Exception in the ORMDAOImpl while calcuting Frequency - " + ex.getMessage());
 			throw new Exception("Exception in the ORMDAOImpl while calcuting Frequency - " + ex);
 		}
+		long t2 = System.currentTimeMillis();
+		log.info("TIME FOR Frequency: " + ((t2 - t1) / 1000));
+
 	}
 
 	/**
@@ -767,8 +766,8 @@ public class GCBizLogic
 				Long setId = set.getId();
 				//System.out.println("comapring OPNT of SET ID " +setId);
 				log.info("comapring ONT of SET ID " + setId);
-				//Collection ontColl = set.getOrderOfNodeTraversalCollection();
-				Collection ontColl = getOrderofNodeTraversal(set);
+				Collection ontColl = set.getOrderOfNodeTraversalCollection();
+				//Collection ontColl = getOrderofNodeTraversal(set);
 				Collection newOntCollection = new ArrayList();
 				int count = 0;
 				if (ontColl != null)
@@ -858,10 +857,13 @@ public class GCBizLogic
 	 * @param rs
 	 * @param selectedInput
 	 * @param selectedOutput
+	 * @param ontSelectionLogic - the ONT criteria identifier 1- for default criteria and 2 - for no match found criteria
 	 */
-	void setONTcountMap(List rs, List selectedInput, List selectedOutput)
+	void setONTcountMap(List rs, List selectedInput, List selectedOutput, int ontSelectionLogic)
 	{
 		long t1 = System.currentTimeMillis();
+		List outputDataSourceFound = new ArrayList();
+		HashMap setToRemoveList = new HashMap();
 		for (Iterator setIter = rs.iterator(); setIter.hasNext();)
 		{
 			GenomicIdentifierSet set = (GenomicIdentifierSet) setIter.next();
@@ -903,15 +905,43 @@ public class GCBizLogic
 							}
 
 						}
-						if (ontCondition && dataSourcelist.containsAll(selectedInput)
-								&& dataSourcelist.containsAll(selectedOutput))
+						if (ontSelectionLogic == Constants.DEFAULT_ONT_SELECTION_LOGIC)
 						{
-							count++;
-							//	newOntCollection.add(headont);
-							newOntCollection.add(ont);
-							log.info("Select ONT: " + dataSourcelist.toString());
-							//System.out.println("Select ONT: " + dataSourcelist.toString());
+							if (ontCondition && dataSourcelist.containsAll(selectedInput)
+									&& dataSourcelist.containsAll(selectedOutput))
+							{
+								count++;
+								//	newOntCollection.add(headont);
+								newOntCollection.add(ont);
+								log.info("Select ONT: " + dataSourcelist.toString());
+
+								//System.out.println("Select ONT: " + dataSourcelist.toString());
+							}
 						}
+						else if (ontSelectionLogic == Constants.NOMATCH_ONT_SELECTION_LOGIC)
+						{
+							if (ontCondition && dataSourcelist.containsAll(selectedInput))
+							{
+								for (int i = 0; i < selectedOutput.size(); i++)
+								{
+									if (!firstDataSource.toString().equalsIgnoreCase(
+											(String) selectedOutput.get(i))
+											|| !lastDataSource.toString().equalsIgnoreCase(
+													(String) selectedOutput.get(i)))
+									{
+										if (dataSourcelist.contains(selectedOutput.get(i)))
+										{
+											count++;
+											//	newOntCollection.add(headont);
+											newOntCollection.add(ont);
+											log.info("Select ONT: " + dataSourcelist.toString());
+											break;
+										}
+									}
+								}
+							}
+						}
+
 					}
 				}
 				if (count > 0)
@@ -923,79 +953,185 @@ public class GCBizLogic
 				}
 				else
 				{
-					setIter.remove();
-					log.info("Remove set for ONT----" + setId + "---" + count);
+					for (Iterator iter = ontColl.iterator(); iter.hasNext();)
+					{
+						OrderOfNodeTraversal ont = (OrderOfNodeTraversal) iter.next();
+						List dataSourcelist = MetadataManager.getDataSourceListFromONT(ont.getId());
+						for (int i = 0; i < dataSourcelist.size(); i++)
+						{
+							// check if the current data source is selected as outpu and not inserted in found dats source list 
+							if (selectedOutput.contains(dataSourcelist.get(i))
+									&& !outputDataSourceFound.contains(dataSourcelist.get(i)))
+							{
+								outputDataSourceFound.add(dataSourcelist.get(i));
+							}
+						}
+					}
+					log.info("outputDataSourceFound: " + outputDataSourceFound);
+
+					//setToRemoveList.put(setId,"");
+					//setIter.remove();
+					//	log.info("Remove set for ONT----" + setId + "---" + count);
 				}
+			}
+		}
+		/**
+		 * logic to check if result is null and if subset of select output data source is not found in any of ONT
+		 * then re-call the method to select onts by setting output data source which are foud in in previos set.
+		 */
+		log.info("ontCountMapForSet.keySet().size(): " + ontCountMapForSet.keySet().size());
+		log.info("outputDataSourceFound.size(): " + outputDataSourceFound.size());
+		log.info("selectedOutput.size(): " + selectedOutput.size());
+		/**
+		 * If no result found then sekect a ONTs with criteria as 
+		 * start/end with input/output AND atleas one output other than start/end is included.
+		 * 
+		 */
+		if (ontCountMapForSet.keySet().size() == 0
+				&& outputDataSourceFound.size() < selectedOutput.size())
+		{
+			ontCountMapForSet = new HashMap();
+			for (Iterator outputIter = selectedOutput.iterator(); outputIter.hasNext();)
+			{
+				if (!outputDataSourceFound.contains(outputIter.next()))
+				{
+					outputIter.remove();
+				}
+			}
+			log.info("call ing method again with output as :" + selectedOutput);
+			setONTcountMap(rs, selectedInput, selectedOutput, Constants.NOMATCH_ONT_SELECTION_LOGIC);
+
+			/**
+			 * remove the subset from the results
+			 */
+			if (ontCountMapForSet != null && ontCountMapForSet.size() > 0)
+			{
+				removeSubSetFromResult(rs, selectedOutput);
+			}
+		}
+		// remove those record from result where its ONT count is not set. 
+		for (Iterator setIter = rs.iterator(); setIter.hasNext();)
+		{
+			GenomicIdentifierSet set = (GenomicIdentifierSet) setIter.next();
+			Long setId = set.getId();
+			if (ontCountMapForSet.get(setId) == null)
+			{
+				setIter.remove();
+				log.info("Remove set for ONT----" + setId);
 			}
 		}
 		long t2 = System.currentTimeMillis();
 		log.info("TIME FOR ONT: " + ((t2 - t1) / 1000));
 	}
 
-	Collection getOrderofNodeTraversal(GenomicIdentifierSet gset)
+	/**
+	 * removes the subset from the result
+	 * @param rs
+	 * @param selectedOutput
+	 */
+	void removeSubSetFromResult(List rs, List selectedOutput)
 	{
-
+		log.info("start of removing subset");
 		try
 		{
-			ApplicationService applicationService = ApplicationServiceProvider
-					.getApplicationService();
-			edu.wustl.geneconnect.domain.GenomicIdentifierSet thisIdSet = new edu.wustl.geneconnect.domain.GenomicIdentifierSet();
-			thisIdSet.setId(gset.getId());
-			java.util.Collection resultList = applicationService.search(
-					"edu.wustl.geneconnect.domain.OrderOfNodeTraversal", thisIdSet);
-
-			return resultList;
-
-		}
-		catch (Exception ex)
-		{
-			System.out
-					.println("GenomicIdentifierSet:getOrderOfNodeTraversalCollection throws exception ... ...");
-			ex.printStackTrace();
-		}
-		return null;
-
-	}
-
-	Collection getCollection(Object domainObject, Class targetClass)
-	{
-		try
-		{
-			Object sourceObject = null;
-			if (domainObject instanceof Gene)
+			int countForNullGenomicId = 0;
+			Map listOfResultSubSet = new Hashtable();
+			/**
+			 * Iterate over a result set and get the value of selected output datasource
+			 * add this to the list
+			 */
+			for (Iterator iter = rs.iterator(); iter.hasNext();)
 			{
-				Gene gene = (Gene) domainObject;
-				gene.setId(((Gene) domainObject).getId());
-				sourceObject = gene;
-			}
-			else if (domainObject instanceof MessengerRNA)
-			{
-				MessengerRNA mrna = (MessengerRNA) domainObject;
-				mrna.setId(((MessengerRNA) domainObject).getId());
-				sourceObject = mrna;
-			}
-			else if (domainObject instanceof Protein)
-			{
-				Protein protein = (Protein) domainObject;
-				protein.setId(((Protein) domainObject).getId());
-				sourceObject = protein;
+				GenomicIdentifierSet set = (GenomicIdentifierSet) iter.next();
+				Long setID = new Long(set.getId());
+				/**
+				 * TODO set genomicIdentifierSetCoolection to Gene mrna protein objects 
+				 */
+				Gene gene = set.getGene();
+				Protein protein = set.getProtein();
+				MessengerRNA mrna = set.getMessengerRNA();
+				Set resultSubSet = new HashSet();
+				for (int i = 0; i < selectedOutput.size(); i++)
+				{
+					String dataSourceName = (String) selectedOutput.get(i);
+					String domainClassName = MetadataManager.getDataSourceAttribute(
+							Constants.DATASOURCE_NAME, dataSourceName, Constants.CLASS);
+					Class dmClass = Class.forName(Constants.DOMAIN_CLASSNAME_PREFIX + "."
+							+ domainClassName);
+					Object objectMethodToInvoke = null;
+					if (domainClassName.equalsIgnoreCase("Gene"))
+					{
+						objectMethodToInvoke = gene;
+					}
+					else if (domainClassName.equalsIgnoreCase("MessengerRNA"))
+					{
+						objectMethodToInvoke = mrna;
+					}
+					else if (domainClassName.equalsIgnoreCase("Protein"))
+					{
+						objectMethodToInvoke = protein;
+					}
 
+					String dataSourceAttribute = MetadataManager.getDataSourceAttribute(
+							Constants.DATASOURCE_NAME, dataSourceName, Constants.ATTRIBUTE);
+					String temp = dataSourceAttribute.substring(0, 1).toUpperCase();
+					String methodName = "get" + temp
+							+ dataSourceAttribute.substring(1, dataSourceAttribute.length());
+					//	System.out.println("in OP DS LISt : "+methodName); 
+
+					Method method = dmClass.getDeclaredMethod(methodName, null);
+					Object value = method.invoke(objectMethodToInvoke, null);
+					//System.out.println("dataSourceName :" +dataSourceName +"--"+value);
+					if ((value != null))
+					{
+						resultSubSet.add(value);
+					}
+
+				}
+				boolean addsettolist = true;
+				Set keyset = listOfResultSubSet.keySet();
+				log.info("set1: " + resultSubSet);
+
+				/**
+				 *  compare the set in list with the new set of values.
+				 *  if the new set is a subset of any previously added set in the list then do remove new set from result.
+				 *  If the new set is super set of any previously added set in the list then remove the subset from list and result.
+				 *  else add the new set ina list.   
+				 */
+
+				for (Iterator setIt = keyset.iterator(); setIt.hasNext();)
+				{
+					Long key = (Long) setIt.next();
+					Set s = (Set) listOfResultSubSet.get(key);
+					log.info("set2: " + s);
+					if (resultSubSet.containsAll(s))
+					{
+						listOfResultSubSet.remove(key);
+						listOfResultSubSet.put(setID, resultSubSet);
+						log.info("removed set from list exists Set: " + key);
+						ontCountMapForSet.remove(key);
+						addsettolist = false;
+						break;
+					}
+					if (s.containsAll(resultSubSet))
+					{
+						log.info("removed set for subset of slreasdy exists Set: " + setID);
+						ontCountMapForSet.remove(setID);
+						addsettolist = false;
+						break;
+					}
+				}
+				if (addsettolist)
+				{
+					log.info("set1 added: " + resultSubSet);
+					listOfResultSubSet.put(setID, resultSubSet);
+				}
 			}
-			ApplicationService applicationService = ApplicationServiceProvider
-					.getApplicationService();
-			java.util.Collection resultList = applicationService.search(targetClass.getName(),
-					sourceObject);
-
-			return resultList;
-
 		}
-		catch (Exception ex)
+		catch (Exception e)
 		{
-			System.out
-					.println("GenomicIdentifierSet:getOrderOfNodeTraversalCollection throws exception ... ...");
-			ex.printStackTrace();
+			log.error(e.getMessage(), e);
 		}
-		return null;
 	}
 
 	/**
@@ -1003,8 +1139,21 @@ public class GCBizLogic
 	 */
 	public static void main(String ard[])
 	{
-		float f1 = 1.0f;
-		float f2 = 1.0f;
-		System.out.println(f1 > f2);
+		//		float f1 = 1.0f;
+		//		float f2 = 1.0f;
+		//		System.out.println(f1 > f2);
+		List l = new ArrayList();
+		Set set1 = new HashSet();
+		set1.add("A");
+		set1.add("C");
+		Set set2 = new HashSet();
+		set2.add("A");
+		set2.add("B");
+		set2.add("C");
+		
+		if (set1.containsAll(set2))
+			System.out.println("remove set2");
+		if (set2.containsAll(set1))
+			System.out.println("remove set1");
 	}
 }

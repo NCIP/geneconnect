@@ -32,6 +32,7 @@
 					</javac>
 	</target>
 	<target name="runJunit" depends="compile">
+		<copy file="${basedir}/remoteService.xml" todir="${basedir}/classes" />
 		<junit dir="${basedir}" printsummary="yes" showoutput="true">
 			<classpath refid="cp"/>
 		            <formatter type="xml" />

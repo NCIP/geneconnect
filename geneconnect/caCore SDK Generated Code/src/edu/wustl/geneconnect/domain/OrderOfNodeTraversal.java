@@ -79,35 +79,35 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 
 	public java.util.Collection getGenomicIdentifierSetCollection()
 	{
-//		System.out.println("DEBUG 22");
-//		try
-//		{
-//			if (genomicIdentifierSetCollection.size() == 0)
-//			{
-//			}
-//		}
-//		catch (Exception e)
-//		{
-//			ApplicationService applicationService = ApplicationServiceProvider
-//					.getApplicationService();
-//			try
-//			{
-//
-//				edu.wustl.geneconnect.domain.OrderOfNodeTraversal thisIdSet = new edu.wustl.geneconnect.domain.OrderOfNodeTraversal();
-//				thisIdSet.setId(this.getId());
-//				java.util.Collection resultList = applicationService.search(
-//						"edu.wustl.geneconnect.domain.GenomicIdentifierSet", thisIdSet);
-//				genomicIdentifierSetCollection = resultList;
-//				return resultList;
-//
-//			}
-//			catch (Exception ex)
-//			{
-//				System.out
-//						.println("OrderOfNodeTraversal:getGenomicIdentifierSetCollection throws exception ... ...");
-//				ex.printStackTrace();
-//			}
-//		}
+		System.out.println("DEBUG 22");
+		try
+		{
+			if (genomicIdentifierSetCollection.size() == 0)
+			{
+			}
+		}
+		catch (Exception e)
+		{
+			ApplicationService applicationService = ApplicationServiceProvider
+					.getApplicationService();
+			try
+			{
+
+				edu.wustl.geneconnect.domain.OrderOfNodeTraversal thisIdSet = new edu.wustl.geneconnect.domain.OrderOfNodeTraversal();
+				thisIdSet.setId(this.getId());
+				java.util.Collection resultList = applicationService.search(
+						"edu.wustl.geneconnect.domain.GenomicIdentifierSet", thisIdSet);
+				genomicIdentifierSetCollection = resultList;
+				return resultList;
+
+			}
+			catch (Exception ex)
+			{
+				System.out
+						.println("OrderOfNodeTraversal:getGenomicIdentifierSetCollection throws exception ... ...");
+				ex.printStackTrace();
+			}
+		}
 
 		return genomicIdentifierSetCollection;
 	}

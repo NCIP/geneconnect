@@ -70,5 +70,8 @@ public class Constants
 	public static final String SEARCH_FOR_PROTEIN = "From edu.wustl.geneconnect.domain.Protein";
 	public static final String SEARCH_FOR_CONFIDENCE = "confidenceScore";
 	
+	public static final int DEFAULT_ONT_SELECTION_LOGIC = 1;
+	public static final int NOMATCH_ONT_SELECTION_LOGIC = 2;
+	
 	
 }

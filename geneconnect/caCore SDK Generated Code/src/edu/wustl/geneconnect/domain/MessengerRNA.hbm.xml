@@ -15,17 +15,17 @@
 	<property name="genbankmRNAAsOutput" formula="(select 1 from dual)"/>
 	<property name="refseqmRNAAsOutput" formula="(select 1 from dual)"/>
     
-    <!--set name="genomicIdentifierSetCollection" lazy="true" inverse="true">
+    <set name="genomicIdentifierSetCollection" lazy="true" inverse="true">
       <cache usage="read-write" />
       <key column="MRNA_ID" />
       <one-to-many class="edu.wustl.geneconnect.domain.GenomicIdentifierSet" />
-    </set-->
-    <set name="proteinCollection" table="MRNA_PROTEIN" lazy="false">
+    </set>
+    <set name="proteinCollection" table="MRNA_PROTEIN" lazy="true">
       <cache usage="read-write" />
       <key column="MRNA_ID" />
       <many-to-many class="edu.wustl.geneconnect.domain.Protein" column="PROTEIN_ID" />
     </set>
-    <set name="geneCollection" table="GENE_MRNA" lazy="false">
+    <set name="geneCollection" table="GENE_MRNA" lazy="true">
       <cache usage="read-write" />
       <key column="MRNA_ID" />
       <many-to-many class="edu.wustl.geneconnect.domain.Gene" column="GENE_ID" />

@@ -29,6 +29,8 @@ import edu.wustl.geneconnect.utility.MetadataManager;
 
 /**
  * Provides method to interpret DetachedCriteria and creation of new DetachedCriteria
+ * and also methods to interpret the domain objects stroes teh selected in put and output data source for 
+ * confidecen and frequecny calculation
  * @author sachin_lale
  *
  */
@@ -269,7 +271,7 @@ public class ResultProcessor
 		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
 				Constants.GENE_CLASS_NAME);
 		log.info("debug1");
-		System.out.println("roleName " + roleName);
+		//System.out.println("roleName " + roleName);
 		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
 		field.setAccessible(true);
 		Object gene = field.get(set);
@@ -277,7 +279,7 @@ public class ResultProcessor
 		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
 				Constants.MRNA_CLASS_NAME);
 		log.info("debug2");
-		System.out.println("roleName " + roleName);
+		//System.out.println("roleName " + roleName);
 		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
 		field.setAccessible(true);
 		Object mrna = field.get(set);
@@ -285,9 +287,9 @@ public class ResultProcessor
 		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
 				Constants.PROTEIN_CLASS_NAME);
 		log.info("debug3");
-		System.out.println("debug3");
-		System.out.println("roleName " + roleName);
-		System.out.println("debug4");
+		//System.out.println("debug3");
+		//System.out.println("roleName " + roleName);
+		//System.out.println("debug4");
 		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
 		field.setAccessible(true);
 		Object protein = field.get(set);
@@ -370,7 +372,7 @@ public class ResultProcessor
 				//	System.out.println("in OP DS LISt : "+methodName); 
 				method = MessengerRNA.class.getDeclaredMethod(methodName, null);
 				value = method.invoke(mrna, null);
-				System.out.println("methodName " + value);
+				//System.out.println("methodName " + value);
 				if (value != null)
 				{
 					System.out.println("output Addedd :" + dataSourceName);
@@ -412,7 +414,7 @@ public class ResultProcessor
 				//	System.out.println("in OP DS LISt : "+methodName); 
 				method = Protein.class.getDeclaredMethod(methodName, null);
 				value = method.invoke(protein, null);
-				System.out.println("methodName " + value);
+				//System.out.println("methodName " + value);
 				if (value != null)
 				{
 					System.out.println("output Addedd :" + dataSourceName);
@@ -591,7 +593,7 @@ public class ResultProcessor
 	{
 		GCBizLogic gcBizlogic = new GCBizLogic();
 
-		gcBizlogic.prepareResult(rs, selectedOutputDataSourceList);
+		//gcBizlogic.prepareResult(rs, selectedOutputDataSourceList);
 
 		log.info("ResultSet Size after prepareResult(): " + rs.size());
 
@@ -748,10 +750,10 @@ public class ResultProcessor
 			{
 				ontCrit.add(Restrictions.isNull("childOrderOfNodeTraversal"));
 				log.info("Adding ISNULL next ");
-				System.out.println("LINK ADDED " + linkType);
+				//System.out.println("LINK ADDED " + linkType);
 			}
 		}
-		System.out.println(genomicIdSetCriteria);
+		//System.out.println(genomicIdSetCriteria);
 		return genomicIdSetCriteria;
 	}
 
