@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="gme://caCORE.cabig/3.0/edu.wustl.geneconnect" xmlns:edu.wustl.geneconnect.domain="gme://caCORE.cabig/3.0/edu.wustl.geneconnect.domain" targetNamespace="gme://caCORE.cabig/3.0/edu.wustl.geneconnect" elementFormDefault="qualified">
+  <xs:import namespace="gme://caCORE.cabig/3.0/edu.wustl.geneconnect.domain" schemaLocation="edu.wustl.geneconnect.domain.xsd" />
+  <xs:element name="GenomicIdentifierSolution" type="GenomicIdentifierSolution" />
+  <xs:complexType name="GenomicIdentifierSolution">
+    <xs:sequence>
+      <xs:element name="genomicIdentifierSetCollection" type="edu.wustl.geneconnect.domain:GenomicIdentifierSet" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="consensusIdentifierDataCollection" type="edu.wustl.geneconnect.domain:ConsensusIdentifierData" minOccurs="0" maxOccurs="unbounded" />
+    </xs:sequence>
+    <xs:attribute name="id" type="xs:long" />
+  </xs:complexType>
+</xs:schema>
+
