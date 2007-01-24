@@ -7,33 +7,49 @@ package edu.wustl.geneconnect.domain;
  */
 
 /**
-
+ * This class represents the type of link between a pair of genomic identifiers that are linked to each other.
  */
-
 public class LinkType implements java.io.Serializable
 {
 
 	private static final long serialVersionUID = 1234567890L;
-
+	/**
+	 * Unique identifier of LinkType.
+	 */
 	private java.lang.Long id;
-
+/**
+ * Returns the unique identifier of LinkType.
+ * @return unique identifier
+ */
 	public java.lang.Long getId()
 	{
 		return id;
 	}
-
+/**
+ * Sets the unique identifier to this LinkType object.
+ * @param id
+ */
 	public void setId(java.lang.Long id)
 	{
 		this.id = id;
 	}
-
+/**
+ * It denotes the type of link between a pair of genomic identifiers. 
+ * Possible values could be one of the Direct Annotation, Inferred Annotation or Alignment-based similarity.
+ */
 	private java.lang.String type;
-
+/**
+ * Returns the type of link between a pair of genomic identifiers.
+ * @return type
+ */
 	public java.lang.String getType()
 	{
 		return type;
 	}
-
+/**
+ * Sets the type of link between a pair of genomic identifiers.
+ * @param type
+ */
 	public void setType(java.lang.String type)
 	{
 		this.type = type;

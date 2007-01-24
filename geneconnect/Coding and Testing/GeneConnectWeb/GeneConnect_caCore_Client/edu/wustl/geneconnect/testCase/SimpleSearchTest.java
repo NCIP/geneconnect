@@ -4,13 +4,17 @@ package edu.wustl.geneconnect.testCase;
 import edu.wustl.geneconnect.GenomicIdentifierSolution;
 import edu.wustl.geneconnect.domain.Gene;
 import edu.wustl.geneconnect.domain.GenomicIdentifierSet;
+import edu.wustl.geneconnect.domain.LinkType;
 import edu.wustl.geneconnect.domain.MessengerRNA;
+import edu.wustl.geneconnect.domain.OrderOfNodeTraversal;
 import edu.wustl.geneconnect.domain.Protein;
 import gov.nih.nci.system.applicationservice.ApplicationService;
 import gov.nih.nci.system.applicationservice.ApplicationServiceProvider;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -115,7 +119,7 @@ public class SimpleSearchTest extends TestCase
 			/**
 			 * Iterate over result set and compare the values with expected list
 			 */
-			System.out.println("Ensembl Gene"+ "\t" + "UniGene" + "\t" + "Ensembl Transcript"+ "\t"
+			System.out.println("Set ID \tEnsembl Gene"+ "\t" + "UniGene" + "\t" + "Ensembl Transcript"+ "\t"
 					+ "Ensembl Protein" + "\t" + "Confidence Score");
 			for (int i = 0; i < resultList.size(); i++)
 			{
@@ -131,8 +135,46 @@ public class SimpleSearchTest extends TestCase
 
 				Float confidence = returnedSet.getConfidenceScore();
 
-				System.out.println(ensemblGeneId + "\t" + unigeneId + "\t" + ensemblTransId + "\t"
+				System.out.println(returnedSet.getId()+"\t"+ensemblGeneId + "\t" + unigeneId + "\t" + ensemblTransId + "\t"
 						+ ensemblPeptideId + "\t" + confidence);
+				Collection ontCollection = returnedSet.getOrderOfNodeTraversalCollection();
+				System.out.println("Associated Order of Node traversal with Set: " +returnedSet.getId());
+				int k=1;
+				for (Iterator iter1 = ontCollection.iterator(); iter1.hasNext();)
+				{
+					
+					OrderOfNodeTraversal ont = (OrderOfNodeTraversal) iter1.next();
+					List ontList = new ArrayList();
+					OrderOfNodeTraversal tempont = ont;
+					while (tempont != null)
+					{
+						LinkType ltype = tempont.getLinkType();
+						String linkType = null;
+						ontList.add(tempont.getSourceDataSource().getName());
+						if (ltype != null)
+						{
+							ontList.add(ltype.getType());
+						}	
+						
+						OrderOfNodeTraversal nextont = tempont.getChildOrderOfNodeTraversal();
+						tempont = nextont;
+					}
+					int j=0;
+					if(ontList.size()>0)
+					{
+						System.out.print("\t"+k+": ");
+						k++;
+					}	
+					for(j=0;j<ontList.size()-1;j++)
+					{
+						System.out.print(ontList.get(j)+"--");
+					}
+					if(j>0)
+					{
+						System.out.println(ontList.get(j));
+					}
+				}
+
 				boolean equalAll = false;
 				/**
 				 * Iterate over the expected list and find is the result is as expected

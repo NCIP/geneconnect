@@ -14,14 +14,24 @@ public class UniGene extends GeneGenomicIdentifier implements java.io.Serializab
 {
 
 	private static final long serialVersionUID = 1234567890L;
-
+/**
+ * Contains genomic identifier value for UniGene data source.
+ */
 	protected java.lang.String genomicIdentifier;
-
+	/**
+	 * Returns the genomic identifier value for UniGene data source.
+	 * @return genomicIdentifier
+	 * @see edu.wustl.geneconnect.domain.GenomicIdentifier#getGenomicIdentifier()
+	 */	
 	public java.lang.String getGenomicIdentifier()
 	{
 		return genomicIdentifier;
 	}
-
+	/**
+	 * Sets the genomic identifier value for UniGene data source.
+	 * @param genomicIdentifier
+	 * @see edu.wustl.geneconnect.domain.GenomicIdentifier#setGenomicIdentifier(java.lang.Object genomicIdentifier)
+	 */	
 	public void setGenomicIdentifier(java.lang.String genomicIdentifier)
 	{
 		this.genomicIdentifier = genomicIdentifier;

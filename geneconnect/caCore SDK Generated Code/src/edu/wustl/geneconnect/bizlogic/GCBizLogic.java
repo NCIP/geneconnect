@@ -60,7 +60,6 @@ public class GCBizLogic
 		 */
 		if (ontList.size() > 0 && rs.size() > 0)
 		{
-			//System.out.println("ontList---" +ontList);
 			log.info("calculating total score with ONT list");
 			System.out.println("ONT list :" + ontList.size());
 			log.info("ONT list :" + ontList.size());
@@ -91,7 +90,6 @@ public class GCBizLogic
 
 		}
 		log.info("TotalScore of Solution :" + totalScore);
-		System.out.println("TotalScore of Solution :" + totalScore);
 		return totalScore;
 	}
 
@@ -114,9 +112,7 @@ public class GCBizLogic
 		{
 			GenomicIdentifierSet set = (GenomicIdentifierSet) iter.next();
 			Long setID = new Long(set.getId());
-			/**
-			 * TODO set genomicIdentifierSetCoolection to Gene mrna protein objects 
-			 */
+
 			Gene gene = set.getGene();
 			Protein protein = set.getProtein();
 			MessengerRNA mrna = set.getMessengerRNA();
@@ -157,8 +153,6 @@ public class GCBizLogic
 				{
 					Map map = (Map) dsl.get(j);
 					String dataSourceName = (String) map.get(Constants.DATASOURCE_NAME);
-					//System.out.println("dataSourceName to set false : "+dataSourceName);
-					//UTILITY	
 					if (selectedOutputDataSourceList.contains(dataSourceName))
 					{
 						String dataSourceAttribute = MetadataManager.getDataSourceAttribute(
@@ -166,15 +160,11 @@ public class GCBizLogic
 						String temp = dataSourceAttribute.substring(0, 1).toUpperCase();
 						String methodName = "get" + temp
 								+ dataSourceAttribute.substring(1, dataSourceAttribute.length());
-						//	System.out.println("in OP DS LISt : "+methodName); 
 
 						Method method = dmClass.getDeclaredMethod(methodName, null);
 						Object value = method.invoke(objectMethodToInvoke, null);
-						//System.out.println("dataSourceName :" +dataSourceName +"--"+value);
 						if ((value == null) || (value.toString().equalsIgnoreCase("NULL")))
 						{
-							//System.out.println("NULL VALUE");
-							//	log.info("NULL value got for " + methodName);
 							countForNullGenomicId++;
 						}
 					}
@@ -187,8 +177,7 @@ public class GCBizLogic
 			 * So remove this SET from teh result list. 
 			 *   
 			 */
-			//			log.info("CHECK for NULL : " + countForNullGenomicId + "---"
-			//					+ selectedOutputDataSourceList.size());
+		
 			if (countForNullGenomicId > 0
 					&& countForNullGenomicId == selectedOutputDataSourceList.size())
 			{
@@ -216,7 +205,6 @@ public class GCBizLogic
 
 		GenomicIdentifierSolution sol = new GenomicIdentifierSolution();
 
-		//System.out.println("freqList.size() :" +freqList.size());
 		try
 		{
 			List dsl = null;
@@ -227,7 +215,6 @@ public class GCBizLogic
 			 */
 			HashMap frequencyMap = new HashMap();
 
-			//	log.info("rs.size(): " + rs.size());
 			if (rs.size() == 0)
 				return;
 
@@ -243,10 +230,7 @@ public class GCBizLogic
 				GenomicIdentifierSet set = (GenomicIdentifierSet) rs.get(i);
 
 				Collection ontCollection = set.getOrderOfNodeTraversalCollection();
-				//				int noOfOntForThisSet = 1;
-				//				if (ontCollection != null)
-				//					noOfOntForThisSet = ontCollection.size();
-
+		
 				Collection dataColl = new HashSet();
 				set.setConsensusIdentifierDataCollection(dataColl);
 				set.setGenomicIdentifierSolution(sol);
@@ -292,7 +276,6 @@ public class GCBizLogic
 									+ temp
 									+ dataSourceAttribute
 											.substring(1, dataSourceAttribute.length());
-							//log.info("Method invoke Gene: " + methodName);
 							Method method = dmClass.getDeclaredMethod(methodName, null);
 							/**
 							 * Get genomicId of the cuurent Gene attribute 
@@ -309,7 +292,6 @@ public class GCBizLogic
 								if (dsList == null)
 								{
 									dsList = new ArrayList();
-									//dsList.add(new Integer(1));
 									dsList.add(new Integer(noOfOntForThisSet));
 									dsList.add(map);
 									dsList.add(setID);
@@ -320,7 +302,6 @@ public class GCBizLogic
 									Integer val = (Integer) dsList.get(0);
 									int count = val.intValue();
 									count += noOfOntForThisSet;
-									//count++;
 									dsList.set(0, new Integer(count));
 									dsList.add(setID);
 								}
@@ -328,7 +309,6 @@ public class GCBizLogic
 							else if (value != null && frequencyMap.get(value.toString()) == null)
 							{
 								List dsList = new ArrayList();
-								//dsList.add(new Integer(1));
 								dsList.add(new Integer(noOfOntForThisSet));
 								dsList.add(map);
 								dsList.add(setID);
@@ -340,7 +320,6 @@ public class GCBizLogic
 								Integer val = (Integer) dsList.get(0);
 								int count = val.intValue();
 								count += noOfOntForThisSet;
-								//count++;
 								dsList.set(0, new Integer(count));
 								dsList.add(setID);
 							}
@@ -360,8 +339,6 @@ public class GCBizLogic
 				boolean isSetToRemove = false;
 				int setIdCounter = 0;
 				String key = (String) iter.next();
-				//				if (key.toString().equalsIgnoreCase("NULL"))
-				//					continue;
 				List dsList = (List) frequencyMap.get(key);
 				StringBuffer dsClassName = new StringBuffer("edu.wustl.geneconnect.domain.");
 				Map tempMap = (Map) dsList.get(1);
@@ -369,7 +346,6 @@ public class GCBizLogic
 				StringBuffer dataSourceType = new StringBuffer();
 				dataSourceType.append((String) tempMap.get(Constants.TYPE));
 				Integer count = (Integer) dsList.get(0);
-				//System.out.println("KEY AND COUNT : " + key + "====" + count+"===="+dsClassName.toString());
 				log.info("KEY AND COUNT : " + key + "====" + count + "===="
 						+ dsClassName.toString());
 				float frequency = count.floatValue() / totalScore;
@@ -443,11 +419,8 @@ public class GCBizLogic
 					for (Iterator rsIter = rs.iterator(); rsIter.hasNext();)
 					{
 						GenomicIdentifierSet set = (GenomicIdentifierSet) rsIter.next();
-						//System.out.println("Set in LIst for FREQ: " + set.getId()+"-----"+key+"------"+frequency);
-						//log.info("Set in LIst for FREQ: " + set.getId()+"-----"+key+"------"+frequency);
 						if (isSetToRemove && set.getId().compareTo(setID) == 0)
 						{
-							//System.out.println("Set remove for Frequency: " + set.getId());
 							log.info("SET remove for FREQ: " + set.getId() + "---" + frequency);
 							rsIter.remove();
 						}
@@ -469,8 +442,6 @@ public class GCBizLogic
 			for (int i = 0; i < rs.size(); i++)
 			{
 				GenomicIdentifierSet set = (GenomicIdentifierSet) rs.get(i);
-				//				System.out.println("Data Collection: "
-				//						+ set.getConsensusIdentifierDataCollection().size());
 			}
 		}
 		catch (Exception ex)
@@ -512,7 +483,6 @@ public class GCBizLogic
 	{
 		GenomicIdentifierSolution sol = new GenomicIdentifierSolution();
 
-		//System.out.println("freqList.size() :" +freqList.size());
 		try
 		{
 			List dsl = null;
@@ -533,7 +503,6 @@ public class GCBizLogic
 			 * and put this in a Map as Key.Where Value of Map is ArrayList consist of
 			 * count,DataSourceName,GenomicIdentifierSet Ids
 			 */
-			//System.out.println("SACHIN rs.size : " +rs.size());
 			for (int i = 0; i < rs.size(); i++)
 			{
 
@@ -619,7 +588,6 @@ public class GCBizLogic
 				}
 				if (genomicIdforConfidence.length() - 1 > 0)
 					genomicIdforConfidence.deleteCharAt(genomicIdforConfidence.length() - 1);
-				//System.out.println("genomicIdforConfidence : "+genomicIdforConfidence);
 				log.info("genomicIdforConfidence : " + genomicIdforConfidence);
 				/**
 				 * Put the key in a Map.
@@ -629,19 +597,14 @@ public class GCBizLogic
 				 */
 				String mapKey = genomicIdforConfidence.toString();
 				Integer n = (Integer) ontCountMapForSet.get(setID);
-				//int ontCount = set.getConfidenceScore().intValue();
 				int ontCount = n.intValue();
-				//System.out.println("ONT COUNT for " + set.getId() + "----" + ontCount);
 				log.info("ONT COUNT for " + set.getId() + "----" + ontCount);
 				if (confidenceMap.get(mapKey) == null)
 				{
 					List dsList = new ArrayList();
-					//dsList.add(new Integer(1));
 					dsList.add(new Integer(ontCount));
-					//dsList.add(map);
 					dsList.add(setID);
 					confidenceMap.put(mapKey, dsList);
-					//System.out.println("New KEy added confidenceMap : " + mapKey + "--" + ontCount);
 					log.info("New Key added confidenceMap : " + mapKey + "--" + ontCount);
 				}
 				else
@@ -649,16 +612,13 @@ public class GCBizLogic
 					List dsList = (ArrayList) confidenceMap.get(mapKey);
 					Integer val = (Integer) dsList.get(0);
 					int count = val.intValue();
-					//count++;
 					count = count + ontCount;
 					dsList.set(0, new Integer(count));
-					//System.out.println("Increment count in confidenceMap " + mapKey + "--" + count);
 					log.info("Increment count in confidenceMap " + mapKey + "--" + count);
 					dsList.add(setID);
 				}
 
 			}
-			//System.out.println("SACHIN ENd: ");
 
 			/**
 			 * Iterate over the confidenceMap ans set the confidenceScore attribute of each set.
@@ -694,8 +654,6 @@ public class GCBizLogic
 						if (set.getId().compareTo(setID) == 0)
 						{
 							set.setConfidenceScore(new Float(confScore));
-							//							System.out.println("Set in LIst for CONFIDENCE: " + set.getId()
-							//									+ "-----" + key + "------");
 							log.info("SET in list for CONFIDENCE: " + set.getId() + "-----" + key
 									+ "------");
 
@@ -739,9 +697,7 @@ public class GCBizLogic
 			}
 			else if (!isGreaterThanEqual && !(confScore > predicateValue))
 			{
-				//System.out.println("Set ID Removed******" + set.getId() + "---" + confScore);
 				log.info("Set ID Removed***Confidence" + set.getId() + "***" + confScore);
-				//newRs.add(set);
 				iter.remove();
 			}
 		}
@@ -756,7 +712,6 @@ public class GCBizLogic
 	 */
 	void setONTcountMap(List rs, List ontList)
 	{
-		//System.out.println("ontList---" +ontList);
 
 		if (ontList.size() > 0)
 		{
@@ -764,10 +719,8 @@ public class GCBizLogic
 			{
 				GenomicIdentifierSet set = (GenomicIdentifierSet) setIter.next();
 				Long setId = set.getId();
-				//System.out.println("comapring OPNT of SET ID " +setId);
 				log.info("comapring ONT of SET ID " + setId);
 				Collection ontColl = set.getOrderOfNodeTraversalCollection();
-				//Collection ontColl = getOrderofNodeTraversal(set);
 				Collection newOntCollection = new ArrayList();
 				int count = 0;
 				if (ontColl != null)
@@ -776,7 +729,6 @@ public class GCBizLogic
 					StringBuffer lastDataSource = new StringBuffer();
 					for (Iterator iter = ontColl.iterator(); iter.hasNext();)
 					{
-						//						List dataSourcelist = new ArrayList();
 						OrderOfNodeTraversal ont = (OrderOfNodeTraversal) iter.next();
 						/** 
 						 * Get associates ONT list from metadata
@@ -789,7 +741,6 @@ public class GCBizLogic
 						 * DS1,linktype1,DS2,linktype2,DS3
 						 */
 
-						//System.out.println("dataSourcelist " +dataSourcelist);
 						for (int i = 0; i < ontList.size(); i++)
 						{
 							/**
@@ -811,7 +762,6 @@ public class GCBizLogic
 										cnt++;
 									}
 								}
-								//System.out.println("cnt " + cnt);
 								if (cnt == innerList.size())
 								{
 									/** 
@@ -820,7 +770,6 @@ public class GCBizLogic
 									 */
 									count++;
 									newOntCollection.add(ont);
-									//System.out.println("Select ONT MATCH " + innerList);
 									log.info("Select ONT MATCH " + innerList);
 								}
 							}
@@ -831,10 +780,8 @@ public class GCBizLogic
 				/**
 				 * change to count>0 for OR condition
 				 */
-				//	if(count==ontList.size())
 				if (count > 0)
 				{
-					//System.out.println("----" + setId + "---" + count);
 					log.info("ONT count for " + setId + "---" + count);
 					set.setOrderOfNodeTraversalCollection(newOntCollection);
 					ontCountMapForSet.put(setId, new Integer(count));
@@ -869,7 +816,6 @@ public class GCBizLogic
 			GenomicIdentifierSet set = (GenomicIdentifierSet) setIter.next();
 			Long setId = set.getId();
 			Collection ontColl = set.getOrderOfNodeTraversalCollection();
-			//Collection ontColl = getOrderofNodeTraversal(set);
 			Collection newOntCollection = new ArrayList();
 			int count = 0;
 			if (ontColl != null)
@@ -878,7 +824,6 @@ public class GCBizLogic
 				StringBuffer lastDataSource = new StringBuffer();
 				for (Iterator iter = ontColl.iterator(); iter.hasNext();)
 				{
-					//List dataSourcelist = new ArrayList();
 					OrderOfNodeTraversal ont = (OrderOfNodeTraversal) iter.next();
 					/** 
 					 * Get associates ONT list from metadata
@@ -911,11 +856,8 @@ public class GCBizLogic
 									&& dataSourcelist.containsAll(selectedOutput))
 							{
 								count++;
-								//	newOntCollection.add(headont);
 								newOntCollection.add(ont);
 								log.info("Select ONT: " + dataSourcelist.toString());
-
-								//System.out.println("Select ONT: " + dataSourcelist.toString());
 							}
 						}
 						else if (ontSelectionLogic == Constants.NOMATCH_ONT_SELECTION_LOGIC)
@@ -932,7 +874,6 @@ public class GCBizLogic
 										if (dataSourcelist.contains(selectedOutput.get(i)))
 										{
 											count++;
-											//	newOntCollection.add(headont);
 											newOntCollection.add(ont);
 											log.info("Select ONT: " + dataSourcelist.toString());
 											break;
@@ -946,7 +887,6 @@ public class GCBizLogic
 				}
 				if (count > 0)
 				{
-					//System.out.println("----" + setId + "---" + count);
 					log.info("ONT count for " + setId + "---" + count);
 					ontCountMapForSet.put(setId, new Integer(count));
 					set.setOrderOfNodeTraversalCollection(newOntCollection);
@@ -967,11 +907,6 @@ public class GCBizLogic
 							}
 						}
 					}
-					log.info("outputDataSourceFound: " + outputDataSourceFound);
-
-					//setToRemoveList.put(setId,"");
-					//setIter.remove();
-					//	log.info("Remove set for ONT----" + setId + "---" + count);
 				}
 			}
 		}
@@ -982,6 +917,8 @@ public class GCBizLogic
 		log.info("ontCountMapForSet.keySet().size(): " + ontCountMapForSet.keySet().size());
 		log.info("outputDataSourceFound.size(): " + outputDataSourceFound.size());
 		log.info("selectedOutput.size(): " + selectedOutput.size());
+		log.info("outputDataSourceFound: " + outputDataSourceFound);
+
 		/**
 		 * If no result found then sekect a ONTs with criteria as 
 		 * start/end with input/output AND atleas one output other than start/end is included.
@@ -1044,9 +981,7 @@ public class GCBizLogic
 			{
 				GenomicIdentifierSet set = (GenomicIdentifierSet) iter.next();
 				Long setID = new Long(set.getId());
-				/**
-				 * TODO set genomicIdentifierSetCoolection to Gene mrna protein objects 
-				 */
+				
 				Gene gene = set.getGene();
 				Protein protein = set.getProtein();
 				MessengerRNA mrna = set.getMessengerRNA();
@@ -1077,11 +1012,9 @@ public class GCBizLogic
 					String temp = dataSourceAttribute.substring(0, 1).toUpperCase();
 					String methodName = "get" + temp
 							+ dataSourceAttribute.substring(1, dataSourceAttribute.length());
-					//	System.out.println("in OP DS LISt : "+methodName); 
 
 					Method method = dmClass.getDeclaredMethod(methodName, null);
 					Object value = method.invoke(objectMethodToInvoke, null);
-					//System.out.println("dataSourceName :" +dataSourceName +"--"+value);
 					if ((value != null))
 					{
 						resultSubSet.add(value);

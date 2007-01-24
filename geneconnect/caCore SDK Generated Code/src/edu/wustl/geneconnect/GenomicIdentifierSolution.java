@@ -17,21 +17,34 @@ public class GenomicIdentifierSolution implements java.io.Serializable
 {
 
 	private static final long serialVersionUID = 1234567890L;
-
+	/**
+	 * Unique identifier of the Genomic Identifier Solution object.
+	 */
 	private java.lang.Long id;
-
+	/**
+	 * Returns the unique identifier of the Genomic Identifier Solution object.
+	 * @return unique identifier
+	 */ 
 	public java.lang.Long getId()
 	{
 		return id;
 	}
-
+/**
+ * Sets the unique identifier of the Genomic Identifier Solution object.
+ * @param id
+ */
 	public void setId(java.lang.Long id)
 	{
 		this.id = id;
 	}
-
+/**
+ * Associated GenomicIdentifierSet object collection with this GenomicIdentifierSolution.
+ */
 	private java.util.Collection genomicIdentifierSetCollection = new java.util.HashSet();
-
+/**
+ * Returns the associated collection of GenomicIdentifierSet object with this GenomicIdentifierSolution.
+ * @return genomicIdentifierSetCollection
+ */
 	public java.util.Collection getGenomicIdentifierSetCollection()
 	{
 		try
@@ -64,15 +77,23 @@ public class GenomicIdentifierSolution implements java.io.Serializable
 		}
 		return genomicIdentifierSetCollection;
 	}
-
+/**
+ * Sets the collection of GenomicIdentifierSet objects with this GenomicIdentifierSolution.
+ * @param genomicIdentifierSetCollection
+ */
 	public void setGenomicIdentifierSetCollection(
 			java.util.Collection genomicIdentifierSetCollection)
 	{
 		this.genomicIdentifierSetCollection = genomicIdentifierSetCollection;
 	}
-
+	/**
+	 * Associated collection of ConsensusIdentifierData object with this GenomicIdentifierSolution.
+	 */
 	private java.util.Collection consensusIdentifierDataCollection = new java.util.HashSet();
-
+	/**
+	 * Returns the associated collection of ConsensusIdentifierData object with this GenomicIdentifierSolution.
+	 * @return consensusIdentifierDataCollection
+	 */
 	public java.util.Collection getConsensusIdentifierDataCollection()
 	{
 		try
@@ -105,7 +126,10 @@ public class GenomicIdentifierSolution implements java.io.Serializable
 		}
 		return consensusIdentifierDataCollection;
 	}
-
+/**
+ * Sets the collection of ConsensusIdentifierData object with this GenomicIdentifierSolution.
+ * @param consensusIdentifierDataCollection
+ */
 	public void setConsensusIdentifierDataCollection(
 			java.util.Collection consensusIdentifierDataCollection)
 	{

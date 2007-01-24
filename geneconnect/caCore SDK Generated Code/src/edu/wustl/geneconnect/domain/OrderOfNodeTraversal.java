@@ -22,14 +22,22 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 {
 
 	private static final long serialVersionUID = 1234567890L;
-
+/**
+ * Unique identifier of Order Of Node Traversal object.
+ */
 	private java.lang.Long id;
-
+/**
+ * Returns the unique identifier of Order Of Node Traversal object.
+ * @return unique identifier
+ */
 	public java.lang.Long getId()
 	{
 		return id;
 	}
-
+/**
+ * Sets the unique identifier to Order Of Node Traversal object.
+ * @param id
+ */
 	public void setId(java.lang.Long id)
 	{
 		this.id = id;
@@ -49,14 +57,17 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 	{
 		return childPathId;
 	}
-
+/**
+ *  The method is added to set the next node in the linked list of OrderOfNodeTraversal.
+ * @param childPathId
+ */
 	public void setChildPathId(java.lang.Long childPathId)
 	{
 		this.childPathId = childPathId;
 	}
 
 	/**
-	 * Added to search a prev path id. 
+	 * Added to search a previous path id. 
 	 */
 	private java.lang.Long parentPathid;
 
@@ -69,17 +80,25 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 	{
 		return parentPathid;
 	}
-
+/**
+ * The method is added to set the previous node in the linked list of OrderOfNodeTraversal.
+ * @param parentPathid
+ */
 	public void setParentPathid(java.lang.Long parentPathid)
 	{
 		this.parentPathid = parentPathid;
 	}
-
+	/**
+	 * Associated collection of GenomicIdentifierSet objects with this OrderOfNodeTraversal.
+	 * @see edu.wustl.geneconnect.domain.GenomicIdentifierSet
+	 */
 	private java.util.Collection genomicIdentifierSetCollection=new HashSet();
-
+	/**
+	 * Returns the associated collection of GenomicIdentifierSet objects with this OrderOfNodeTraversal.
+	 * @return genomicIdentifierSetCollection
+	 */
 	public java.util.Collection getGenomicIdentifierSetCollection()
 	{
-		System.out.println("DEBUG 22");
 		try
 		{
 			if (genomicIdentifierSetCollection.size() == 0)
@@ -111,15 +130,24 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 
 		return genomicIdentifierSetCollection;
 	}
-
+/**
+ * Sets the collection of GenomicIdentifierSet objects with this OrderOfNodeTraversal.
+ * @param genomicIdentifierSetCollection
+ */
 	public void setGenomicIdentifierSetCollection(
 			java.util.Collection genomicIdentifierSetCollection)
 	{
 		this.genomicIdentifierSetCollection = genomicIdentifierSetCollection;
 	}
-
+/**
+ * Associated DataSource object with this OrderOfNodeTraversal.
+ * @see edu.wustl.geneconnect.domain.DataSource
+ */
 	private edu.wustl.geneconnect.domain.DataSource sourceDataSource;
-
+/**
+ * Returns the associated DataSource object with this OrderOfNodeTraversal.
+ * @return sourceDataSource
+ */
 	public edu.wustl.geneconnect.domain.DataSource getSourceDataSource()
 	{
 		ApplicationService applicationService = ApplicationServiceProvider.getApplicationService();
@@ -145,14 +173,24 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 		
 
 	}
-
+/**
+ * Sets the DataSource object with this OrderOfNodeTraversal.
+ * @param sourceDataSource
+ */
 	public void setSourceDataSource(edu.wustl.geneconnect.domain.DataSource sourceDataSource)
 	{
 		this.sourceDataSource = sourceDataSource;
 	}
-
+/**
+ * Associated LinkType object with this OrderOfNodeTraversal.
+ * Denotes the type of link between a pair of genomic identifiers that are linked to each other.
+ * @see edu.wustl.geneconnect.domain.LinkType
+ */
 	private edu.wustl.geneconnect.domain.LinkType linkType;
-
+/**
+ * Returns the associated LinkType object with this OrderOfNodeTraversal.
+ * @return linkType
+ */
 	public edu.wustl.geneconnect.domain.LinkType getLinkType()
 	{
 		ApplicationService applicationService = ApplicationServiceProvider.getApplicationService();
@@ -176,12 +214,18 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 		return linkType;
 
 	}
-
+/**
+ * Sets the LinkType object with this OrderOfNodeTraversal.
+ * @param linkType
+ */
 	public void setLinkType(edu.wustl.geneconnect.domain.LinkType linkType)
 	{
 		this.linkType = linkType;
 	}
 
+/**
+ * Asscoiated next node of OrderOfNodeTraversal with this linked list of OrderOfNodeTraversal.
+ */
 	private edu.wustl.geneconnect.domain.OrderOfNodeTraversal childOrderOfNodeTraversal;
 
 	/**
@@ -228,13 +272,18 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 		return childOrderOfNodeTraversal;
 
 	}
-
+/**
+ * Sets the next node of OrderOfNodeTraversal with this linked list of OrderOfNodeTraversal.
+ * @param childOrderOfNodeTraversal
+ */
 	public void setChildOrderOfNodeTraversal(
 			edu.wustl.geneconnect.domain.OrderOfNodeTraversal childOrderOfNodeTraversal)
 	{
 		this.childOrderOfNodeTraversal = childOrderOfNodeTraversal;
 	}
-
+/**
+ * Asscoiated previous node of OrderOfNodeTraversal with this linked list of OrderOfNodeTraversal.
+ */
 	private edu.wustl.geneconnect.domain.OrderOfNodeTraversal parentOrderOfNodeTraversal;
 
 	/**
@@ -246,39 +295,42 @@ public class OrderOfNodeTraversal implements java.io.Serializable
 	public edu.wustl.geneconnect.domain.OrderOfNodeTraversal getParentOrderOfNodeTraversal()
 	{
 
-//		ApplicationService applicationService = ApplicationServiceProvider.getApplicationService();
-//		edu.wustl.geneconnect.domain.OrderOfNodeTraversal thisIdSet = new edu.wustl.geneconnect.domain.OrderOfNodeTraversal();
-//		// Changed to search a path id which eqauls to next_path_id
-//		// instead of (as genarated by caCore )searching a path id which eqauls to path_id
-//		if (this.getParentPathid() == null)
-//		{
-//			return null;
-//		}
-//		else
-//		{
-//			thisIdSet.setId(this.getParentPathid());
-//			System.out.println("this.getParentPathid() "+this.getParentPathid());
-//		}
-//		try
-//		{
-//			java.util.List resultList = applicationService.search(
-//					"edu.wustl.geneconnect.domain.OrderOfNodeTraversal", thisIdSet);
-//
-//			if (resultList != null && resultList.size() > 0)
-//			{
-//				parentOrderOfNodeTraversal = (edu.wustl.geneconnect.domain.OrderOfNodeTraversal) resultList
-//						.get(0);
-//			}
-//		}
-//		catch (Exception ex)
-//		{
-//			System.out
-//					.println("OrderOfNodeTraversal:getParentOrderOfNodeTraversal throws exception ... ...");
-//			ex.printStackTrace();
-//		}
+		ApplicationService applicationService = ApplicationServiceProvider.getApplicationService();
+		edu.wustl.geneconnect.domain.OrderOfNodeTraversal thisIdSet = new edu.wustl.geneconnect.domain.OrderOfNodeTraversal();
+		// Changed to search a path id which eqauls to next_path_id
+		// instead of (as genarated by caCore )searching a path id which eqauls to path_id
+		if (this.getParentPathid() == null)
+		{
+			return null;
+		}
+		else
+		{
+			thisIdSet.setId(this.getParentPathid());
+			System.out.println("this.getParentPathid() "+this.getParentPathid());
+		}
+		try
+		{
+			java.util.List resultList = applicationService.search(
+					"edu.wustl.geneconnect.domain.OrderOfNodeTraversal", thisIdSet);
+
+			if (resultList != null && resultList.size() > 0)
+			{
+				parentOrderOfNodeTraversal = (edu.wustl.geneconnect.domain.OrderOfNodeTraversal) resultList
+						.get(0);
+			}
+		}
+		catch (Exception ex)
+		{
+			System.out
+					.println("OrderOfNodeTraversal:getParentOrderOfNodeTraversal throws exception ... ...");
+			ex.printStackTrace();
+		}
 		return parentOrderOfNodeTraversal;
 	}
-
+/**
+ * Sets the previous node of OrderOfNodeTraversal with this linked list of OrderOfNodeTraversal.
+ * @param parentOrderOfNodeTraversal
+ */
 	public void setParentOrderOfNodeTraversal(
 			edu.wustl.geneconnect.domain.OrderOfNodeTraversal parentOrderOfNodeTraversal)
 	{

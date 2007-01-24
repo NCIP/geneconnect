@@ -166,8 +166,8 @@ public class SearchWithOntTest extends TestCase
 			/**
 			 * Iterate over result set and compare the values with expected list
 			 */		
-			System.out.println("Ensembl Gene"+ "\t" + "UniGene" + "\t" + "Ensembl Transcript"+ "\t"
-					+ "Ensembl Protein" + "\t" + "Confidence Score");	
+			System.out.println("Set ID \tEnsembl Gene"+ "\t" + "UniGene" + "\t" + "Ensembl Transcript"+ "\t"
+					+ "Ensembl Protein" + "\t" + "Confidence Score");
 			for (int i = 0; i < resultList.size(); i++)
 			{
 				GenomicIdentifierSet returnedSet = (GenomicIdentifierSet) resultList.get(i);
@@ -181,8 +181,46 @@ public class SearchWithOntTest extends TestCase
 				String ensemblPeptideId = returnedProtein.getEnsemblPeptideId();
 
 				Float confidence = returnedSet.getConfidenceScore();
-				System.out.println(ensemblGeneId + "\t" + unigeneId + "\t" + ensemblTransId + "\t"
+				System.out.println(returnedSet.getId()+"\t"+ensemblGeneId + "\t" + unigeneId + "\t" + ensemblTransId + "\t"
 						+ ensemblPeptideId + "\t" + confidence);
+				Collection ontCollection1 = returnedSet.getOrderOfNodeTraversalCollection();
+				System.out.println("Associated Order of Node traversal with Set: " +returnedSet.getId());
+				int k=1;
+				for (Iterator iter1 = ontCollection1.iterator(); iter1.hasNext();)
+				{
+					
+					OrderOfNodeTraversal ont = (OrderOfNodeTraversal) iter1.next();
+					List ontList = new ArrayList();
+					OrderOfNodeTraversal tempont = ont;
+					while (tempont != null)
+					{
+						LinkType ltype = tempont.getLinkType();
+						String linkType = null;
+						ontList.add(tempont.getSourceDataSource().getName());
+						if (ltype != null)
+						{
+							ontList.add(ltype.getType());
+						}	
+						
+						OrderOfNodeTraversal nextont = tempont.getChildOrderOfNodeTraversal();
+						tempont = nextont;
+					}
+					int j=0;
+					if(ontList.size()>0)
+					{
+						System.out.print("\t"+k+": ");
+						k++;
+					}	
+					for(j=0;j<ontList.size()-1;j++)
+					{
+						System.out.print(ontList.get(j)+"--");
+					}
+					if(j>0)
+					{
+						System.out.println(ontList.get(j));
+					}
+				}
+
 				boolean equalAll = false;
 				/**
 				 * Iterate over result set and compare the values with expected list

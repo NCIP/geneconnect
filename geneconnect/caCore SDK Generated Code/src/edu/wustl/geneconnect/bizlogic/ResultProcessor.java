@@ -64,13 +64,6 @@ public class ResultProcessor
 		// List which stores FrequecyCriteria objects representing Frequency predicates given by user  
 
 		int ontCounter = -1;
-		//		List ontValueList = new ArrayList();
-		//		List ontNameList = new ArrayList();
-		//		Map ontMap = new HashMap();
-		//		
-		//		List inputDsList=new ArrayList();
-		//		List outputDsList=new ArrayList();
-
 		int freqCounter = -1;
 		int dsCounter = -1;
 
@@ -210,9 +203,6 @@ public class ResultProcessor
 					ontCounter++;
 					f.setDataSource(strValue);
 					ontList.add(f);
-
-					//ontValueList.add(strValue);
-					//ontNameList.add("name");
 				}
 			}
 			if (predicate.startsWith("type"))
@@ -240,25 +230,11 @@ public class ResultProcessor
 					type.add(strValue);
 
 					f.setType(type);
-					//ontList.add(strValue);
-					//ontValueList.add(strValue);
-					//ontNameList.add("type");
 				}
 			}
 		}
-		//System.out.println("ontList : " + ontList.size());
 		log.info("ONT predicate list size: " + ontList.size());
-		//		for (int i = 0; i < ontList.size(); i++)
-		//		{
-		//
-		//			GCCriteria f = (GCCriteria) ontList.get(i);
-		//			String ds = f.getDataSource();
-		//			List type = f.getType();
-		//			for (int k = 0; k < type.size(); k++)
-		//			{
-		//				System.out.print(f.getDataSource() + "-->" + type.get(k));
-		//			}
-		//		}
+	
 		log.info("Frequency predicate list size: " + freqList.size());
 
 	}
@@ -271,7 +247,6 @@ public class ResultProcessor
 		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
 				Constants.GENE_CLASS_NAME);
 		log.info("debug1");
-		//System.out.println("roleName " + roleName);
 		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
 		field.setAccessible(true);
 		Object gene = field.get(set);
@@ -279,7 +254,6 @@ public class ResultProcessor
 		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
 				Constants.MRNA_CLASS_NAME);
 		log.info("debug2");
-		//System.out.println("roleName " + roleName);
 		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
 		field.setAccessible(true);
 		Object mrna = field.get(set);
@@ -287,9 +261,6 @@ public class ResultProcessor
 		roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,
 				Constants.PROTEIN_CLASS_NAME);
 		log.info("debug3");
-		//System.out.println("debug3");
-		//System.out.println("roleName " + roleName);
-		//System.out.println("debug4");
 		field = GenomicIdentifierSet.class.getDeclaredField(roleName);
 		field.setAccessible(true);
 		Object protein = field.get(set);
@@ -307,16 +278,12 @@ public class ResultProcessor
 			{
 				Map map = (Map) dsl.get(j);
 				String dataSourceName = (String) map.get(Constants.DATASOURCE_NAME);
-				//System.out.println("dataSourceName to set false : "+dataSourceName);
-
-				//						String dataSourceAttribute = MetadataManager.getDataSourceAttribute(
-				//								Constants.DATASOURCE_NAME, dataSourceName, Constants.ATTRIBUTE);
+				
 				String dataSourceAttribute = (String) map.get(Constants.ATTRIBUTE);
 				String outputAttribute = (String) map.get(Constants.OUTPUT_ATTRIBUTE);
 				String temp = dataSourceAttribute.substring(0, 1).toUpperCase();
 				String methodName = "get" + temp
 						+ dataSourceAttribute.substring(1, dataSourceAttribute.length());
-				//	System.out.println("in OP DS LISt : "+methodName); 
 				Method method = Gene.class.getDeclaredMethod(methodName, null);
 				Object value = method.invoke(gene, null);
 				System.out.println(methodName + "--------" + value);
@@ -328,10 +295,8 @@ public class ResultProcessor
 				}
 				temp = outputAttribute.substring(0, 1).toUpperCase();
 				methodName = "get" + temp + outputAttribute.substring(1, outputAttribute.length());
-				//	System.out.println("in OP DS LISt : "+methodName); 
 				method = Gene.class.getDeclaredMethod(methodName, null);
 				value = method.invoke(gene, null);
-				//System.out.println("methodName " + value);
 				if (value != null)
 				{
 					System.out.println("output Addedd :" + dataSourceName);
@@ -358,7 +323,6 @@ public class ResultProcessor
 				String temp = dataSourceAttribute.substring(0, 1).toUpperCase();
 				String methodName = "get" + temp
 						+ dataSourceAttribute.substring(1, dataSourceAttribute.length());
-				//System.out.println("in OP DS LISt : "+methodName); 
 				Method method = MessengerRNA.class.getDeclaredMethod(methodName, null);
 				Object value = method.invoke(mrna, null);
 				System.out.println(methodName + "--------" + value);
@@ -369,10 +333,8 @@ public class ResultProcessor
 				}
 				temp = outputAttribute.substring(0, 1).toUpperCase();
 				methodName = "get" + temp + outputAttribute.substring(1, outputAttribute.length());
-				//	System.out.println("in OP DS LISt : "+methodName); 
 				method = MessengerRNA.class.getDeclaredMethod(methodName, null);
 				value = method.invoke(mrna, null);
-				//System.out.println("methodName " + value);
 				if (value != null)
 				{
 					System.out.println("output Addedd :" + dataSourceName);
@@ -400,7 +362,6 @@ public class ResultProcessor
 				String temp = dataSourceAttribute.substring(0, 1).toUpperCase();
 				String methodName = "get" + temp
 						+ dataSourceAttribute.substring(1, dataSourceAttribute.length());
-				//System.out.println("in OP DS LISt : "+methodName); 
 				Method method = Protein.class.getDeclaredMethod(methodName, null);
 				Object value = method.invoke(protein, null);
 				System.out.println(methodName + "--------" + value);
@@ -411,10 +372,8 @@ public class ResultProcessor
 				}
 				temp = outputAttribute.substring(0, 1).toUpperCase();
 				methodName = "get" + temp + outputAttribute.substring(1, outputAttribute.length());
-				//	System.out.println("in OP DS LISt : "+methodName); 
 				method = Protein.class.getDeclaredMethod(methodName, null);
 				value = method.invoke(protein, null);
-				//System.out.println("methodName " + value);
 				if (value != null)
 				{
 					System.out.println("output Addedd :" + dataSourceName);
@@ -430,10 +389,7 @@ public class ResultProcessor
 			set.setConfidenceScore(new Float(1));
 
 		}
-		//			roleName = MetadataManager.getRoleName(Constants.GENOMICIDENTIFIERSET_CLASS_NAME,Constants.CONSENSUS_IDENTIFIERDATA_CLASS_NAME);
-		//			field = GenomicIdentifierSet.class.getDeclaredField(roleName);
-		//			field.setAccessible(true);
-		//			Object coll = field.get(set);
+		
 		Collection consensusCollection = set.getConsensusIdentifierDataCollection();
 		isFreqGreaterThanEqual = true;
 		if (consensusCollection != null && consensusCollection.size() > 0)
@@ -511,10 +467,10 @@ public class ResultProcessor
 				}
 
 			}
-			System.out.println("ONT selected by USER");
+			log.info("ONT selected by USER");
 			for (int i = 0; i < ontList.size(); i++)
 			{
-				System.out.println(ontList.get(i));
+				log.info(ontList.get(i));
 			}
 			set.setOrderOfNodeTraversalCollection(null);
 		}
@@ -655,13 +611,7 @@ public class ResultProcessor
 			// get type of attribute
 			String attributeType = MetadataManager.getDataSourceAttribute(
 					Constants.DATASOURCE_NAME, dsName, Constants.TYPE);
-
-			//			className = className.substring(0, 1).toLowerCase()
-			//					+ className.substring(1, className.length());
-
-			//			System.out.println("Data Source ROLE :  " + roleName);
-			//			System.out.println("Data Source ATTRIBUTE:  " + classAttribute);
-			//			System.out.println("Data Source ATTRIBUTE TYPE :  " + attributeType);
+		
 			log.info("Adding " + roleName + ":" + classAttribute);
 			/**
 			 * Create DetachedCriteria for search on given datasource and its genomicId
@@ -714,7 +664,6 @@ public class ResultProcessor
 			String outputAttribute = MetadataManager.getDataSourceAttribute(
 					Constants.DATASOURCE_NAME, outputDSName, Constants.OUTPUT_ATTRIBUTE);
 			log.info("Adding " + roleName + ":" + outputAttribute);
-			//Logger.out.info("Added Op Attribute :" +outputAttribute);
 			outputGenomicCriteria.add(Restrictions.eq(outputAttribute, new Boolean(true)));
 		}
 		Map currentNode = new HashMap();
@@ -750,10 +699,8 @@ public class ResultProcessor
 			{
 				ontCrit.add(Restrictions.isNull("childOrderOfNodeTraversal"));
 				log.info("Adding ISNULL next ");
-				//System.out.println("LINK ADDED " + linkType);
 			}
 		}
-		//System.out.println(genomicIdSetCriteria);
 		return genomicIdSetCriteria;
 	}
 

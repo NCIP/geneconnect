@@ -15,14 +15,24 @@ public class ProteinGenomicIdentifier extends GenomicIdentifier implements java.
 {
 
 	private static final long serialVersionUID = 1234567890L;
-
+/**
+ * Contains genomic identifier value of data source belonging to Protein family.
+ */
 	protected java.lang.String genomicIdentifier;
-
+/**
+ * Returns the genomic identifier value of data source belonging to Protein family.
+ * @return genomicIdentifier
+ * @see edu.wustl.geneconnect.domain.GenomicIdentifier#getGenomicIdentifier()
+ */
 	public java.lang.String getGenomicIdentifier()
 	{
 		return genomicIdentifier;
 	}
-
+/**
+ * Sets the genomic identifier value of data source belonging to Protein family.
+ * @param genomicIdentifier
+ * @see edu.wustl.geneconnect.domain.GenomicIdentifier#setGenomicIdentifier(java.lang.Object genomicIdentifier)
+ */
 	public void setGenomicIdentifier(java.lang.String genomicIdentifier)
 	{
 		this.genomicIdentifier = genomicIdentifier;

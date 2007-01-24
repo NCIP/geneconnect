@@ -14,14 +14,24 @@ public class EntrezGene extends GeneGenomicIdentifier implements java.io.Seriali
 {
 
 	private static final long serialVersionUID = 1234567890L;
-
+/**
+ * Contains genomic identifier value for EntrezGene data source.
+ */
 	protected java.lang.Long genomicIdentifier;
-
+	/**
+	 * Returns the genomic identifier value for EntrezGene data source.
+	 * @return genomicIdentifier
+	 * @see edu.wustl.geneconnect.domain.GenomicIdentifier#getGenomicIdentifier()
+	 */	
 	public java.lang.Long getGenomicIdentifier()
 	{
 		return genomicIdentifier;
 	}
-
+	/**
+	 * Sets the genomic identifier value for EntrezGene data source.
+	 * @param genomicIdentifier
+	 * @see edu.wustl.geneconnect.domain.GenomicIdentifier#setGenomicIdentifier(java.lang.Object genomicIdentifier)
+	 */	
 	public void setGenomicIdentifier(java.lang.Long genomicIdentifier)
 	{
 		this.genomicIdentifier = genomicIdentifier;

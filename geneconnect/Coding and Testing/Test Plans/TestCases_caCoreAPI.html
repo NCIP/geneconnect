@@ -133,110 +133,139 @@ Setup:
 2. Application Server (where caCore-Like system is deployed) has been   
    started.
 3. For test client refer to:
-   http://cabigcvs.nci.nih.gov/viewcvs/viewcvs.cgi/geneconnect/caCore% 
-   20SDK%20Generated%20Code/src/GCTestClient.java
+   http://cabigcvs.nci.nih.gov/viewcvs/viewcvs.cgi/geneconnect/Coding% 
+   20and%20Testing/GeneConnectWeb/GeneConnect_caCore_Client/
+4. For this test case refer to code 
+   GeneConnect_caCore_Client/edu/wustl/geneconnect/testCase  
+   /SimpleSearchTest.java
 
 Procedure:
-1. To start with create client application. Please refer to  
-   querySimple()method of a sample test client GCTestClient.java.
+1. To start with create client application.
 
-2. Create a DetachedCriteria object of hibernate for GenomicIdentifierSet
-   class.
+2. Create a domain object of GenomicIdentifierSet class.
 
-3. Add Restriction on one or more attributes of the class.
-   (eg. for Gene Class Restrictions.eq("ensemblGeneId", "ENS2"))
+3. Create a domain object of Gene class.
 
-4. Add Restriction on one or more boolean attributes of the class.
-   to select the data source as a part of output solution.
-   (eg. for Gene Class Restrictions.eq("uniGeneAsOutput", new Boolean 
-   (true)))
+4. Set ensemblGeneId attribute of Gene to 'ENSG00000120738'.
 
-5. Call a ApplicationService.query(DetachedCriteria,Class) of caCore API.
+5. Set unigeneAsOutput attribute of Gene to 'true'.
+
+6. Set gene attribute of GenomicIdentifierSet to above creted Gene.
+
+7. Create a domain object of Protein class.
+
+8. Set ensemblPeptideAsOutput attribute of Protein to 'true'.
+
+9. Set protein attribute of GenomicIdentifierSet to above creted Protein.
+
+10. Create a domain object of MessengerRNA class.
+
+10. Set ensemblTranscriptAsOutput attribute of MessengerRNA to 'true'.
+
+11. Set messengerRNA attribute of GenomicIdentifierSet to above creted MessengerRNA.
+
+12. Call a ApplicationService.search(targetClassName,GenomicIdentifierSetObject) of caCore API.
 
 6. Execute the client application.
 
 
 Input/Data:
 
-The DetachedCriteria query must specify the search value of one or more genomic identifiers and its data sources(attribute of Gene,MessengerRNA and /or Protein class).
+The  query object must specify the search value of one or more genomic identifiers and ouyput data sources(attribute of Gene,MessengerRNA and /or Protein class).
 
 Expected Output:
 
 1. A list of objects which satisfy the search condition(s) will be returned. OR An empty list will be returned if no object matches search condition(s).
+2. For data list please refer to  caCORE_API_Results.xml file 
+   http://cabigcvs.nci.nih.gov/viewcvs/viewcvs.cgi/geneconnect/Coding%
+   20and%20Testing/Test%20Activity%20Logs/caCORE_API_Results.xml
+
 
 
 Verification Logic:
 
 1. Verify by browsing mannualy through database.  
 
-2.The correctness of the Frequency value for a particular genomic identifier can be verified as follows:
+2. The correctness of the Frequency value for a particular genomic identifier can be verified as follows:
+   Frequency is calculated as the ratio of number of occurrences of a ?single genomic identifier? in each combination of genomic identifiers to the total number of traversable paths for the given input.  
 
-Frequency is calculated as the ratio of number of occurrences of a ?single genomic identifier? in each combination of genomic identifiers to the total number of traversable paths for the given input.  
-
-3.The correctness of the Confidence Score for a set of genomic identifiers can be verified as follows:
-
-Confidence score is calculated as the ratio of number of occurrences of a unique ?combination of genomic identifiers (includes only selected input and output data sources)? in a query, to the total number of traversable paths for the given input.</pre></font></td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Mode of Execution</b></td>              <td vAlign="top" height="1">Manual                </td>              <td vAlign="top" height="21"><b>Verification Logic</b></td>              <td vAlign="top" height="1">DATABASE<br>                </td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Author</b></td>              <td vAlign="top" height="21">Sachin Lale</td>              <td vAlign="top" height="21"><b>Date Entered</b></td>              <td vAlign="top" height="21">18/09/2006&nbsp;</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"><b>Date Last Update</b></td>              <td vAlign="top" height="21">20/10/2006&nbsp;</td>            </tr>          </tbody>        </table>      </td>    </tr>  </tbody></table>
+3. The correctness of the Confidence Score for a set of genomic identifiers can be verified as follows:
+   Confidence score is calculated as the ratio of number of occurrences of a unique ?combination of genomic identifiers (includes only selected input and output data sources)? in a query, to the total number of traversable paths for the given input.</pre></font></td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Mode of Execution</b></td>              <td vAlign="top" height="1">Manual                </td>              <td vAlign="top" height="21"><b>Verification Logic</b></td>              <td vAlign="top" height="1">DATABASE<br>                </td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Author</b></td>              <td vAlign="top" height="21">Sachin Lale</td>              <td vAlign="top" height="21"><b>Date Entered</b></td>              <td vAlign="top" height="21">18/09/2006&nbsp;</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"><b>Date Last Update</b></td>              <td vAlign="top" height="21">24/01/2007&nbsp;</td>            </tr>          </tbody>        </table>      </td>    </tr>  </tbody></table>
 <p align="right"><a href="#TMT Generated Test Plans">Top</a></p><a name="Test Case ID: GeneConnectver 1.1caCore APISearchQuery Based on Confidence Score"><center><table bgColor="#CCCCFF" border="1" cellPadding="0" cellSpacing="0" width="700">  <tbody>    <tr>      <td align="middle" bgColor="#CCCCFF">        <p align="left"><font color="#660066"><b>Test Case ID : 1871</b></font></p>      </td>    </tr>    <tr>      <td bgcolor="#FFFFFF"><b>Short Title : </b>Query Based on Confidence Score</td>    </tr>    <tr>      <td bgcolor="#FFFFFF"><b>Title : </b>Query Based on Confidence Score</td>    </tr>  </tbody></table><br><table bgColor="#CCCCFF" border="1" cellPadding="0" cellSpacing="0" width="700">  <tbody>    <tr>      <td align="middle" bgColor="#CCCCFF">        <p align="left"><font color="#660066"><b>VITALS</b></font></p>      </td>    </tr>    <tr>      <td>        <table bgColor="#CCCCFF" border="1" cellPadding="2" width="100%">          <tbody>            <tr bgColor="#ffffff">              <td vAlign="top"><b>Product</b></td>              <td vAlign="top" colspan="3">GeneConnect</td>            <tr bgColor="#ffffff">              <td vAlign="top"><b>Component</b></td>              <td vAlign="top">caCore API<br>              </td>              <td vAlign="top"><b>Test Area</b></td>              <td vAlign="top">Search</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top"><b>Reference</b></td>              <td vAlign="top">1</td>              <td vAlign="top"><b>Priority</b></td>              <td vAlign="top">P1</td>            </tr>          </tbody>        </table>    <tr>      <td align="middle" bgColor="#CCCCFF">        <p align="left"><font color="#660066"><b>DESCRIPTION</b></font></p>      </td>    </tr>    <tr>      <td>        <table bgColor="#CCCCFF" border="1" cellPadding="2" width="100%" height="113">          <tbody>            <tr bgColor="#ffffff"><td vAlign="top" height="32" colspan="4"><font class="itsmultlinefont"><pre>Purpose:
 
 To use caCore Like API query interface to retrive a set of associated genomic identifiers with a given data source as output and genomic identifer as input and criteria on confidence score.
 
+
 Setup:
 
 1. caCore-Like system has been deployed
 2. Application Server (where caCore-Like system is deployed) has been   
    started.
 3. For test client refer to:
-   http://cabigcvs.nci.nih.gov/viewcvs/viewcvs.cgi/geneconnect/caCore% 
-   20SDK%20Generated%20Code/src/GCTestClient.java
-
+   http://cabigcvs.nci.nih.gov/viewcvs/viewcvs.cgi/geneconnect/Coding% 
+   20and%20Testing/GeneConnectWeb/GeneConnect_caCore_Client/
+4. For this test case refer to code 
+   GeneConnect_caCore_Client/edu/wustl/geneconnect/testCase/
+   SearchWithConfidenceTest.java
 
 Procedure:
-1. To start with create client application. Please refer to  
-   queryConfScore() method of a sample test client GCTestClient.java.
+1. To start with create client application.
 
-2. Create a DetachedCriteria object of hibernate for GenomicIdentifierSet
-   class.
+2. Create a domain object of GenomicIdentifierSet class.
 
-3. Add Restriction on confidence score of the class.
-   (eg. for GenomicIdentifierSet Class 
-    Restrictions.gt("confidenceScore", new Float("0.2"))
+3. Create a domain object of Gene class.
 
-4. Add Restriction on one or more attributes of the class.
-   (eg. for Gene Class Restrictions.eq("ensemblGeneId", "ENS2"))
+4. Set ensemblGeneId attribute of Gene to 'ENSG00000120738'.
 
-5. Add Restriction on one or more boolean attributes of the class.
-   to select the data source as a part of output solution.
-   (eg. for Gene Class Restrictions.eq("uniGeneAsOutput", new Boolean 
-   (true)))
+5. Set unigeneAsOutput attribute of Gene to 'true'.
 
-6. Call a ApplicationService.query(DetachedCriteria,Class) of caCore API.
+6. Set gene attribute of GenomicIdentifierSet to above creted Gene.
 
-7. Execute the client application.
+7. Create a domain object of Protein class.
+
+8. Set ensemblPeptideAsOutput attribute of Protein to 'true'.
+
+9. Set protein attribute of GenomicIdentifierSet to above creted Protein.
+
+10. Create a domain object of MessengerRNA class.
+
+10. Set ensemblTranscriptAsOutput attribute of MessengerRNA to 'true'.
+
+11. Set messengerRNA attribute of GenomicIdentifierSet to above creted MessengerRNA.
+
+12. Set confidenceScore attribute of GenomicIdentifierSet to '0.3'.
+
+13. Call a ApplicationService.search(targetClassName,GenomicIdentifierSetObject) of caCore API.
+
+6. Execute the client application.
 
 
 Input/Data:
 
-The DetachedCriteria query must specify the search value of one or more genomic identifiers and its data sources(attribute of Gene,MessengerRNA and /or Protein class).
+The  query object must specify the search value of one or more genomic identifiers and ouyput data sources(attribute of Gene,MessengerRNA and /or Protein class).
 
 Expected Output:
 
 1. A list of objects which satisfy the search condition(s) will be returned. OR An empty list will be returned if no object matches search condition(s).
 
+2.  For data list please refer to  caCORE_API_Results.xml file 
+   http://cabigcvs.nci.nih.gov/viewcvs/viewcvs.cgi/geneconnect/Coding%
+   20and%20Testing/Test%20Activity%20Logs/caCORE_API_Results.xml
 
 Verification Logic:
 
 1. Verify by browsing mannualy through database.  
 
-2.The correctness of the Frequency value for a particular genomic identifier can be verified as follows:
+2. The correctness of the Frequency value for a particular genomic identifier can be verified as follows:
+   Frequency is calculated as the ratio of number of occurrences of a ?single genomic identifier? in each combination of genomic identifiers to the total number of traversable paths for the given input.  
 
-Frequency is calculated as the ratio of number of occurrences of a ?single genomic identifier? in each combination of genomic identifiers to the total number of traversable paths for the given input.  
-
-3.The correctness of the Confidence Score for a set of genomic identifiers can be verified as follows:
-
-Confidence score is calculated as the ratio of number of occurrences of a unique ?combination of genomic identifiers (includes only selected input and output data sources)? in a query, to the total number of traversable paths for the given input.</pre></font></td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Mode of Execution</b></td>              <td vAlign="top" height="1">Manual                </td>              <td vAlign="top" height="21"><b>Verification Logic</b></td>              <td vAlign="top" height="1">DATABASE<br>                </td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Author</b></td>              <td vAlign="top" height="21">Sachin Lale</td>              <td vAlign="top" height="21"><b>Date Entered</b></td>              <td vAlign="top" height="21">18/09/2006&nbsp;</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"><b>Date Last Update</b></td>              <td vAlign="top" height="21">20/10/2006&nbsp;</td>            </tr>          </tbody>        </table>      </td>    </tr>  </tbody></table>
+3. The correctness of the Confidence Score for a set of genomic identifiers can be verified as follows:
+   Confidence score is calculated as the ratio of number of occurrences of a unique ?combination of genomic identifiers (includes only selected input and output data sources)? in a query, to the total number of traversable paths for the given input.</pre></font></td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Mode of Execution</b></td>              <td vAlign="top" height="1">Manual                </td>              <td vAlign="top" height="21"><b>Verification Logic</b></td>              <td vAlign="top" height="1">DATABASE<br>                </td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Author</b></td>              <td vAlign="top" height="21">Sachin Lale</td>              <td vAlign="top" height="21"><b>Date Entered</b></td>              <td vAlign="top" height="21">18/09/2006&nbsp;</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"><b>Date Last Update</b></td>              <td vAlign="top" height="21">24/01/2007&nbsp;</td>            </tr>          </tbody>        </table>      </td>    </tr>  </tbody></table>
 <p align="right"><a href="#TMT Generated Test Plans">Top</a></p><a name="Test Case ID: GeneConnectver 1.1caCore APISearchQuery By ONT"><center><table bgColor="#CCCCFF" border="1" cellPadding="0" cellSpacing="0" width="700">  <tbody>    <tr>      <td align="middle" bgColor="#CCCCFF">        <p align="left"><font color="#660066"><b>Test Case ID : 1872</b></font></p>      </td>    </tr>    <tr>      <td bgcolor="#FFFFFF"><b>Short Title : </b>Query By ONT</td>    </tr>    <tr>      <td bgcolor="#FFFFFF"><b>Title : </b>Query By Order of Node Traversal</td>    </tr>  </tbody></table><br><table bgColor="#CCCCFF" border="1" cellPadding="0" cellSpacing="0" width="700">  <tbody>    <tr>      <td align="middle" bgColor="#CCCCFF">        <p align="left"><font color="#660066"><b>VITALS</b></font></p>      </td>    </tr>    <tr>      <td>        <table bgColor="#CCCCFF" border="1" cellPadding="2" width="100%">          <tbody>            <tr bgColor="#ffffff">              <td vAlign="top"><b>Product</b></td>              <td vAlign="top" colspan="3">GeneConnect</td>            <tr bgColor="#ffffff">              <td vAlign="top"><b>Component</b></td>              <td vAlign="top">caCore API<br>              </td>              <td vAlign="top"><b>Test Area</b></td>              <td vAlign="top">Search</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top"><b>Reference</b></td>              <td vAlign="top">1</td>              <td vAlign="top"><b>Priority</b></td>              <td vAlign="top">P1</td>            </tr>          </tbody>        </table>    <tr>      <td align="middle" bgColor="#CCCCFF">        <p align="left"><font color="#660066"><b>DESCRIPTION</b></font></p>      </td>    </tr>    <tr>      <td>        <table bgColor="#CCCCFF" border="1" cellPadding="2" width="100%" height="113">          <tbody>            <tr bgColor="#ffffff"><td vAlign="top" height="32" colspan="4"><font class="itsmultlinefont"><pre>Purpose:
 
-To use caCore Like API query interface to retrive a set of associated genomic identifiers with a given data source as output and genomic identifer as input.
+To use caCore Like API query interface to retrive a set of associated genomic identifiers with a given data source as output and genomic identifer as input and criteria on Order of node traversal.
+
+Setup:
 
 Setup:
 
@@ -244,121 +273,147 @@ Setup:
 2. Application Server (where caCore-Like system is deployed) has been   
    started.
 3. For test client refer to:
-   http://cabigcvs.nci.nih.gov/viewcvs/viewcvs.cgi/geneconnect/caCore% 
-   20SDK%20Generated%20Code/src/GCTestClient.java
-
+   http://cabigcvs.nci.nih.gov/viewcvs/viewcvs.cgi/geneconnect/Coding% 
+   20and%20Testing/GeneConnectWeb/GeneConnect_caCore_Client/
+4. For this test case refer to code 
+   GeneConnect_caCore_Client/edu/wustl/geneconnect/testCase/
+   SearchWithOntTest.java
 
 Procedure:
-1. To start with create client application. Please refer to  
-   querybyNodeTraversal() method of a sample test client   
-   GCTestClient.java.
+1. To start with create client application.
 
-2. Create a DetachedCriteria object of hibernate for GenomicIdentifierSet
-   class.
+2. Create a domain object of GenomicIdentifierSet class.
 
-3. Create DetachedCriteria object for orderofNodeTraversalCollection for  
-   for GenomicIdentifierSet class.
+3. Create a domain object of Gene class.
 
-4. Add Restriction on one or more attributes of the class.
-   (eg. for Gene Class Restrictions.eq("ensemblGeneId", "ENS2"))
+4. Set ensemblGeneId attribute of Gene to 'ENSG00000120738'.
 
-5. Add Restriction on one or more boolean attributes of the class.
-   to select the data source as a part of output solution.
-   (eg. for Gene Class Restrictions.eq("uniGeneAsOutput", new Boolean 
-   (true)))
+5. Set unigeneAsOutput attribute of Gene to 'true'.
 
-6. Call a ApplicationService.query(DetachedCriteria,Class) of caCore API.
+6. Set gene attribute of GenomicIdentifierSet to above creted Gene.
 
-7. Execute the client application.
+7. Create a domain object of Protein class.
+
+8. Set ensemblPeptideAsOutput attribute of Protein to 'true'.
+
+9. Set protein attribute of GenomicIdentifierSet to above creted Protein.
+
+10. Create a domain object of MessengerRNA class.
+
+10. Set ensemblTranscriptAsOutput attribute of MessengerRNA to 'true'.
+
+11. Set messengerRNA attribute of GenomicIdentifierSet to above creted MessengerRNA.
+
+12. Create instance of OrderOfNodeTraversal.
+
+13. Set the data source and link type attribute. 
+
+14. Set the path as UniGene {INFERRED} Ensembl Gene {DIRECT} Ensembl Transcript {DIRECT} Ensembl Protein
+
+15. Add OrderOfNodeTraversal object to a collection and set this collection to orderOfNodeTraversalCollection attribute of GenomicIdentifierSet.
+
+16. Call a ApplicationService.search(targetClassName,GenomicIdentifierSetObject) of caCore API.
+
+17. Execute the client application.
 
 
 Input/Data:
 
-The DetachedCriteria query must specify the search value of one or more genomic identifiers and its data sources(attribute of Gene,MessengerRNA and /or Protein class).
+The  query object must specify the search value of one or more genomic identifiers and ouyput data sources(attribute of Gene,MessengerRNA and /or Protein class).
 
 Expected Output:
 
 1. A list of objects which satisfy the search condition(s) will be returned. OR An empty list will be returned if no object matches search condition(s).
+2. For data list please refer to  caCORE_API_Results.xml file 
+   http://cabigcvs.nci.nih.gov/viewcvs/viewcvs.cgi/geneconnect/Coding%
+   20and%20Testing/Test%20Activity%20Logs/caCORE_API_Results.xml
 
 
 Verification Logic:
 
 1. Verify by browsing mannualy through database.  
 
-2. All returned GenomicIdentifierSet objects must be associated with specified path (orderOfNodeTraversal).
+2. The correctness of the Frequency value for a particular genomic identifier can be verified as follows:
+   Frequency is calculated as the ratio of number of occurrences of a ?single genomic identifier? in each combination of genomic identifiers to the total number of traversable paths for the given input.  
 
-3.The correctness of the Frequency value for a particular genomic identifier can be verified as follows:
-
-Frequency is calculated as the ratio of number of occurrences of a ?single genomic identifier? in each combination of genomic identifiers to the total number of traversable paths for the given input.  
-
-3.The correctness of the Confidence Score for a set of genomic identifiers can be verified as follows:
-
-Confidence score is calculated as the ratio of number of occurrences of a unique ?combination of genomic identifiers (includes only selected input and output data sources)? in a query, to the total number of traversable paths for the given input.</pre></font></td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Mode of Execution</b></td>              <td vAlign="top" height="1">Manual                </td>              <td vAlign="top" height="21"><b>Verification Logic</b></td>              <td vAlign="top" height="1">DATABASE<br>                </td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Author</b></td>              <td vAlign="top" height="21">Sachin Lale</td>              <td vAlign="top" height="21"><b>Date Entered</b></td>              <td vAlign="top" height="21">18/09/2006&nbsp;</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"><b>Date Last Update</b></td>              <td vAlign="top" height="21">20/10/2006&nbsp;</td>            </tr>          </tbody>        </table>      </td>    </tr>  </tbody></table>
+3. The correctness of the Confidence Score for a set of genomic identifiers can be verified as follows:
+   Confidence score is calculated as the ratio of number of occurrences of a unique ?combination of genomic identifiers (includes only selected input and output data sources)? in a query, to the total number of traversable paths for the given input.</pre></font></td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Mode of Execution</b></td>              <td vAlign="top" height="1">Manual                </td>              <td vAlign="top" height="21"><b>Verification Logic</b></td>              <td vAlign="top" height="1">DATABASE<br>                </td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Author</b></td>              <td vAlign="top" height="21">Sachin Lale</td>              <td vAlign="top" height="21"><b>Date Entered</b></td>              <td vAlign="top" height="21">18/09/2006&nbsp;</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"><b>Date Last Update</b></td>              <td vAlign="top" height="21">24/01/2007&nbsp;</td>            </tr>          </tbody>        </table>      </td>    </tr>  </tbody></table>
 <p align="right"><a href="#TMT Generated Test Plans">Top</a></p><a name="Test Case ID: GeneConnectver 1.1caCore APISearchQuery By Limiting ID Frequency"><center><table bgColor="#CCCCFF" border="1" cellPadding="0" cellSpacing="0" width="700">  <tbody>    <tr>      <td align="middle" bgColor="#CCCCFF">        <p align="left"><font color="#660066"><b>Test Case ID : 1873</b></font></p>      </td>    </tr>    <tr>      <td bgcolor="#FFFFFF"><b>Short Title : </b>Query By Limiting ID Frequency</td>    </tr>    <tr>      <td bgcolor="#FFFFFF"><b>Title : </b>Query By Limiting ID Frequency</td>    </tr>  </tbody></table><br><table bgColor="#CCCCFF" border="1" cellPadding="0" cellSpacing="0" width="700">  <tbody>    <tr>      <td align="middle" bgColor="#CCCCFF">        <p align="left"><font color="#660066"><b>VITALS</b></font></p>      </td>    </tr>    <tr>      <td>        <table bgColor="#CCCCFF" border="1" cellPadding="2" width="100%">          <tbody>            <tr bgColor="#ffffff">              <td vAlign="top"><b>Product</b></td>              <td vAlign="top" colspan="3">GeneConnect</td>            <tr bgColor="#ffffff">              <td vAlign="top"><b>Component</b></td>              <td vAlign="top">caCore API<br>              </td>              <td vAlign="top"><b>Test Area</b></td>              <td vAlign="top">Search</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top"><b>Reference</b></td>              <td vAlign="top">1</td>              <td vAlign="top"><b>Priority</b></td>              <td vAlign="top">P1</td>            </tr>          </tbody>        </table>    <tr>      <td align="middle" bgColor="#CCCCFF">        <p align="left"><font color="#660066"><b>DESCRIPTION</b></font></p>      </td>    </tr>    <tr>      <td>        <table bgColor="#CCCCFF" border="1" cellPadding="2" width="100%" height="113">          <tbody>            <tr bgColor="#ffffff"><td vAlign="top" height="32" colspan="4"><font class="itsmultlinefont"><pre>Purpose:
 
 To use caCore Like API query interface to retrive a set of associated genomic identifiers with a given data source as output and genomic identifer as input and criteria on frequency.
 
+
 Setup:
 
 1. caCore-Like system has been deployed
 2. Application Server (where caCore-Like system is deployed) has been   
    started.
 3. For test client refer to:
-   http://cabigcvs.nci.nih.gov/viewcvs/viewcvs.cgi/geneconnect/caCore% 
-   20SDK%20Generated%20Code/src/GCTestClient.java
-
+   http://cabigcvs.nci.nih.gov/viewcvs/viewcvs.cgi/geneconnect/Coding% 
+   20and%20Testing/GeneConnectWeb/GeneConnect_caCore_Client/
+4. For this test case refer to code 
+   GeneConnect_caCore_Client/edu/wustl/geneconnect/testCase/
+   SearchWithFrequencyTest.java
 
 Procedure:
-1. To start with create client application. Please refer to  
-   queryByLimitingIDFrequency() method of a sample test client   
-   GCTestClient.java.
+1. To start with create client application.
 
-2. Create a DetachedCriteria object of hibernate for GenomicIdentifierSet
-   class.
+2. Create a domain object of GenomicIdentifierSet class.
 
-3. Add Restriction on frequency.For instance:
-   DetachedCriteria freqCriteria = genomicIdSetCriteria			.createCriteria("consensusIdentifierDataCollection");
+3. Create a domain object of Gene class.
 
-   freqCriteria.add(Restrictions.gt("frequency", new Float("0.1")));
-   freqCriteria.add(Restrictions.gt("frequency", new Float("0.1")));
+4. Set ensemblGeneId attribute of Gene to 'ENSG00000120738'.
 
-   DetachedCriteria genomicIdCriteria = freqCriteria.createCriteria  
-                                         ("genomicIdentifier");
+5. Set unigeneAsOutput attribute of Gene to 'true'.
 
-   genomicIdCriteria.add(Restrictions.eq("dataSource", "Ensembl Gene"));
-   genomicIdCriteria.add(Restrictions.eq("dataSource", "Entrez Gene"));
+6. Set gene attribute of GenomicIdentifierSet to above creted Gene.
 
-4. Add Restriction on one or more attributes of the class.
-   (eg. for Gene Class Restrictions.eq("ensemblGeneId", "ENS2"))
+7. Create a domain object of Protein class.
 
-5. Add Restriction on one or more boolean attributes of the class.
-   to select the data source as a part of output solution.
-   (eg. for Gene Class Restrictions.eq("uniGeneAsOutput", new Boolean 
-   (true)))
+8. Set ensemblPeptideAsOutput attribute of Protein to 'true'.
 
-6. Call a ApplicationService.query(DetachedCriteria,Class) of caCore API.
+9. Set protein attribute of GenomicIdentifierSet to above creted Protein.
 
-7. Execute the client application.
+10. Create a domain object of MessengerRNA class.
+
+10. Set ensemblTranscriptAsOutput attribute of MessengerRNA to 'true'.
+
+11. Set messengerRNA attribute of GenomicIdentifierSet to above creted MessengerRNA.
+
+12. Create instance of ConsensusIdentifierData.
+
+13. Create Instance of edu.wustl.geneconnect.domain.UniGene
+
+14. Set genomicIdentifier attribute of ConsensusIdentifierData to above creted UniGene object.
+
+15. Set frequecny attribute of ConsensusIdentifierData to '0.3'.
+
+16. Add ConsensusIdentifierData object to a collection and set this collection to consensusIdentifierDataCollection attribute of 
+GenomicIdentifierSet.
+
+17. Call a ApplicationService.search(targetClassName,GenomicIdentifierSetObject) of caCore API.
+
+18. Execute the client application.
 
 
 Input/Data:
 
-The DetachedCriteria query must specify the search value of one or more genomic identifiers and its data sources(attribute of Gene,MessengerRNA and /or Protein class).
+The  query object must specify the search value of one or more genomic identifiers and ouyput data sources(attribute of Gene,MessengerRNA and /or Protein class).
 
 Expected Output:
 
 1. A list of objects which satisfy the search condition(s) will be returned. OR An empty list will be returned if no object matches search condition(s).
-
+2. For data list please refer to  caCORE_API_Results.xml file 
+   http://cabigcvs.nci.nih.gov/viewcvs/viewcvs.cgi/geneconnect/Coding%
+   20and%20Testing/Test%20Activity%20Logs/caCORE_API_Results.xml
 
 Verification Logic:
 
 1. Verify by browsing mannualy through database.  
 
-2.The correctness of the Frequency value for a particular genomic identifier can be verified as follows:
+2. The correctness of the Frequency value for a particular genomic identifier can be verified as follows:
+   Frequency is calculated as the ratio of number of occurrences of a ?single genomic identifier? in each combination of genomic identifiers to the total number of traversable paths for the given input.  
 
-Frequency is calculated as the ratio of number of occurrences of a ?single genomic identifier? in each combination of genomic identifiers to the total number of traversable paths for the given input.  
-
-3.The correctness of the Confidence Score for a set of genomic identifiers can be verified as follows:
-
-Confidence score is calculated as the ratio of number of occurrences of a unique ?combination of genomic identifiers (includes only selected input and output data sources)? in a query, to the total number of traversable paths for the given input.</pre></font></td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Mode of Execution</b></td>              <td vAlign="top" height="1">Manual                </td>              <td vAlign="top" height="21"><b>Verification Logic</b></td>              <td vAlign="top" height="1">DATABASE<br>                </td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Author</b></td>              <td vAlign="top" height="21">Sachin Lale</td>              <td vAlign="top" height="21"><b>Date Entered</b></td>              <td vAlign="top" height="21">18/09/2006&nbsp;</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"><b>Date Last Update</b></td>              <td vAlign="top" height="21">20/10/2006&nbsp;</td>            </tr>          </tbody>        </table>      </td>    </tr>  </tbody></table>
+3. The correctness of the Confidence Score for a set of genomic identifiers can be verified as follows:
+   Confidence score is calculated as the ratio of number of occurrences of a unique ?combination of genomic identifiers (includes only selected input and output data sources)? in a query, to the total number of traversable paths for the given input.</pre></font></td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Mode of Execution</b></td>              <td vAlign="top" height="1">Manual                </td>              <td vAlign="top" height="21"><b>Verification Logic</b></td>              <td vAlign="top" height="1">DATABASE<br>                </td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"><b>Author</b></td>              <td vAlign="top" height="21">Sachin Lale</td>              <td vAlign="top" height="21"><b>Date Entered</b></td>              <td vAlign="top" height="21">18/09/2006&nbsp;</td>            </tr>            <tr bgColor="#ffffff">              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"></td>              <td vAlign="top" height="21"><b>Date Last Update</b></td>              <td vAlign="top" height="21">24/01/2007&nbsp;</td>            </tr>          </tbody>        </table>      </td>    </tr>  </tbody></table>
 <p align="right"><a href="#TMT Generated Test Plans">Top</a></p></body></html>

@@ -134,10 +134,7 @@ public class HQLProcessor
 		 */
 		while (i >= 0)
 		{
-			//System.out.println("i:" +i);
-
 			int index = hqlString.indexOf(Constants.SEARCH_FOR_CONSENSUS_IDENTIFIER, i);
-			//System.out.println("index " +index);
 			if (index >= 0)
 			{
 				frequencyIndexList.add(new Integer(index));
@@ -148,7 +145,6 @@ public class HQLProcessor
 			}
 			i = index + "Constants.SEARCH_FOR_CONSENSUS_IDENTIFIER".length();
 		}
-		//System.out.println("list sizew: " +frequencyIndexList.size());
 		List frequencyStringList = new ArrayList();
 		int n = hqlString.length();
 
@@ -161,7 +157,6 @@ public class HQLProcessor
 			{
 
 				n = ((Integer) frequencyIndexList.get(j)).intValue();
-				//System.out.println("val of n :"+n);
 			}
 
 			if (n < hqlString.length())
@@ -173,8 +168,6 @@ public class HQLProcessor
 			{
 
 				int lastIndex = hqlString.lastIndexOf(Constants.SEARCH_FOR_TARGETALIAS);
-				//System.out.println("val of lastIndex :"+lastIndex);
-				//System.out.println("val of k :"+k);
 				if (lastIndex > 0 && lastIndex > k)
 				{
 					frequencyStringList.add(hqlString.substring(k, lastIndex));
@@ -191,7 +184,6 @@ public class HQLProcessor
 		 */
 		for (i = 0; i < frequencyStringList.size(); i++)
 		{
-			//System.out.println(frequencyStringList.get(i));
 			String frequencyString = (String) frequencyStringList.get(i);
 			int indexOfconfidence = frequencyString.indexOf(Constants.SEARCH_FOR_FREQUENCY);
 			String value = null;
@@ -255,9 +247,7 @@ public class HQLProcessor
 		 */
 		while (i >= 0)
 		{
-			//System.out.println("i:" +i);
 			int index = hqlString.indexOf(Constants.SEARCH_FOR_ONT, i);
-			//System.out.println("index " +index);
 			if (index >= 0)
 			{
 				ontIndexList.add(new Integer(index));
@@ -268,7 +258,6 @@ public class HQLProcessor
 			}
 			i = index + Constants.SEARCH_FOR_ONT.length();
 		}
-		//System.out.println("list sizew: " +ontIndexList.size());
 		List ontStringList = new ArrayList();
 		int n = hqlString.length();
 		for (int j = 0; j < ontIndexList.size();)
@@ -292,8 +281,6 @@ public class HQLProcessor
 			{
 
 				int lastIndex = hqlString.lastIndexOf("Constants.SEARCH_FOR_TARGETALIAS");
-				//System.out.println("val of lastIndex :"+lastIndex);
-				//System.out.println("val of k :"+k);
 				if (lastIndex > 0 && lastIndex > k)
 				{
 					ontStringList.add(hqlString.substring(k, lastIndex));
@@ -319,7 +306,6 @@ public class HQLProcessor
 		 */
 		for (int listn = 0; listn < ontStringList.size(); listn++)
 		{
-			//System.out.println("ONT: " + ontStringList.get(listn));
 			String ontString = (String) ontStringList.get(listn);
 			tempontString.setLength(0);
 			tempontString.append(ontString);
@@ -333,11 +319,9 @@ public class HQLProcessor
 				indexOfname = indexOfname + Constants.SEARCH_FOR_DATASOURCE.length();
 				tempontString.setLength(0);
 				tempontString.append(startofValue);
-				//System.out.println("startofValue :"+startofValue);
 
 				int indexStartValue = startofValue.indexOf("'");
 				int indexEndOfValue = startofValue.indexOf("'", indexStartValue + 1);
-				//System.out.println("Value " +startofValue.substring(indexStartValue+1,indexEndOfValue));
 				dataSourceList.add(startofValue.substring(indexStartValue + 1, indexEndOfValue));
 				if (tempontString.indexOf(Constants.SEARCH_FOR_DATASOURCE) < 0)
 				{
@@ -346,7 +330,6 @@ public class HQLProcessor
 			}
 			if (dataSourceList.size() > 0)
 			{
-				//ontList.add(innerDataSourceList);
 				ontmap.put("DataSource_" + listn, dataSourceList);
 			}
 			tempontString.setLength(0);
@@ -374,7 +357,6 @@ public class HQLProcessor
 			}
 			if (linkTypeList.size() > 0)
 			{
-				//ontList.add(innerDataSourceList);
 				ontmap.put("LinkType_" + listn, linkTypeList);
 			}
 
@@ -395,13 +377,8 @@ public class HQLProcessor
 			if ((dsList != null && linkList != null) && (dsList.size() == (linkList.size() + 1)))
 			{
 				List innerontList = new ArrayList();
-				//StringBuffer dataSourceName = new StringBuffer();
-				//StringBuffer linkType = new StringBuffer();
 				for (int j = 0; j < dsList.size(); j++)
 				{
-					//dataSourceName.setLength(0);
-					//linkType.setLength(0);
-
 					innerontList.add((String) dsList.get(j));
 					if (j < linkList.size())
 					{
@@ -641,7 +618,6 @@ public class HQLProcessor
 				log.info("associationObject null creating new for class :" + className);
 				String temp = roleName.substring(0, 1).toUpperCase();
 				String methodName = "set" + temp + roleName.substring(1, roleName.length());
-				//System.out.println("methodName: " +methodName);
 
 				Class[] paramClass = new Class[]{associationClass};
 				Object[] paramObject = new Object[]{associationObject};
@@ -752,7 +728,5 @@ public class HQLProcessor
 		{
 			e.printStackTrace();
 		}
-		//String hql = "Ad GenomicIdentifierSet dfC  GenomicIdentifierSet  DRGdfFH";
-
 	}
 }

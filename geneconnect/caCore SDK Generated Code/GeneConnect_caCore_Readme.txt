@@ -11,11 +11,9 @@ Index
     
 3. Pre-installation tasks : Setup Requirements 
     3.1. Operating Systems
-    3.2. Minimum Disk Space and RAM Requirements
-    3.3. Database Installation
-    3.4. JAVA Installation
-    3.5. Apache Tomcat 5.x Installation
-    3.6. caCore SDK 1-1-1 Installation  
+    3.2. JAVA Installation
+    3.3. Apache Tomcat 5.x Installation
+    3.4. caCore SDK 1-1-1 Installation  
 
 4. Folder Structure
     4.1. Contents of base directory and the subdirectories
@@ -23,15 +21,11 @@ Index
 5. Configuration Instructions
     5.1. Configurations required to generate GeneConnect caCore-Like System.
 
-6. Creating DataBase Tables
-
-7. Running the Server and Client Application
+6. Running the Server and Client Application
  
-8. Appendix
+7. Appendix
 
-Appendix A : Oracle Database installation details
-
-Appendix B : General Checks before starting with GeneConnect caCore Like system
+Appendix A : General Checks before starting with GeneConnect caCore Like system
 
 
 
@@ -62,44 +56,24 @@ The GeneConnect caCore-Like system can be installed on any of the following oper
 The other operating Systems such as Windows 2000, NT will be supported in the final release.
 
 
-3.2. Minimum Disk Space and RAM Requirements
---------------------------------------------
-
-Disk Space: 25 GB 
-RAM: <<<1>>> GB
-
-
-3.3. Database Installation
---------------------------
-	 
-	 This release of GeneConnect Server supports Oracle 9i.
-
-         - Oracle database server should be installed. Oracle instance should be running on it. 
-	 
-	 - Oracle database client should be installed on the machine, where the GeneConnect server is to be installed. 
-
-	 - TNS name should be configured , pointing to the installed Oracle database server. For this, add an entry into TNSNAMES.ORA file in ORACLE_HOME\NETWORK\admin directory.
-
-	 - See Appendix A for database installation details specific to GeneConnect. These steps need to be executed before running the GeneConnect server.
-
-3.4. JAVA Installation
+3.2. JAVA Installation
 ----------------------
 
 Install JRE 5.0 version on your machine.
 Installable can be downloaded from http://java.sun.com/javase/downloads/index.jsp. 
 
 
-3.5. Apache Tomcat 5.x Installation
+3.3. Apache Tomcat 5.x Installation
 -------------------------------------------------
 	 
 Install Apache Tomcat 5.0 version on your machine.
 Installable can be downloaded from http://tomcat.apache.org/download-55.cgi
 
 
-3.6. caCore SDK 1.1.1 Installation
+3.4. caCore SDK 3.1 Installation
 -------------------------------------------------
 	 
-Install caCore SDK 1.1.1 version on your machine.
+Install caCore SDK 3.1 version on your machine.
 Installable can be downloaded from http://ncicb.nci.nih.gov/download/downloadcacoresdk.jsp
 
 
@@ -247,55 +221,17 @@ g.. Execute ant script of caCore SDK.
 
 
 ------------------------------------------------------------------------------
-6. Creating DataBase Tables
-------------------------------------------------------------------------------
-
-To create the database tables required by GeneConnect caCore-Like system , run the script "GC_caCore_SchemaCreation.sql" in the caBIG cvs under folder 
-'geneconnect/caCore SDK Generated Code' directory.
-
-This sql file also contains statement for inserting dummy data for application testing purpose.
-
-------------------------------------------------------------------------------
-7. Running the Server
+6. Running the Server
 ------------------------------------------------------------------------------
 Before running GeneConnect Server make sure that you go through the check list in Appendix B and then run the script configured according to your requirements. 
 
 a. Start the Apache Tomcat Server.
-b. The sample client application GCTestClient.java is provided showing creation of queries satisfying use cases.
-
 
 ------------------------------------------------------------------------------
-8. Appendix
+7. Appendix
 ------------------------------------------------------------------------------
 
-
-Appendix A : Oracle Database installation details
---------------------------------------------------
-GeneConnect server will require ~25 GB of disk space to run. Before running, complete the Oracle set-up as given below by logging in as an administrator.
-
-Tablespace creation scripts
----------------------------
-CREATE TABLESPACE "GENECONNECTDATA" LOGGING 
-DATAFILE '$ORACLE_HOME/GENECONNECTDATA01.ora' SIZE 16384M 
-EXTENT MANAGEMENT LOCAL SEGMENT SPACE MANAGEMENT AUTO;
-
-
-User Creation Scripts
----------------------
-This section provides query to create a database user 'GENECONNECTUSER' with some specific privileges. The following actions can also be performed by executing the script GCOracleInit.sql, present in the /RunScripts directory.
-NOTE: In the below SQL replace <password> with an appropriate password string.
-
- 
-CREATE USER GENECONNECTUSER PROFILE DEFAULT IDENTIFIED BY <password> DEFAULT TABLESPACE USERS TEMPORARY TABLESPACE TEMP ACCOUNT UNLOCK;
- 
-GRANT CREATE ANY INDEX TO GENECONNECTUSER;
-GRANT CREATE ANY TABLE TO GENECONNECTUSER;
-GRANT UNLIMITED TABLESPACE TO GENECONNECTUSER;
-GRANT CONNECT TO GENECONNECTUSER;
-
-
-
-Appendix B : General Checks before starting with GeneConnect caCore Like system 
+Appendix A : General Checks before starting with GeneConnect caCore Like system 
 -------------------------------------------------------------------------------
 1. Check if Web Application Archieve (WAR file)generated by caCore SDK deployed in Apache Tomcat location.
 2. While executing GCTestClient check if Required jar files are present in the CLASSPATH.
