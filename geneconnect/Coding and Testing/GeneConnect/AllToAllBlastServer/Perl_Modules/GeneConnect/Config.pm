@@ -15,7 +15,7 @@ use Exporter;
 our @ISA = ( "Exporter" );
 our @EXPORT_OK = qw( get_config_params );
 
-our $VERSION = 0.02;
+our $VERSION = 0.03;
 
 
 #*****************************************************************************************
@@ -61,6 +61,18 @@ _validate_config( \%config ) or die "Error loading config file: $@";
 
 sub get_config_params
 {
+	my ( $pathfile ) = @_;
+	
+	
+	if( defined $pathfile && $pathfile ne '' )
+	{
+		# if a file is passed as a param, use that for the config options
+		Config::Simple->import_from( $pathfile, \%config )
+			or die Config::Simple->error();
+
+		_validate_config( \%config ) or die "Error loading config file: $@";
+	}
+        
 	return \%config;
 }
 
