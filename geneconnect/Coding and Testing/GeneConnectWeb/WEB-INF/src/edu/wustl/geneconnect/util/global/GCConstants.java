@@ -51,8 +51,9 @@ public interface GCConstants
 	String FORWARD_TO_ADVANCED_SEARCH_RESULT_PAGE = "advancedSearchresults";
 	String FORWARD_TO_SIMPLE_SEARCH_RESULT_PAGE = "simpleSearchresults";
 	String FORWARD_TO_ADVANCED_SEARCH_FOR_BATCH = "batchSearch";
+	String FORWARD_TO_ERROR_PAGE= "errorPage";
 	/********************************************************/
-	
+
 	/**************** Constants for Action forms*********/
 	public static final String FORM = "FORM";
 	public static final String ADVANCED_SEARCH_FORM = "advancedSearchForm";
@@ -63,20 +64,20 @@ public interface GCConstants
 	String ADVANCED_SEARCH_BIZLOGIC = "AdvancedSearchBizLogic";
 	String ONT_BIZLOGIC = "ONTBizLogic";
 	/********************************************************/
-	
-	public static final String QUERY_KEY= "queryKey";
-	public static final String QUERY_KEY_MAP= "QUERY_KEY_MAP";
-	public static final String SELECTED_QUERY= "SELECTED_QUERY";
+
+	public static final String QUERY_KEY = "queryKey";
+	public static final String QUERY_KEY_MAP = "QUERY_KEY_MAP";
+	public static final String SELECTED_QUERY = "SELECTED_QUERY";
 	public static final String ADVANCED_SEARCH = "advancedSearch";
-	
+
 	public static final String FREQUENCY_MAP = "FREQUENCY_MAP";
-	public static final String ADVANCED_FORM_OUTPUTDS_SUFIX_KEY="_FrequenceValue";
+	public static final String ADVANCED_FORM_OUTPUTDS_SUFIX_KEY = "_FrequenceValue";
 	/**
 	 * Constants for Search result view
 	 */
 	public static final String SELECTED_ONT_LIST = "SELECTED_ONT_LIST";
 	public static final String RESULT_DATA_LIST = "RESULT_DATA_LIST";
-	public static final String SELECTED_DATASOURCES= "SELECTED_DATASOURCES";
+	public static final String SELECTED_DATASOURCES = "SELECTED_DATASOURCES";
 	public static final String COLUMN_HEADERS = "COLUMN_HEADERS";
 	public static final String COLUMN_HEADERS_REMOVED = "COLUMN_HEADERS_REMOVED";
 	public static final String RESULT_LIST = "RESULT_LIST";
@@ -93,21 +94,20 @@ public interface GCConstants
 	public static final String SET_ID_KEY = "SET_ID";
 	public static final String SET_ID_DELIM = "_";
 	public static final String CONF_SCORE_KEY = "Path Score";
-	public static final String CONF_SCORE_DISPLAY = "Path Score";	
+	public static final String CONF_SCORE_DISPLAY = "Path Score";
 	public static final String SELECTED_DATA_SOURCES = "SELECTED_DATA_SOURCES";
-	
-	
+
 	public static final String DELEMITER = "_";
 	public static final String SEARCH_RESULT = "SearchResult.csv";
-	public static final String QUERY_KEY_ALL= "All";
-	
+	public static final String QUERY_KEY_ALL = "All";
+
 	/**
 	 * Column Names for DATASOURCE TABLE
 	 */
 	public static final String DATA_SOURCES_KEY = "DATA_SOURCES_KEY";
 	public static final String DATASOURCE_ID = "DATASOURCE_ID";
 	public static final String DATASOURCE_NAME = "DATASOURCE_NAME";
-	public static final String DATASOURCE_ATTRIBUTES = "DATASOURCE_ATTRIBUTES"; 
+	public static final String DATASOURCE_ATTRIBUTES = "DATASOURCE_ATTRIBUTES";
 	public static final String GRAPH_DATASOURCES = "GRAPH_DATASOURCES";
 	public static final String GRAPH_DATASOURCES_LINKS = "GRAPH_DATASOURCES_LINKS";
 	public static final String GRAPH_HIGHLIGHT_PATHS = "GRAPH_HIGHLIGHT_PATHS";
@@ -138,7 +138,6 @@ public interface GCConstants
 	public static final String TARGET_CLASS = "TARGET_CLASS";
 	public static final String ROLE_NAME = "ROLE_NAME";
 
-	
 	/**
 	 * Keys for Pagenation
 	 */
@@ -167,24 +166,25 @@ public interface GCConstants
 	public static final String NO_MATCH_FOUND = "No Match Found";
 	public static final String NO_MATCH_FOUND_MESSAGE = "NO_MATCH_FOUND_MESSAGE";
 	public static final String NA = "N/A";
-	
+
 	public static final String DOAMIN_CLASSNAME_PREFIX = "edu.wustl.geneconnect.domain";
-	public static final String FREQUENCY_VALUE= "FrequenceValue";
-	
-	public static final String SINGLE_QUERY_VALUE="Single";
-	public static final String BACTH_QUERY_VALUE="Batch";
+	public static final String FREQUENCY_VALUE = "FrequenceValue";
+
+	public static final String SINGLE_QUERY_VALUE = "Single";
+	public static final String BACTH_QUERY_VALUE = "Batch";
+	public static final String SESSION_INVALIDATE = "SESSION_INVALIDATE";
 	/*********** Constants for Home page ***************/
 	String NO_OF_PARIWISE_LINKS = "NoOfPariwiseLinks";
 	String NO_OF_GI_SETS = "NoOfGISets";
 	String NO_OF_GRAPH_PATHS = "NoOfGraphPaths";
 	/********************************************************/
-	
+
 	/*********** Constants for DATABASE TABLES ***************/
 	String TABLE_DATASOURCE = "DATASOURCE";
 	String TABLE_DATASOURCE_LINKS = "DATASOURCE_LINKS";
 	String TABLE_ROLE_LOOKUP = "ROLE_LOOKUP";
 	String TABLE_LINKTYPE = "LINKTYPE";
-	String TABLE_PATH = "PATH"; 
+	String TABLE_PATH = "PATH";
 	String TABLE_GENOMIC_IDENTIFIER_SET = "GENOMIC_IDENTIFIER_SET";
 	String TABLE_ONT = "ONT";
 	/********************************************************/

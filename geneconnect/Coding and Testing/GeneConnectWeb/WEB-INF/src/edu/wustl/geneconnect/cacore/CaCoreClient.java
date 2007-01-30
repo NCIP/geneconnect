@@ -117,140 +117,142 @@ public class CaCoreClient
 		 * Create root DetachedCriteria for GenomicIdentifierSet
 		 */
 		GenomicIdentifierSet genomicIdentifierSet = new GenomicIdentifierSet();
-		
+
 		try
 		{
-		
-		//System.out.println("caCore deprepnputDsList.size() :  " + inputDsList.size());
-		Map addedAssociation = new HashMap();
-		for (int i = 0; i < inputDsList.size(); i++)
-		{
-			NameValueBean bean = (NameValueBean) inputDsList.get(i);
-			// Get Class of data source i.e Gene,MRNA or Protein
-			String className = MetadataManager.getDataSourceAttribute(GCConstants.DATASOURCE_NAME,
-					bean.getName(), GCConstants.CLASS);
 
-			String roleName = MetadataManager.getRoleName("GenomicIdentifierSet", className);
+			//System.out.println("caCore deprepnputDsList.size() :  " + inputDsList.size());
+			Map addedAssociation = new HashMap();
+			for (int i = 0; i < inputDsList.size(); i++)
+			{
+				NameValueBean bean = (NameValueBean) inputDsList.get(i);
+				// Get Class of data source i.e Gene,MRNA or Protein
+				String className = MetadataManager.getDataSourceAttribute(
+						GCConstants.DATASOURCE_NAME, bean.getName(), GCConstants.CLASS);
 
-			// get attribute name of Gene.MRNA or protein representing data source 
-			String classAttribute = MetadataManager.getDataSourceAttribute(
-					GCConstants.DATASOURCE_NAME, bean.getName(), GCConstants.ATTRIBUTE);
-			// get type of attribute
-			String attributeType = MetadataManager.getDataSourceAttribute(
-					GCConstants.DATASOURCE_NAME, bean.getName(), GCConstants.TYPE);
+				String roleName = MetadataManager.getRoleName("GenomicIdentifierSet", className);
 
-			//			className = className.substring(0, 1).toLowerCase()
-			//					+ className.substring(1, className.length());
+				// get attribute name of Gene.MRNA or protein representing data source 
+				String classAttribute = MetadataManager.getDataSourceAttribute(
+						GCConstants.DATASOURCE_NAME, bean.getName(), GCConstants.ATTRIBUTE);
+				// get type of attribute
+				String attributeType = MetadataManager.getDataSourceAttribute(
+						GCConstants.DATASOURCE_NAME, bean.getName(), GCConstants.TYPE);
 
-			Logger.out.info("Data Source ROLE :  " + roleName);
-			Logger.out.info("Data Source ATTRIBUTE:  " + classAttribute);
-			Logger.out.info("Data Source ATTRIBUTE TYPE :  " + attributeType);
+				//			className = className.substring(0, 1).toLowerCase()
+				//					+ className.substring(1, className.length());
 
-			/**
-			 * Create DetachedCriteria for search on given datasource and its genomicId
-			 */
-			/**
-			 * Check if Criteria already created.IF yed teh get teh DetachedCriteria object from Map
-			 * else crete new DetachedCriteria 
-			 */
-			Class associationClass=null;
-			Object associationObject = addedAssociation.get(roleName);
-			
-			associationClass = Class.forName(GCConstants.DOAMIN_CLASSNAME_PREFIX+"."+className);
-			if (associationObject == null)
-			{			
-				associationObject =  associationClass.newInstance();
-				Logger.out.info("associationObject null creating new for class :" + className);
-				String temp = roleName.substring(0, 1).toUpperCase();
-				String methodName = "set" + temp
-				+ roleName.substring(1, roleName.length());
-				System.out.println("methodName: " +methodName);
-				
-				Class[] paramClass = new Class[]{associationClass};
-				Object[] paramObject = new Object[]{associationObject};
-				Method method = GenomicIdentifierSet.class.getDeclaredMethod(methodName,paramClass);
-				method.invoke(genomicIdentifierSet,paramObject);
-				addedAssociation.put(roleName, associationObject);
+				Logger.out.info("Data Source ROLE :  " + roleName);
+				Logger.out.info("Data Source ATTRIBUTE:  " + classAttribute);
+				Logger.out.info("Data Source ATTRIBUTE TYPE :  " + attributeType);
 
-			}	
+				/**
+				 * Create DetachedCriteria for search on given datasource and its genomicId
+				 */
+				/**
+				 * Check if Criteria already created.IF yed teh get teh DetachedCriteria object from Map
+				 * else crete new DetachedCriteria 
+				 */
+				Class associationClass = null;
+				Object associationObject = addedAssociation.get(roleName);
+
+				associationClass = Class.forName(GCConstants.DOAMIN_CLASSNAME_PREFIX + "."
+						+ className);
+				if (associationObject == null)
+				{
+					associationObject = associationClass.newInstance();
+					Logger.out.info("associationObject null creating new for class :" + className);
+					String temp = roleName.substring(0, 1).toUpperCase();
+					String methodName = "set" + temp + roleName.substring(1, roleName.length());
+					System.out.println("methodName: " + methodName);
+
+					Class[] paramClass = new Class[]{associationClass};
+					Object[] paramObject = new Object[]{associationObject};
+					Method method = GenomicIdentifierSet.class.getDeclaredMethod(methodName,
+							paramClass);
+					method.invoke(genomicIdentifierSet, paramObject);
+					addedAssociation.put(roleName, associationObject);
+
+				}
 				String temp = classAttribute.substring(0, 1).toUpperCase();
 				String methodName = "set" + temp
 						+ classAttribute.substring(1, classAttribute.length());
 				Method method = null;
 				Class[] attributes = null;
-				
+
 				Object[] attributesValue = null;
-				
+
 				if (attributeType.equalsIgnoreCase("java.lang.Long"))
 				{
 					attributes = new Class[]{Long.class};
 					method = associationClass.getDeclaredMethod(methodName, attributes);
-					attributesValue =  new Object[]{new Long(bean.getValue())};
+					attributesValue = new Object[]{new Long(bean.getValue())};
 				}
 				else
 				{
 					attributes = new Class[]{String.class};
 					method = associationClass.getDeclaredMethod(methodName, attributes);
-					attributesValue =  new Object[]{new String(bean.getValue())};
+					attributesValue = new Object[]{new String(bean.getValue())};
 				}
-				method.invoke(associationObject,attributesValue);
+				method.invoke(associationObject, attributesValue);
 				Logger.out.info("Added Input Attribute :" + classAttribute);
-				
+
 				/**
 				 * Set association object in GenomicIdentifierSet
 				 */
-				
-			
 
-		}
-
-		for (int j = 0; j < outputDsList.size(); j++)
-		{
-			String outputDSName = (String) outputDsList.get(j);
-			String outputClassName = MetadataManager.getDataSourceAttribute(
-					GCConstants.DATASOURCE_NAME, outputDSName, GCConstants.CLASS);
-			Class associationClass = Class.forName(GCConstants.DOAMIN_CLASSNAME_PREFIX+"."+outputClassName);
-			String roleName = MetadataManager.getRoleName("GenomicIdentifierSet", outputClassName);
-			Object associationObject = addedAssociation.get(roleName);
-			if (associationObject == null)
-			{
-				Logger.out.info("associationObject null creating new for class :" + outputClassName);
-				associationObject =  associationClass.newInstance();
-				addedAssociation.put(roleName, associationObject);
-				
-				String temp = roleName.substring(0, 1).toUpperCase();
-				String methodName = "set" + temp
-				+ roleName.substring(1, roleName.length());
-				System.out.println("methodName: " +methodName);
-				Class[] paramClass = new Class[]{associationClass};
-				Object[] paramObject = new Object[]{associationObject};
-				Method method = GenomicIdentifierSet.class.getDeclaredMethod(methodName,paramClass);
-				method.invoke(genomicIdentifierSet,paramObject);
-				
 			}
 
-			String outputAttribute = MetadataManager.getDataSourceAttribute(
-					GCConstants.DATASOURCE_NAME, outputDSName, GCConstants.OUTPUT_ATTRIBUTE);
-			String temp = outputAttribute.substring(0, 1).toUpperCase();
-			String methodName = "set" + temp
-					+ outputAttribute.substring(1, outputAttribute.length());
-			Method method = null;
-			Class[] attributes = new Class[]{Boolean.class};
-			Object[] attributesValue = new Object[]{new Boolean(true)};
-		
-			method = associationClass.getDeclaredMethod(methodName, attributes);
-			method.invoke(associationObject,attributesValue);
-			Logger.out.info("Added Op Attribute :" + outputAttribute);
+			for (int j = 0; j < outputDsList.size(); j++)
+			{
+				String outputDSName = (String) outputDsList.get(j);
+				String outputClassName = MetadataManager.getDataSourceAttribute(
+						GCConstants.DATASOURCE_NAME, outputDSName, GCConstants.CLASS);
+				Class associationClass = Class.forName(GCConstants.DOAMIN_CLASSNAME_PREFIX + "."
+						+ outputClassName);
+				String roleName = MetadataManager.getRoleName("GenomicIdentifierSet",
+						outputClassName);
+				Object associationObject = addedAssociation.get(roleName);
+				if (associationObject == null)
+				{
+					Logger.out.info("associationObject null creating new for class :"
+							+ outputClassName);
+					associationObject = associationClass.newInstance();
+					addedAssociation.put(roleName, associationObject);
 
+					String temp = roleName.substring(0, 1).toUpperCase();
+					String methodName = "set" + temp + roleName.substring(1, roleName.length());
+					System.out.println("methodName: " + methodName);
+					Class[] paramClass = new Class[]{associationClass};
+					Object[] paramObject = new Object[]{associationObject};
+					Method method = GenomicIdentifierSet.class.getDeclaredMethod(methodName,
+							paramClass);
+					method.invoke(genomicIdentifierSet, paramObject);
+
+				}
+
+				String outputAttribute = MetadataManager.getDataSourceAttribute(
+						GCConstants.DATASOURCE_NAME, outputDSName, GCConstants.OUTPUT_ATTRIBUTE);
+				String temp = outputAttribute.substring(0, 1).toUpperCase();
+				String methodName = "set" + temp
+						+ outputAttribute.substring(1, outputAttribute.length());
+				Method method = null;
+				Class[] attributes = new Class[]{Boolean.class};
+				Object[] attributesValue = new Object[]{new Boolean(true)};
+
+				method = associationClass.getDeclaredMethod(methodName, attributes);
+				method.invoke(associationObject, attributesValue);
+				Logger.out.info("Added Op Attribute :" + outputAttribute);
+
+			}
+
+			Logger.out.info(genomicIdentifierSet);
 		}
-		
-		Logger.out.info(genomicIdentifierSet);
-		}
-		catch(Exception e)
+		catch (Exception e)
 		{
-			Logger.out.error(e.getMessage(),e);
+			Logger.out.error(e.getMessage(), e);
 			e.printStackTrace();
-			throw new DAOException(e.getMessage(),e);
+			throw new DAOException(e.getMessage(), e);
 		}
 		return genomicIdentifierSet;
 

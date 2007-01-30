@@ -1,6 +1,6 @@
 <%@ taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
 <%@ taglib uri="/WEB-INF/struts-html.tld" prefix="html"%>
-<%@ page import="edu.wustl.catissuecore.util.global.Constants"%>
+<%@ page import="edu.wustl.common.util.global.Constants"%>
 
 <br>
   <table width="700" border="0" cellspacing="0" cellpadding="0" align="center">

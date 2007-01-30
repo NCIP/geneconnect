@@ -52,12 +52,15 @@ public class HomeAction extends Action
 	public ActionForward execute(ActionMapping mapping, ActionForm form,
 			HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
-		request.setAttribute(GCConstants.NO_OF_PARIWISE_LINKS, MetadataManager.getPairwiseLinks().toString());
-		
-		request.setAttribute(GCConstants.NO_OF_GI_SETS, MetadataManager.getDistinctGISets().toString());
-		
-		request.setAttribute(GCConstants.NO_OF_GRAPH_PATHS, MetadataManager.getPossibleGraphPaths().toString());
-		
+		request.setAttribute(GCConstants.NO_OF_PARIWISE_LINKS, MetadataManager.getPairwiseLinks()
+				.toString());
+
+		request.setAttribute(GCConstants.NO_OF_GI_SETS, MetadataManager.getDistinctGISets()
+				.toString());
+
+		request.setAttribute(GCConstants.NO_OF_GRAPH_PATHS, MetadataManager.getPossibleGraphPaths()
+				.toString());
+
 		return mapping.findForward(GCConstants.FORWARD_TO_HOME_PAGE);
 	}
 

@@ -3,19 +3,20 @@
  *<p>Company: Washington University, School of Medicine, St. Louis.</p>
  *<p>ClassName: java edu.wustl.geneconnect.graph.DataSource</p> 
  */
-package edu.wustl.geneconnect.graph;
 
+package edu.wustl.geneconnect.graph;
 
 public class DataSource
 {
+
 	Integer id;
-	
+
 	String name;
-	
+
 	int row;
-	
+
 	int col;
-	
+
 	public DataSource(Integer id, String name, int row, int col)
 	{
 		this.id = id;
@@ -23,7 +24,7 @@ public class DataSource
 		this.row = row;
 		this.col = col;
 	}
-	
+
 	/**
 	 * @return Returns the id.
 	 */
@@ -31,6 +32,7 @@ public class DataSource
 	{
 		return id;
 	}
+
 	/**
 	 * @param id The id to set.
 	 */
@@ -38,6 +40,7 @@ public class DataSource
 	{
 		this.id = id;
 	}
+
 	/**
 	 * @return Returns the name.
 	 */
@@ -45,6 +48,7 @@ public class DataSource
 	{
 		return name;
 	}
+
 	/**
 	 * @param name The name to set.
 	 */
@@ -52,6 +56,7 @@ public class DataSource
 	{
 		this.name = name;
 	}
+
 	/**
 	 * @return Returns the rowNo.
 	 */
@@ -59,6 +64,7 @@ public class DataSource
 	{
 		return row;
 	}
+
 	/**
 	 * @param rowNo The rowNo to set.
 	 */
@@ -66,7 +72,7 @@ public class DataSource
 	{
 		this.row = row;
 	}
-	
+
 	/**
 	 * @return Returns the col.
 	 */
@@ -74,6 +80,7 @@ public class DataSource
 	{
 		return col;
 	}
+
 	/**
 	 * @param col The col to set.
 	 */

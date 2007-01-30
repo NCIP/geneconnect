@@ -49,7 +49,7 @@ public class SimpleSearchForm extends ActionForm
 	 * List of Data sources
 	 */
 	private List datasources;
-	
+
 	/**
 	 * Indicates next action to be taken
 	 */
@@ -63,13 +63,12 @@ public class SimpleSearchForm extends ActionForm
 	 * Map to handle values of all the Participant Medical Identifiers
 	 */
 	protected Map values = new HashMap();
-	
+
 	/**
 	 * Strore the type of query by default batch search 
 	 */
 	private String queryType = GCConstants.BACTH_QUERY_VALUE;
-	
-	
+
 	List outputDsList;
 
 	/**
@@ -172,16 +171,18 @@ public class SimpleSearchForm extends ActionForm
 	{
 		this.targetAction = targetAction;
 	}
-	  public void reset(ActionMapping mapping, HttpServletRequest request)
-	  {
-		  values = new HashMap();
-		  counter = 1;
-	  }
+
+	public void reset(ActionMapping mapping, HttpServletRequest request)
+	{
+		values = new HashMap();
+		counter = 1;
+	}
+
 	/**
 	 * Getter method for queryType
 	 * @return
 	 */
-	
+
 	public String getQueryType()
 	{
 		return queryType;
@@ -205,11 +206,10 @@ public class SimpleSearchForm extends ActionForm
 		outputDsList = new ArrayList();
 		inputDsList = new ArrayList();
 		//metadataManager = MetadataManager.getInstance();
-		
+
 		Map inputMap = new HashMap();
 		List testList = new ArrayList();
 
-		
 		Map map = getValues();
 		Set s = map.keySet();
 
@@ -232,11 +232,9 @@ public class SimpleSearchForm extends ActionForm
 		for (Iterator iter = s.iterator(); iter.hasNext();)
 		{
 			String str = (String) iter.next();
-			//Logger.out.debug("KEys: " + str);
 			if (str.endsWith("_systemIdentifier"))
 			{
-				//noOfInputs++;
-				//Logger.out.debug("noOfInputs: " + noOfInputs);
+				//do nothing
 			}
 			else if (str.startsWith("Input:"))
 			{
@@ -246,13 +244,13 @@ public class SimpleSearchForm extends ActionForm
 				Logger.out.debug("map.get(str): " + map.get(str));
 				if (str.endsWith("DataSource_Id") && ((String) map.get(str)).equalsIgnoreCase("-1"))
 				{
-					//throw new BizLogicException("Select valid data source");
-					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.valid.datasource"));
+					errors.add(ActionErrors.GLOBAL_ERROR,
+							new ActionError("errors.valid.datasource"));
 				}
 				if ((((String) map.get(str)).equalsIgnoreCase(Constants.SELECT_OPTION)))
 				{
-					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.valid.datasource"));
-					//throw new BizLogicException("Select valid data source");
+					errors.add(ActionErrors.GLOBAL_ERROR,
+							new ActionError("errors.valid.datasource"));
 				}
 				if (str.endsWith("DataSource_Id"))
 					noOfInputs++;
@@ -282,7 +280,8 @@ public class SimpleSearchForm extends ActionForm
 			String errmsg = new DefaultExceptionFormatter().getErrorMessage(
 					"errors.no.outputDatasource", arg);
 			Logger.out.info(errmsg);
-			errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.no.outputDatasource",arg));
+			errors.add(ActionErrors.GLOBAL_ERROR,
+					new ActionError("errors.no.outputDatasource", arg));
 		}
 		String temp = null;
 		List dsName = new ArrayList();
@@ -312,7 +311,6 @@ public class SimpleSearchForm extends ActionForm
 		{
 			NameValueBean bean = new NameValueBean();
 			String key = (String) it.next();
-			//Logger.out.debug("KEEYY " +key);
 			temp = "Input:" + key + "_DataSource_Id";
 			String dataSourceID = (String) inputMap.get(temp);
 			Logger.out.debug("dataSourceID " + dataSourceID);
@@ -322,20 +320,21 @@ public class SimpleSearchForm extends ActionForm
 			/**
 			 * Logic to check whther user has enter more than one genomicId for same input data source
 			 */
-			if(!queryType.equalsIgnoreCase(GCConstants.BACTH_QUERY_VALUE))
+			if (!queryType.equalsIgnoreCase(GCConstants.BACTH_QUERY_VALUE))
 			{
-			for (int j = 0; j < dsName.size(); j++)
-			{
-				if (dataSourceName.equalsIgnoreCase(dsName.get(j).toString()))
+				for (int j = 0; j < dsName.size(); j++)
 				{
-					String arg[] = new String[]{dataSourceName};
-					String errmsg = new DefaultExceptionFormatter().getErrorMessage(
-							"errors.duplicate.datasource", arg);
-					Logger.out.info(errmsg);
-					errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.duplicate.datasource",arg));
+					if (dataSourceName.equalsIgnoreCase(dsName.get(j).toString()))
+					{
+						String arg[] = new String[]{dataSourceName};
+						String errmsg = new DefaultExceptionFormatter().getErrorMessage(
+								"errors.duplicate.datasource", arg);
+						Logger.out.info(errmsg);
+						errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+								"errors.duplicate.datasource", arg));
+					}
 				}
 			}
-			}	
 			dsName.add(dataSourceName);
 
 			String tempkey = "Input:" + key + "_Genomic_Id";
@@ -349,7 +348,7 @@ public class SimpleSearchForm extends ActionForm
 				String errmsg = new DefaultExceptionFormatter().getErrorMessage(
 						"error.null.genomicid", arg);
 				Logger.out.info(errmsg);
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.null.genomicid",arg));
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.null.genomicid", arg));
 			}
 			bean.setName(dataSourceName);
 			bean.setValue(genomicID);
@@ -371,8 +370,8 @@ public class SimpleSearchForm extends ActionForm
 				String errmsg = new DefaultExceptionFormatter().getErrorMessage(
 						"errors.datasource.inputOutput", arg);
 				Logger.out.info(errmsg);
-				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.datasource.inputOutput",arg));
-				//throw new BizLogicException(errmsg);
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError(
+						"errors.datasource.inputOutput", arg));
 			}
 
 		}
@@ -415,7 +414,4 @@ public class SimpleSearchForm extends ActionForm
 		this.outputDsList = outputDsList;
 	}
 
-	
-	
-	
 }

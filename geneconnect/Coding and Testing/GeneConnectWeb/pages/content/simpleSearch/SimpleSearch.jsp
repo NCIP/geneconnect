@@ -21,26 +21,26 @@
 	import="edu.wustl.geneconnect.util.global.GCConstants"%>
 <!-- Imports -->
 <%
-SimpleSearchForm simpleform = (SimpleSearchForm )request.getAttribute("simpleSearchForm");
-List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
+	SimpleSearchForm simpleform = (SimpleSearchForm )request.getAttribute("simpleSearchForm");
+	List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 
-			Object obj = request.getAttribute("simpleSearchForm");
-			int noOfRows = 0;
-			Map map = null;
-			String targetAction = "";
-			
-			if (obj != null && obj instanceof SimpleSearchForm)
-			{
-				SimpleSearchForm form = (SimpleSearchForm) obj;
-				map = form.getValues();
-				noOfRows = form.getCounter();
+	Object obj = request.getAttribute("simpleSearchForm");
+	int noOfRows = 0;
+	Map map = null;
+	String targetAction = "";
+	
+	if (obj != null && obj instanceof SimpleSearchForm)
+	{
+		SimpleSearchForm form = (SimpleSearchForm) obj;
+		map = form.getValues();
+		noOfRows = form.getCounter();
 
-				if(noOfRows > dataSourceList.size())
-					noOfRows = dataSourceList.size();
-			
-				targetAction=form.getTargetAction();
+		if(noOfRows > dataSourceList.size())
+			noOfRows = dataSourceList.size();
+	
+		targetAction=form.getTargetAction();
 
-			}
+	}
 %>
 <head>
 <!-- Css and Scripts -->
@@ -101,8 +101,7 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 			x.id="tr_"+(lasttrid)
 			// First Cell
 			var spreqno=x.insertCell(0);
-			spreqno.className="formField";
-		//	sname=(q+1);
+			spreqno.className="formFieldleftBorder";
 			var identifier = "value(Input:" + lasttrid +"_systemIdentifier)";
 			
 			sname="";
@@ -164,6 +163,7 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 				field.value = field.value.replace(/[^\d]+/g, ''); 
 			}
 		}
+		
 		// check all output data source
 		function checkAll(element)
 		{			
@@ -218,6 +218,7 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 				//alert("Input Value-->"+combo.value);
 			}
 		}
+		
 		// function to disable selected ouput data source which is selected as input 
 		function disableOutputDataSource(ele,i)
 		{
@@ -302,6 +303,7 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 			
 			checkAllInputDataSourceValues();
 		}
+		
 		function setSeletedInputDataSource(ele)
 		{
 			var divObj=document.getElementById("addMore");
@@ -317,6 +319,7 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 			}
 			
 		}
+		
 		// for bacth search if user changes any of combo value then apply same value to 
 		//all other combo
 		function selectValueforAllInputDataSource(ele)
@@ -338,6 +341,7 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 			}	
 	
 		}
+		
 		// paste event for safari works on CTRL+V
 		function pasteForSafari(event)
 		{
@@ -423,11 +427,9 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 			if(safariClipBoardData!=null)
 			{
 				copiedData=safariClipBoardData;
-				//alert("copiedData: "+copiedData);
 			}
 			else if(window.clipboardData)
 			{
-				//alert("in IE");
 				copiedData = clipboardData.getData('Text');
 			}
 			else	
@@ -478,7 +480,6 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 			}
 			var formattedRows=new Array();
 			var formattedRowCount=0;
-		//	alert("rows.length : "+rows.length);
 			for(var n=0;n<rows.length;n++)
 			{
 				if(rows[n]!="")
@@ -530,14 +531,7 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 				//var combo=rowIds[i].cells[1].firstChild;
 				var j=0;
 				selectOptionToDelete = true;
-				//alert("Deleting-->"+combo.options[combo.selectedIndex].value);
 
-			//	if(combo.options!=null & (combo.options[combo.selectedIndex].value == "-- Select --" || combo.options[combo.selectedIndex].value == "-1"))
-			//	{
-			//		selectOptionToDelete = true;
-			//	}
-				// set selected input data source as null and disable teh corresponding 
-				// ouput data source
 				if(seletedInputDataSource.length>0&&seletedInputDataSource[1]!=null)
 				{
 					chk = "value(Output:DataSource_Id_"+seletedInputDataSource[1]+")";
@@ -700,7 +694,7 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 
 				%>
 					<tr id="<%=trid%>">
-						<td class="formField"><input type="checkbox" id="<%=check%>"
+						<td class="formFieldleftBorder"><input type="checkbox" id="<%=check%>"
 							name="<%=check%>" /></td>
 						<td class="formField">
 						<html:select property="<%=dataSourceName%>"
@@ -781,6 +775,8 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 </html:form>
 
 <script>
+
+	// populate the forma again if validation error throws from server.
 	var i=0;
 	<%
 		for (int i = 0; i < dataSourceList.size(); i++)
@@ -796,14 +792,13 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 	<%
 		}
 	%>
+	// get the no of rows and enable or diable teh check box baded on input seelction
 		for(i=1;i<=<%=noOfRows%>;i++)
 		{
 			var id ="value(Input:" + i + "_DataSource_Id)";
-			//alert("value(Input:" + i + "_DataSource_Id)");
 			var combo = document.getElementById(id);
 			if(combo!=null)
 			{
-				//alert(combo.value);
 				if(combo.value == "-- Select --")
 				{
 					disableAllOutputDataSource();
@@ -812,11 +807,9 @@ List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 				var checkBox = document.getElementById("value(Output:DataSource_Id_"+combo.value+")");
 				if(checkBox!=null)
 				{
-
 					seletedInputDataSource[i] = combo.value;
 					checkBox.disabled=true;
 				}	
-				
 			}	
 		}
 		<%

@@ -27,10 +27,8 @@ import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -397,7 +395,6 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     
     public void setSize(int width, int height)
     {
-    	System.out.println("setSize method of Applet ******************************");
        super.setSize(width,height);
        validate();
     }
@@ -477,9 +474,16 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	
     	highlightPathsSortedKeys = new TreeMap();
     	
+    	//Map to store Unique ONTs in sorted order
+    	Map sortedUniquePaths = new TreeMap();
+    	
+    	int noOfPaths = 0;
+    	
     	if(this.getParameter("noOfHighlightPaths") != null)
     	{
 	    	int noOfHighlightPaths = Integer.parseInt(this.getParameter("noOfHighlightPaths"));
+	    	
+//	    	System.out.println("No. of Paths-->"+noOfHighlightPaths);
 	    	
 	    	highlightPathList = new String[noOfHighlightPaths];
 	    	
@@ -518,10 +522,16 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 //	    			Logger.out.debug("NodeName to Highlight-->"+vertexStringerImpl.getLabel(v));
 	    		}
 	    		
+//	    		if(highlightPathCount.equals("0"))
+//	    			highlightPathList[i]=highlightPathString.substring(0, highlightPathString.length()-5)+":"+i;
+//	    		else
+//	    			highlightPathList[i]=highlightPathString.substring(0, highlightPathString.length()-5)+":"+i + " {"+highlightPathCount+"}";
+
 	    		if(highlightPathCount.equals("0"))
 	    			highlightPathList[i]=highlightPathString.substring(0, highlightPathString.length()-5);
 	    		else
-	    			highlightPathList[i]=highlightPathString.substring(0, highlightPathString.length()-5) + " {"+highlightPathCount+"}";
+	    			highlightPathList[i]=highlightPathString.substring(0, highlightPathString.length()-5)+ " {"+highlightPathCount+"}";
+
 	    		
 //	    		Logger.out.debug("Size of highlightVertexList==>"+highlightVertexList.size());
 	    		
@@ -537,26 +547,81 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
 	    			counter+=1;
 	    		}
 	    		highlightPathsMap.put(new Integer(i),highlightLinksList);
+	    		
+	    		
+	    		//checking if ONT is already traversed
+	    		if(sortedUniquePaths.containsKey(highlightPathList[i]))
+	    		{
+	    			//getting list of Links for ONT
+	    			ArrayList stackOfLinks = (ArrayList) sortedUniquePaths.get(highlightPathList[i]);
+	    			boolean duplicate = false;
+	    			
+	    			//traversing list of links to check uniqueness of ONT
+	    			for(int k=0; k<stackOfLinks.size(); k++)
+	    			{
+	    				ArrayList links = (ArrayList)stackOfLinks.get(k);
+
+	    				if(links.equals(highlightLinksList))
+	    					duplicate = true;
+	    			}
+	    			
+	    			//if ONT already available
+	    			if(duplicate)
+	    			{
+	    				//Duplicate Path found
+//	    				System.out.println("Duplicate path at Solution Map..."+highlightPathList[i]);
+	    			}
+	    			//add ONT as links are different
+	    			else
+	    			{
+	    				stackOfLinks.add(highlightLinksList);
+	    				
+	    				sortedUniquePaths.put(highlightPathList[i], stackOfLinks);
+	    				
+	    				noOfPaths++;
+	    			}
+	    		}
+	    		//add ONT into sortedUniquePaths map
+	    		else
+	    		{
+	    			ArrayList stackOfLinks = new ArrayList();
+	    			
+	    			stackOfLinks.add(highlightLinksList);
+	    			
+	    			sortedUniquePaths.put(highlightPathList[i], stackOfLinks);
+	    			noOfPaths++;
+	    		}
 	    	}
 	    	
-	    	//will have to implement logic here only.,.,.,.,.,.,..,.,.,..,.,.,..,.,..,.,.,.,..,.,.,.,.,..,.,.,.,.,.,..,
-	    	for(int i=0; i<highlightPathList.length; i++)
+	    	//array of ONT label
+	    	String[] tempPathList = new String[noOfPaths];
+	    	
+	    	//map of ONT links
+	    	Map tempPathsMap = new HashMap();
+
+	    	Set keys = (Set)sortedUniquePaths.keySet();
+			Iterator keysIterator = keys.iterator();
+			
+			int pathCounter=0;
+			
+			//iterating sortedUniquePaths and creating required list of Paths and map of Links
+			while(keysIterator.hasNext())
 			{
-	    		highlightPathsSortedKeys.put(highlightPathList[i], new Integer(i));
+				String key = (String)keysIterator.next();
+				
+				ArrayList stackOfLinks = (ArrayList) sortedUniquePaths.get(key);
+				
+				for(int k=0; k<stackOfLinks.size(); k++)
+				{
+					tempPathList[pathCounter] = key;
+					tempPathsMap.put(new Integer(pathCounter), stackOfLinks.get(k));
+					pathCounter++;
+				}
 			}
 	    	
-	    	Object [] sortedKeysObjs = highlightPathsSortedKeys.keySet().toArray();
-	    	
-	    	String[] sortedKeys = new String[sortedKeysObjs.length];
-	    	
-	    	for(int i=0; i<sortedKeysObjs.length; i++)
-			{
-				sortedKeys[i] = (String)sortedKeysObjs[i];
-			}
-	    	
-	    	highlightPathList = sortedKeys;
-	    	
-	    	
+			//assigning sorted list of Unique paths to appropriate attributes...
+			highlightPathList = tempPathList;
+			highlightPathsMap = tempPathsMap;
     	}
     }
     
@@ -573,9 +638,9 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	
     	String selectedValue = (String)highlightList.getSelectedValue();
     	
-//    	highlightPathNo = highlightList.getSelectedIndex();
+    	highlightPathNo = highlightList.getSelectedIndex();
     	
-    	highlightPathNo = ((Integer)highlightPathsSortedKeys.get(selectedValue)).intValue();
+//    	highlightPathNo = ((Integer)highlightPathsSortedKeys.get(selectedValue)).intValue();
     	
     	if(highlightList.getSelectionBackground() == Color.white)
     	{
@@ -664,9 +729,9 @@ public class GeneConnectChart extends JApplet implements ListSelectionListener, 
     	
     	String selectedValue = (String)highlightList.getSelectedValue();
     	
-    	//highlightPathNo = highlightList.getSelectedIndex();
+    	highlightPathNo = highlightList.getSelectedIndex();
     	
-    	highlightPathNo = ((Integer)highlightPathsSortedKeys.get(selectedValue)).intValue();
+//    	highlightPathNo = ((Integer)highlightPathsSortedKeys.get(selectedValue)).intValue();
     	
     	if(highlightList.getSelectionBackground() == Color.white)
     	{

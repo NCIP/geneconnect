@@ -14,18 +14,16 @@ PUBLIC
 	</form-beans>
 	
 	<!-- Global Exception Definitions -->
-	<!--global-exceptions>
-		<exception
-			type="edu.wustl.common.exception.UserNotAuthenticatedException"
-			key="" scope="request" path=".catissuecore.redirectToLoginPageDef" />
+	<global-exceptions>
 		<exception
 			handler="edu.wustl.common.util.CommonExceptionHandler"
 			key="" scope="request" type="java.lang.Exception"
-			path=".catissuecore.errorPageDef" />
-	</global-exceptions-->
+			path=".geneConnect.errorPageDef" />
+	</global-exceptions>
 	
 	<action-mappings>
-	
+	<action path="/viewErrorDetails" forward=".geneConnect.error.details"
+			validate="false" />
 	<action path="/Home"
 		type="edu.wustl.geneconnect.action.HomeAction"
 		name="blankForm"
@@ -67,6 +65,7 @@ PUBLIC
 		scope="request">
 		<forward name="simpleSearchresults" path=".geneConnect.SimpleSearchResult"/>
 		<forward name="advancedSearchresults" path=".geneConnect.AdvancedSearchResult"/>
+		<forward name="errorPage" path=".geneConnect.errorPageDef"/>
 	</action>
 
 	<action path="/AdvancedSearch"

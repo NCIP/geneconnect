@@ -177,6 +177,18 @@
 			//if(selectedQuery.length>0)
 			if(document.forms[0].selectedQuery.value.length>0)
 			{
+				var order="asc";
+				if(document.forms[0].sortedColumnDirection.value!=null&document.forms[0].sortedColumnDirection.value.length>0)
+				{
+					/*if(document.forms[0].sortedColumnDirection.value=="ascending")
+					{
+						order="asc";
+					}
+					else if (document.forms[0].sortedColumnDirection.value=="descending")
+					{
+						order="desc";
+					}*/
+				}
 				var action = "SearchResultView.do?pageOf=advancedSearch&isPaging=false";
 				//&queryKey="+selectedQuery
 				//document.forms[0].operation.value="export";
@@ -216,8 +228,11 @@
 		
 	</script>
 
-<%String pageName = "SearchResultView.do";
-			//ResultDataInterface resultData = (ResultDataInterface)request.getAttribute(GCConstants.RESULT_DATA_LIST);
+<%		String pageName = "SearchResultView.do";
+		int queryKeyCol = 0;
+		StringBuffer noMatchFoundMessage = (StringBuffer) session
+		.getAttribute(GCConstants.NO_MATCH_FOUND_MESSAGE);
+		
 			int pageNum = Integer.parseInt((String) request.getAttribute(GCConstants.PAGE_NUMBER));
 			int totalResults = Integer.parseInt((String) request
 					.getAttribute(GCConstants.TOTAL_RESULTS));
@@ -228,6 +243,8 @@
 			String isConfidenceChecked = (String) request.getAttribute(GCConstants.CONFIDENCE);
 			String isFrequencyChecked = (String) request.getAttribute(GCConstants.FREQUENCY);
 			String sortedColumn = (String) request.getAttribute(GCConstants.SORTED_COLUMN);
+			String sortedColumnIndex = (String) request
+			.getAttribute(GCConstants.SORTED_COLUMN_INDEX);
 			String sortedColumnDirection = (String) request
 					.getAttribute(GCConstants.SORTED_COLUMN_DIRECTION);
 
@@ -275,8 +292,11 @@
 			{
 
 				String colValue = (String) columnList.get(i);
-
-				if ((!colValue.endsWith(GCConstants.FREQUENCY_KEY_SUFFIX))
+				if (colValue.endsWith(GCConstants.QUERY_KEY))
+				{
+					queryKeyCol = i;
+				}
+				else if ((!colValue.endsWith(GCConstants.FREQUENCY_KEY_SUFFIX))
 						&& (!colValue.endsWith(GCConstants.CONF_SCORE_KEY))
 						&& (!colValue.endsWith(GCConstants.SET_ID_KEY)))
 				{
@@ -365,6 +385,12 @@
 <%
 String pre=".active-column-"+(imgCol);
 String suf="{width:40px;background-image:url('images/mag1.GIF');background-repeat: no-repeat;background-position: 0% 0%}";
+
+%>
+<%=pre+suf%>
+<%
+pre=".active-column-"+(queryKeyCol);
+suf="{display:none!important}";
 
 %>
 <%=pre+suf%>
@@ -568,17 +594,17 @@ tr#hiddenCombo
 <table summary="" cellpadding="0" cellspacing="0" border="0"
 	width="100%" height="90%">
 	<html:form action="/SearchResultView.do">
-
-		<!-- && pageOf.equals(Constants.PAGEOF_QUERY_RESULTS) -->
 		<!-- If no data then display apropriate message -->
-		<%if (dataList == null || dataList.size() == 0)
+		<%if (noMatchFoundMessage != null)
 			{
-				dataList = new ArrayList();
 
-			%>
-		<bean:message key="advanceQuery.noRecordsFound" />
-
+				%>
+		<li><font color="red"><bean:message key="result.noMatchFound.message" /><%=": " + noMatchFoundMessage%></font></li>
 		<%}
+
+		%>
+		
+		<%
 			if (dataList != null)
 			{
 
@@ -598,7 +624,7 @@ tr#hiddenCombo
 					%>
 		<tr>
 			<td class="dataPagingSection">
-			<table summary="" cellpadding="2" cellspacing="2" border="0"
+			<table summary="" cellpadding="2" cellspacing="0" border="0"
 				width="100%" height="90%">
 
 				<tr>
@@ -723,7 +749,8 @@ tr#hiddenCombo
 								    					varSelRow = src.getRowProperty('index'); 
 								    					 if(varSelCol==<%=imgCol%>)
 								    					 {
-															var url = ".."+"<%=request.getContextPath()%>"+"/GeneConnectGraph.do?setid="+myData[varSelRow][<%=columnForSetId%>];
+															var queryKey=myData[varSelRow][<%=queryKeyCol%>];
+															var url = ".."+"<%=request.getContextPath()%>"+"/GeneConnectGraph.do?setid="+myData[varSelRow][<%=columnForSetId%>]+"&queryKey="+queryKey;
 								    						newwindow=window.open(url,'name','height=750,width=545,resizable=yes');
 															if (window.focus) {newwindow.focus()}
 								    					 }
@@ -765,11 +792,37 @@ tr#hiddenCombo
 							//overide sort function to meet our requirenemnt
 						    obj.sort = function(index, direction)
 						    { 
-							    //store the column index and sort direction 
-								document.forms[0].sortedColumn.value=index;	
-								document.forms[0].sortedColumnDirection.value=direction;	
-					            _sort.call(this, index, direction);
-						        return true;
+							   if(index==<%=columnList.size()%>)
+								{
+									return true;
+								}
+									var order="asc";
+									direction=document.forms[0].sortedColumnDirection.value;	
+									if(document.forms[0].sortedColumnIndex.value==index&&direction=="asc")
+									{
+										order="desc";
+									}
+									else if(document.forms[0].sortedColumnIndex.value==index&&direction=="desc")
+									{
+										order="asc";
+									}	
+									if(direction=="ascending")
+									{
+										order="asc";
+									}
+									else if (direction=="descending")
+									{
+										order="desc";
+									}
+									var colname = obj.getColumnProperty("text", index);
+									document.forms[0].sortedColumnIndex.value=index;
+									document.forms[0].sortedColumn.value=colname;	
+									document.forms[0].sortedColumnDirection.value=order;	
+									var action = "SearchResultView.do?pageOf=advancedSearch&isPaging=true&isSorting=true";
+									document.forms[0].action = action;
+									document.forms[0].submit();
+									return true;
+								
 						    }
 							document.write(obj);
 					</script></div>
@@ -781,6 +834,7 @@ tr#hiddenCombo
 		<tr>
 			<td><html:hidden property="operation" value="" /></td>
 			<td><html:hidden property="sortedColumn" value="" /></td>
+			<td><html:hidden property="sortedColumnIndex" value="" /></td>
 			<td><html:hidden property="sortedColumnDirection" value="" /></td>
 			<td><html:hidden property="queryKey" value="" /></td>
 		</tr>
@@ -789,8 +843,37 @@ tr#hiddenCombo
 
 </table>
 <script>
-		
+		//retain the criteria on page change
+		// criteria such as checed frequency / confidence / sroted column / selected query
 		var checkbox;
+		<%
+		if(sortedColumn!=null&&sortedColumnDirection!=null&&sortedColumnIndex!=null)
+		{
+		%>
+		document.forms[0].sortedColumn.value="<%=sortedColumn%>";	
+		document.forms[0].sortedColumnIndex.value="<%=sortedColumnIndex%>";
+		
+		var order =	"<%=sortedColumnDirection%>";
+		document.forms[0].sortedColumnDirection.value=order;
+
+		if(order=="asc")
+		{
+			order="ascending";
+		}
+		else
+		{
+			order="descending";
+		}
+		
+		//alert(document.forms[0].sortedColumnDirection.value);
+		obj.setSortProperty("direction", order);
+		obj.setSortProperty("index", document.forms[0].sortedColumnIndex.value);
+		obj.refresh();
+		//		alert(obj.getSortProperty("direction"));
+			
+		<%
+		}
+		%>
 		<%
 			if(isConfidenceChecked!=null&&isConfidenceChecked.equalsIgnoreCase("true"))
 			{
@@ -809,21 +892,6 @@ tr#hiddenCombo
 		<%
 			}
 		%>	
-		var index;
-		var direction="ascending";
-		<%
-		  	int index = -1;	
-		  	if(sortedColumn!=null&&sortedColumn.length()>0)
-			{
-				index = Integer.parseInt(sortedColumn);	
-		%>
-				index = <%=index%>;
-				direction = "<%=sortedColumnDirection%>";
-				obj.sort(index, direction);
-				obj.refresh();
-		<% 			
-			}
-		%>	
 		<%
 		if(selectedQueryKey!=null&&selectedQueryKey.length()>0)
 		{
@@ -833,4 +901,3 @@ tr#hiddenCombo
 		}
 		%>	
 </script>
-

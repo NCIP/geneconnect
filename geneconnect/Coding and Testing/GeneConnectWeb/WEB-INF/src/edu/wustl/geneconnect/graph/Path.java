@@ -3,28 +3,29 @@
  *<p>Company: Washington University, School of Medicine, St. Louis.</p>
  *<p>ClassName: java edu.wustl.geneconnect.graph.Path</p> 
  */
-package edu.wustl.geneconnect.graph;
 
+package edu.wustl.geneconnect.graph;
 
 public class Path
 {
-//	private String source;
-	
-//	private String destination;
-	
+
+	//	private String source;
+
+	//	private String destination;
+
 	private int pathType;
-	
+
 	private Integer source;
-	
+
 	private Integer destination;
-	
+
 	public Path(Integer source, Integer destination, int pathType)
 	{
 		this.source = source;
 		this.destination = destination;
 		this.pathType = pathType;
 	}
-	
+
 	/**
 	 * @return Returns the pathType.
 	 */
@@ -32,6 +33,7 @@ public class Path
 	{
 		return pathType;
 	}
+
 	/**
 	 * @param pathType The pathType to set.
 	 */
@@ -39,7 +41,7 @@ public class Path
 	{
 		this.pathType = pathType;
 	}
-	
+
 	/**
 	 * @return Returns the destination.
 	 */
@@ -47,6 +49,7 @@ public class Path
 	{
 		return destination;
 	}
+
 	/**
 	 * @param destination The destination to set.
 	 */
@@ -54,6 +57,7 @@ public class Path
 	{
 		this.destination = destination;
 	}
+
 	/**
 	 * @return Returns the source.
 	 */
@@ -61,6 +65,7 @@ public class Path
 	{
 		return source;
 	}
+
 	/**
 	 * @param source The source to set.
 	 */

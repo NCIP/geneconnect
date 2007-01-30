@@ -1045,7 +1045,7 @@ public class GCBizLogic
 						ontCountMapForSet.remove(key);
 						addsettolist = false;
 						break;
-					}
+					}	
 					if (s.containsAll(resultSubSet))
 					{
 						log.info("removed set for subset of slreasdy exists Set: " + setID);

@@ -125,7 +125,7 @@ public class Utility
 			{
 				String pathAdded = (String)onts.get(i) + "$";
 				
-//				Logger.out.debug("Pahts parsed-->"+(String)onts.get(i));
+				Logger.out.debug("Pahts parsed-->"+(String)onts.get(i));
 				
 				parsedOnts.append(pathAdded);
 				

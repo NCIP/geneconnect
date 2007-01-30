@@ -31,55 +31,55 @@ public class MetadataManager //implements MetadataManagerInterface
 
 	// Store datasoruceid , dataSource name
 	private static List dataSourcesToDisplay = null;
-	 
+
 	// represents the DATSOURCE meta data table
 	private static List dataSources = null;
-	
+
 	//represents the DATASOURCE_LINKS meta data table
 	private static List dataSourcesLinks = null;
-	
+
 	//represents the LINKTYPE meta data table
 	private static Map linkTypes = null;
-	
+
 	//represents the map of DATASOURCE_LINKS meta data table
 	private static Map dataSourcesLinksMap = null;
-	
+
 	//represents the map of DATASOURCE meta data table
 	private static Map dataSourcesMap = null;
-	
+
 	// represents the ROLE_LOOKUP meta data table
 	private static List roleLookup = null;
-	
+
 	//represents the PATH meta data table
 	private static List paths = null;
 
 	//represent no. of pairwise links for Home page data
 	private static Long pairwiseLinks = new Long(0);
-	
+
 	//represents no. of distinct Genomic Identifier sets
 	private static Long distinctGISets = new Long(0);
-	
+
 	//represents no. of possible paths through GeneConnect graph
 	private static Long possibleGraphPaths = new Long(0);
-	
+
 	private static JDBCDAO jdbcDao = null;
-	
 
 	/** MetadataManager as a singleton class */
 	private static MetadataManager metadataManagerInstance = new MetadataManager();
 
-/** Method to return instance of this class
- * @return MetadataManager Returns object of this class
- */
+	/** Method to return instance of this class
+	 * @return MetadataManager Returns object of this class
+	 */
 	public static MetadataManager getInstance() throws DAOException
 	{
 		jdbcDao = JDBCDAO.getInstance();
 		return metadataManagerInstance;
 	}
-/**
- * Calls method to populate metadata     
- * @throws DAOException
- */
+
+	/**
+	 * Calls method to populate metadata     
+	 * @throws DAOException
+	 */
 	public static void populateMetadata() throws DAOException
 	{
 		try
@@ -103,15 +103,16 @@ public class MetadataManager //implements MetadataManagerInterface
 			throw new DAOException(e.getMessage());
 		}
 	}
-/**
- * Execute the query to store dat source name to display on UI 
- * @throws DAOException
- */
+
+	/**
+	 * Execute the query to store dat source name to display on UI 
+	 * @throws DAOException
+	 */
 	private static void setDataSourceToDisplay() throws DAOException
 	{
 		dataSourcesToDisplay = new ArrayList();
-		ResultSet resultSet = jdbcDao
-				.executeSQLQuery("select DATASOURCE_ID,DATASOURCE_NAME FROM "+GCConstants.TABLE_DATASOURCE+" ORDER BY DATASOURCE_NAME");
+		ResultSet resultSet = jdbcDao.executeSQLQuery("select DATASOURCE_ID,DATASOURCE_NAME FROM "
+				+ GCConstants.TABLE_DATASOURCE + " ORDER BY DATASOURCE_NAME");
 		try
 		{
 			while (resultSet.next())
@@ -127,10 +128,11 @@ public class MetadataManager //implements MetadataManagerInterface
 			throw new DAOException(e.getMessage());
 		}
 	}
-/**
- * Execute query and store te meta data of DATASOURCE
- * @throws DAOException
- */
+
+	/**
+	 * Execute query and store te meta data of DATASOURCE
+	 * @throws DAOException
+	 */
 	private static void setDataSource() throws DAOException
 	{
 		try
@@ -138,22 +140,24 @@ public class MetadataManager //implements MetadataManagerInterface
 			dataSources = new ArrayList();
 			ResultSet result = jdbcDao.executeSQLQuery("SELECT " + GCConstants.DATASOURCE_ID + ","
 					+ GCConstants.DATASOURCE_NAME + "," + GCConstants.ATTRIBUTE + ","
-					+ GCConstants.OUTPUT_ATTRIBUTE + ","
-					+ GCConstants.ROW_FOR_GRAPH + ","
-					+ GCConstants.COL_FOR_GRAPH + ","
-					+ GCConstants.GENOMIC_IDENTIFIER_CLASS + ","
-					+ GCConstants.CLASS + "," + GCConstants.TYPE + " FROM "+GCConstants.TABLE_DATASOURCE);
+					+ GCConstants.OUTPUT_ATTRIBUTE + "," + GCConstants.ROW_FOR_GRAPH + ","
+					+ GCConstants.COL_FOR_GRAPH + "," + GCConstants.GENOMIC_IDENTIFIER_CLASS + ","
+					+ GCConstants.CLASS + "," + GCConstants.TYPE + " FROM "
+					+ GCConstants.TABLE_DATASOURCE);
 
 			while (result.next())
 			{
 				Map temp = new HashMap();
 				temp.put(GCConstants.CLASS, result.getString(GCConstants.CLASS));
-				temp.put(GCConstants.GENOMIC_IDENTIFIER_CLASS, result.getString(GCConstants.GENOMIC_IDENTIFIER_CLASS));
+				temp.put(GCConstants.GENOMIC_IDENTIFIER_CLASS, result
+						.getString(GCConstants.GENOMIC_IDENTIFIER_CLASS));
 				temp.put(GCConstants.DATASOURCE_ID, result.getString(GCConstants.DATASOURCE_ID));
-				temp.put(GCConstants.DATASOURCE_NAME, result
+				temp
+						.put(GCConstants.DATASOURCE_NAME, result
 								.getString(GCConstants.DATASOURCE_NAME));
 				temp.put(GCConstants.ATTRIBUTE, result.getString(GCConstants.ATTRIBUTE));
-				temp.put(GCConstants.OUTPUT_ATTRIBUTE, result.getString(GCConstants.OUTPUT_ATTRIBUTE));
+				temp.put(GCConstants.OUTPUT_ATTRIBUTE, result
+						.getString(GCConstants.OUTPUT_ATTRIBUTE));
 				temp.put(GCConstants.TYPE, result.getString(GCConstants.TYPE));
 				temp.put(GCConstants.ROW_FOR_GRAPH, result.getString(GCConstants.ROW_FOR_GRAPH));
 				temp.put(GCConstants.COL_FOR_GRAPH, result.getString(GCConstants.COL_FOR_GRAPH));
@@ -168,25 +172,27 @@ public class MetadataManager //implements MetadataManagerInterface
 
 		}
 	}
-	
-/**
- * Execute query and store the meta data of DATASOURCE_LINKS
- * @throws DAOException
- */
+
+	/**
+	 * Execute query and store the meta data of DATASOURCE_LINKS
+	 * @throws DAOException
+	 */
 	private static void setAllDataSourceLinks() throws DAOException
 	{
 		try
 		{
 			dataSourcesLinks = new ArrayList();
-			ResultSet result = jdbcDao.executeSQLQuery("SELECT " + GCConstants.SOURCE_DATASOURCE_ID + ","
-					+ GCConstants.TARGET_DATASOURCE_ID + "," + GCConstants.LINK_TYPE_ID 
-					+ " FROM "+GCConstants.TABLE_DATASOURCE_LINKS);
+			ResultSet result = jdbcDao.executeSQLQuery("SELECT " + GCConstants.SOURCE_DATASOURCE_ID
+					+ "," + GCConstants.TARGET_DATASOURCE_ID + "," + GCConstants.LINK_TYPE_ID
+					+ " FROM " + GCConstants.TABLE_DATASOURCE_LINKS);
 
 			while (result.next())
 			{
 				Map temp = new HashMap();
-				temp.put(GCConstants.SOURCE_DATASOURCE_ID, result.getString(GCConstants.SOURCE_DATASOURCE_ID));
-				temp.put(GCConstants.TARGET_DATASOURCE_ID, result.getString(GCConstants.TARGET_DATASOURCE_ID));
+				temp.put(GCConstants.SOURCE_DATASOURCE_ID, result
+						.getString(GCConstants.SOURCE_DATASOURCE_ID));
+				temp.put(GCConstants.TARGET_DATASOURCE_ID, result
+						.getString(GCConstants.TARGET_DATASOURCE_ID));
 				temp.put(GCConstants.LINK_TYPE_ID, result.getString(GCConstants.LINK_TYPE_ID));
 				dataSourcesLinks.add(temp);
 			}
@@ -200,17 +206,18 @@ public class MetadataManager //implements MetadataManagerInterface
 		}
 	}
 
-/**
- * Execute query and store te meta data of ROLE_LOOKUP
- * @throws DAOException
- */
+	/**
+	 * Execute query and store te meta data of ROLE_LOOKUP
+	 * @throws DAOException
+	 */
 	private static void setRoleLookup() throws DAOException
 	{
 		try
 		{
 			roleLookup = new ArrayList();
 			ResultSet result = jdbcDao.executeSQLQuery("SELECT " + GCConstants.SOURCE_CLASS + ","
-					+ GCConstants.TARGET_CLASS + "," + GCConstants.ROLE_NAME + " FROM "+GCConstants.TABLE_ROLE_LOOKUP);
+					+ GCConstants.TARGET_CLASS + "," + GCConstants.ROLE_NAME + " FROM "
+					+ GCConstants.TABLE_ROLE_LOOKUP);
 
 			while (result.next())
 			{
@@ -230,25 +237,6 @@ public class MetadataManager //implements MetadataManagerInterface
 		}
 	}
 
-	//TODO : Main method for testing purpose -- needs to remove later
-	public static void main(String[] args)
-	{
-		MetadataManager metadataBizLogic = new MetadataManager();
-		/*List dataSources = metadataBizLogic.getDataSources();
-		 Iterator iterator = dataSources.iterator();
-		 while (iterator.hasNext()) {
-		 Logger.out.debug("\n " + iterator.next());
-		 }*/
-		Logger.out.debug("******************");
-
-		//List dataSources = metadataBizLogic.getPossibleLinkTypes(new Integer(2), new Integer(1));
-		//		Iterator iterator = dataSources.iterator();
-		//		while (iterator.hasNext())
-		//		{
-		//			Logger.out.debug("\n " + iterator.next());
-		//		}
-	}
-
 	/**
 	 * Returns a list of all data sources.
 	 * @return List of Data source names.
@@ -266,7 +254,7 @@ public class MetadataManager //implements MetadataManagerInterface
 	{
 		return dataSources;
 	}
-	
+
 	/**
 	 * Returns a list of all data sources links.
 	 * @return List of Data sources links.
@@ -275,12 +263,12 @@ public class MetadataManager //implements MetadataManagerInterface
 	{
 		return dataSourcesLinks;
 	}
-	
-/**
- * Returns data source name from DATASOURCE meta data 
- * @param dataSourceId
- * @return
- */
+
+	/**
+	 * Returns data source name from DATASOURCE meta data 
+	 * @param dataSourceId
+	 * @return
+	 */
 	public static String getDataSourceName(String dataSourceId)
 	{
 		String dsName = null;
@@ -296,13 +284,14 @@ public class MetadataManager //implements MetadataManagerInterface
 		}
 		return dsName;
 	}
-/**
- * Returns the value of given column name of DATASOURCE 
- * @param searchkey - Search criteria on column name
- * @param searchvalue - value to be search on column name
- * @param returnkey - column name whose value to return
- * @return
- */
+
+	/**
+	 * Returns the value of given column name of DATASOURCE 
+	 * @param searchkey - Search criteria on column name
+	 * @param searchvalue - value to be search on column name
+	 * @param returnkey - column name whose value to return
+	 * @return
+	 */
 	public static String getDataSourceAttribute(String searchkey, String searchvalue,
 			String returnkey)
 	{
@@ -320,38 +309,13 @@ public class MetadataManager //implements MetadataManagerInterface
 		}
 		return null;
 	}
-	
-//	/**
-//	 * Returns the value of given column name of DATASOURCE_LINK 
-//	 * @param searchkey - Search criteria on column name
-//	 * @param searchvalue - value to be search on column name
-//	 * @param returnkey - column name whose value to return
-//	 * @return
-//	 */
-//		public static String getDataSourceLinkAttribute(String searchkey, String searchvalue,
-//				String returnkey)
-//		{
-//			String dataSourceAttribute = "";
-//			List l = new ArrayList();
-//			for (int i = 0; i < dataSources.size(); i++)
-//			{
-//				Map map = (Map) dataSources.get(i);
-//				String str = (String) map.get(searchkey);
-//				if (str.equalsIgnoreCase(searchvalue))
-//				{
-//					dataSourceAttribute = (String) map.get(returnkey);
-//					return dataSourceAttribute;
-//				}
-//			}
-//			return null;
-//		}
-		
-/**
- * returns the association role name as specified in Object Model  
- * @param sourceClass
- * @param targetClass
- * @return
- */
+
+	/**
+	 * returns the association role name as specified in Object Model  
+	 * @param sourceClass
+	 * @param targetClass
+	 * @return
+	 */
 	public static String getRoleName(String sourceClass, String targetClass)
 	{
 		String roleName = "";
@@ -382,12 +346,13 @@ public class MetadataManager //implements MetadataManagerInterface
 	{
 		List linkTypes = new ArrayList();
 
-		String sqlQuery = "SELECT LINK_NAME FROM "+GCConstants.TABLE_LINKTYPE
-				+ " WHERE LINK_TYPE_ID = ANY ( SELECT LINK_TYPE_ID FROM "+GCConstants.TABLE_DATASOURCE_LINKS 
-				+ " WHERE SOURCE_DATASOURCE_ID = "
-				+ "(SELECT DATASOURCE_ID FROM "+GCConstants.TABLE_DATASOURCE+" WHERE DATASOURCE_NAME = '"
-				+ sourceDataSourceName + "') " + " AND TARGET_DATASOURCE_ID = "
-				+ "(SELECT DATASOURCE_ID FROM "+GCConstants.TABLE_DATASOURCE+" WHERE DATASOURCE_NAME = '"
+		String sqlQuery = "SELECT LINK_NAME FROM " + GCConstants.TABLE_LINKTYPE
+				+ " WHERE LINK_TYPE_ID = ANY ( SELECT LINK_TYPE_ID FROM "
+				+ GCConstants.TABLE_DATASOURCE_LINKS + " WHERE SOURCE_DATASOURCE_ID = "
+				+ "(SELECT DATASOURCE_ID FROM " + GCConstants.TABLE_DATASOURCE
+				+ " WHERE DATASOURCE_NAME = '" + sourceDataSourceName + "') "
+				+ " AND TARGET_DATASOURCE_ID = " + "(SELECT DATASOURCE_ID FROM "
+				+ GCConstants.TABLE_DATASOURCE + " WHERE DATASOURCE_NAME = '"
 				+ targetDataSourceName + "'))";
 
 		ResultSet resultSet = jdbcDao.executeSQLQuery(sqlQuery);
@@ -416,10 +381,11 @@ public class MetadataManager //implements MetadataManagerInterface
 	{
 		List linkTypes = new ArrayList();
 
-		String sqlQuery = "SELECT LINK_NAME FROM "+GCConstants.TABLE_LINKTYPE 
-				+ " WHERE LINK_TYPE_ID = ANY ( SELECT LINK_TYPE_ID FROM "+GCConstants.TABLE_DATASOURCE_LINKS
-				+ " WHERE SOURCE_DATASOURCE_ID = '" + sourceDataSourceId + "'"
-				+ " AND TARGET_DATASOURCE_ID = '" + targetDataSourceId + "')";
+		String sqlQuery = "SELECT LINK_NAME FROM " + GCConstants.TABLE_LINKTYPE
+				+ " WHERE LINK_TYPE_ID = ANY ( SELECT LINK_TYPE_ID FROM "
+				+ GCConstants.TABLE_DATASOURCE_LINKS + " WHERE SOURCE_DATASOURCE_ID = '"
+				+ sourceDataSourceId + "'" + " AND TARGET_DATASOURCE_ID = '" + targetDataSourceId
+				+ "')";
 
 		ResultSet resultSet = jdbcDao.executeSQLQuery(sqlQuery);
 		try
@@ -475,7 +441,7 @@ public class MetadataManager //implements MetadataManagerInterface
 		}
 		return paths;
 	}
-	
+
 	/**
 	 * Returns all possible valid Paths for the list of DataSources
 	 * @param dataSources list of DataSorces
@@ -484,134 +450,133 @@ public class MetadataManager //implements MetadataManagerInterface
 	public static List getAllValidPathsForDataSources(Map dataSources) throws DAOException
 	{
 		List validPaths = new ArrayList();
-		
+
 		Map sqlQueries = new HashMap();
-		
-		Map uniqueValidPaths  = new HashMap();
-		
+
+		Map uniqueValidPaths = new HashMap();
+
 		String sqlQuery;
-		
-//		String inClauseOfSqlQuery = new String();
-		
-		Map inputDataSources = (HashMap)dataSources.get(GCConstants.INPUT_DATA_SOURCES);
-		
-		Map outputDataSources = (HashMap)dataSources.get(GCConstants.OUTPUT_DATA_SOURCES);
-		
+
+		//		String inClauseOfSqlQuery = new String();
+
+		Map inputDataSources = (HashMap) dataSources.get(GCConstants.INPUT_DATA_SOURCES);
+
+		Map outputDataSources = (HashMap) dataSources.get(GCConstants.OUTPUT_DATA_SOURCES);
+
 		Collection dataSourceValueObjects = new ArrayList();
-		
+
 		Collection keySet = inputDataSources.keySet();
-		
+
 		List inputDataSourcesKeys = new ArrayList(keySet);
-		
+
 		keySet = outputDataSources.keySet();
-		
+
 		List outputDataSourcesKeys = new ArrayList(keySet);
 
-//		Logger.out.debug("Inside getAllValidPathsForDataSources-- No. of Queries to execute-->"+inputDataSources.size());
-//		Logger.out.debug("No. of outputDataSources entered-->"+outputDataSourcesKeys.size());
-		for(int i=0; i<inputDataSources.size(); i++)
+		//		Logger.out.debug("Inside getAllValidPathsForDataSources-- No. of Queries to execute-->"+inputDataSources.size());
+		//		Logger.out.debug("No. of outputDataSources entered-->"+outputDataSourcesKeys.size());
+		for (int i = 0; i < inputDataSources.size(); i++)
 		{
-			List inputDataSourcesList = (ArrayList) inputDataSources.get(inputDataSourcesKeys.get(i));
-			
+			List inputDataSourcesList = (ArrayList) inputDataSources.get(inputDataSourcesKeys
+					.get(i));
+
 			String inClauseOfQuery = new String();
-			
-			for(int j=0; j<inputDataSourcesList.size(); j++)
+
+			for (int j = 0; j < inputDataSourcesList.size(); j++)
 			{
 				String dataSource = (String) inputDataSourcesList.get(j);
-				
-				if(outputDataSources.get(dataSource) == null)
+
+				if (outputDataSources.get(dataSource) == null)
 				{
-					inClauseOfQuery += "'" + dataSource +"',";
-					
+					inClauseOfQuery += "'" + dataSource + "',";
+
 					dataSourceValueObjects.add(dataSource);
 				}
 			}
-			
-			for(int k=0; k<outputDataSourcesKeys.size(); k++)
+
+			for (int k = 0; k < outputDataSourcesKeys.size(); k++)
 			{
-				inClauseOfQuery += "'"+(String)outputDataSourcesKeys.get(k)+"',";
-				dataSourceValueObjects.add((String)outputDataSourcesKeys.get(k));
+				inClauseOfQuery += "'" + (String) outputDataSourcesKeys.get(k) + "',";
+				dataSourceValueObjects.add((String) outputDataSourcesKeys.get(k));
 			}
-			
-//			Logger.out.debug("inClauseOfQuery-->"+inClauseOfQuery);
-			
-			if(inClauseOfQuery.length() > 0)
+
+			if (inClauseOfQuery.length() > 0)
 			{
-				inClauseOfQuery = inClauseOfQuery.substring(0, inClauseOfQuery.length()-1);
-				
-				sqlQuery = "SELECT PATH_ID, SOURCE_DATASOURCE_ID, TARGET_DATASOURCE_ID, PATH FROM "+GCConstants.TABLE_PATH
-					+ " WHERE SOURCE_DATASOURCE_ID IN (" +inClauseOfQuery +") AND TARGET_DATASOURCE_ID IN ("+inClauseOfQuery+")";
-				
+				inClauseOfQuery = inClauseOfQuery.substring(0, inClauseOfQuery.length() - 1);
+
+				sqlQuery = "SELECT PATH_ID, SOURCE_DATASOURCE_ID, TARGET_DATASOURCE_ID, PATH FROM "
+						+ GCConstants.TABLE_PATH + " WHERE SOURCE_DATASOURCE_ID IN ("
+						+ inClauseOfQuery + ") AND TARGET_DATASOURCE_ID IN (" + inClauseOfQuery
+						+ ")";
 
 				//To avoid executing duplicate queries...
-				if( sqlQueries.get(sqlQuery) == null )
+				if (sqlQueries.get(sqlQuery) == null)
 				{
-//					Logger.out.debug("SQL Query-->"+sqlQuery);
-					
+
 					ResultSet resultSet = jdbcDao.executeSQLQuery(sqlQuery);
-					
+
 					try
 					{
-						while(resultSet.next())
+						while (resultSet.next())
 						{
 							String validPathDataSources;
-							
+
 							Collection pathDataSourceValueObjects = new ArrayList();
-							
+
 							pathDataSourceValueObjects.add(resultSet.getString(2));
 							pathDataSourceValueObjects.add(resultSet.getString(3));
-							
+
 							validPathDataSources = resultSet.getString(2);
-							
+
 							String path = resultSet.getString(4);
-							
-							if(path != null)
+
+							if (path != null)
 							{
 								StringTokenizer pathTokenized = new StringTokenizer(path, "_");
-								
+
 								String pathNode;
-								while(pathTokenized.hasMoreTokens())
+								while (pathTokenized.hasMoreTokens())
 								{
 									pathNode = pathTokenized.nextToken();
-									
+
 									pathDataSourceValueObjects.add(pathNode);
-									
-									validPathDataSources += ("-"+pathNode);
+
+									validPathDataSources += ("-" + pathNode);
 								}
 							}
-							
-							validPathDataSources += ("-"+resultSet.getString(3));
-							
-							boolean validPath = pathDataSourceValueObjects.containsAll(dataSourceValueObjects);
-							
-	//						Logger.out.debug("Source-->"+resultSet.getString(2)+" Target-->"+resultSet.getString(3)+" Path-->"+path+" ValidPath-->"+validPath);
-							
-							if(validPath)
-							{	
-								Logger.out.debug("ValidPath-->"+validPathDataSources);
-								if(uniqueValidPaths.get(validPathDataSources) == null)
+
+							validPathDataSources += ("-" + resultSet.getString(3));
+
+							boolean validPath = pathDataSourceValueObjects
+									.containsAll(dataSourceValueObjects);
+
+							if (validPath)
+							{
+								Logger.out.debug("ValidPath-->" + validPathDataSources);
+								if (uniqueValidPaths.get(validPathDataSources) == null)
 								{
 									validPaths.add(validPathDataSources);
-									
-									uniqueValidPaths.put(validPathDataSources, validPathDataSources);
+
+									uniqueValidPaths
+											.put(validPathDataSources, validPathDataSources);
 								}
 							}
 						}
 					}
-					catch(SQLException e)
+					catch (SQLException e)
 					{
 						e.printStackTrace();
 					}
-					
+
 					sqlQueries.put(sqlQuery, sqlQuery);
 				}
 			}
-			
+
 		}
 
 		return validPaths;
 	}
-	
+
 	/**
 	 * Execute query and store the meta data of DATASOURCE_LINKS
 	 * @throws DAOException
@@ -621,37 +586,36 @@ public class MetadataManager //implements MetadataManagerInterface
 		try
 		{
 			dataSourcesLinksMap = new HashMap();
-			
+
 			List linkObjects;
-			
+
 			String sqlQuery = "SELECT " + GCConstants.SOURCE_DATASOURCE_ID + ","
-							+ GCConstants.TARGET_DATASOURCE_ID + "," + GCConstants.LINK_TYPE_ID 
-							+ " FROM "+GCConstants.TABLE_DATASOURCE_LINKS+" GROUP BY "+GCConstants.SOURCE_DATASOURCE_ID +", "+GCConstants.TARGET_DATASOURCE_ID 
-							+", "+GCConstants.LINK_TYPE_ID;
-			
-//			Logger.out.debug("DataSource_Links query-->"+sqlQuery);
-			
+					+ GCConstants.TARGET_DATASOURCE_ID + "," + GCConstants.LINK_TYPE_ID + " FROM "
+					+ GCConstants.TABLE_DATASOURCE_LINKS + " GROUP BY "
+					+ GCConstants.SOURCE_DATASOURCE_ID + ", " + GCConstants.TARGET_DATASOURCE_ID
+					+ ", " + GCConstants.LINK_TYPE_ID;
+
 			ResultSet resultSet = jdbcDao.executeSQLQuery(sqlQuery);
 
 			while (resultSet.next())
 			{
-				String key = resultSet.getString(1)+"-"+resultSet.getString(2);
-				
+				String key = resultSet.getString(1) + "-" + resultSet.getString(2);
+
 				linkObjects = (ArrayList) dataSourcesLinksMap.get(key);
-				
-				if(linkObjects == null)
+
+				if (linkObjects == null)
 				{
 					linkObjects = new ArrayList();
-					linkObjects.add(new NameValueBean(linkTypes.get(resultSet.getString(3)),resultSet.getString(3)));
+					linkObjects.add(new NameValueBean(linkTypes.get(resultSet.getString(3)),
+							resultSet.getString(3)));
 					dataSourcesLinksMap.put(key, linkObjects);
 				}
 				else
 				{
-					linkObjects.add(new NameValueBean(linkTypes.get(resultSet.getString(3)),resultSet.getString(3)));
+					linkObjects.add(new NameValueBean(linkTypes.get(resultSet.getString(3)),
+							resultSet.getString(3)));
 					dataSourcesLinksMap.put(key, linkObjects);
 				}
-				
-//				Logger.out.debug("Source-->"+resultSet.getString(1)+" Target-->"+resultSet.getString(2)+" LinkType-->"+resultSet.getString(3));
 			}
 		}
 		catch (SQLException e)
@@ -662,7 +626,7 @@ public class MetadataManager //implements MetadataManagerInterface
 
 		}
 	}
-	
+
 	/**
 	 * Reurns the map of DataSourcesLinks
 	 * @return map of DataSourcesLinks
@@ -671,7 +635,7 @@ public class MetadataManager //implements MetadataManagerInterface
 	{
 		return dataSourcesLinksMap;
 	}
-	
+
 	/**
 	 * Execute query and store the meta data of LINKTYPE
 	 * @throws DAOException
@@ -681,12 +645,13 @@ public class MetadataManager //implements MetadataManagerInterface
 		try
 		{
 			linkTypes = new HashMap();
-			
-			String sqlQuery = "SELECT LINK_TYPE_ID, LINK_TYPE_NAME FROM "+GCConstants.TABLE_LINKTYPE;
-			
+
+			String sqlQuery = "SELECT LINK_TYPE_ID, LINK_TYPE_NAME FROM "
+					+ GCConstants.TABLE_LINKTYPE;
+
 			ResultSet resultSet = jdbcDao.executeSQLQuery(sqlQuery);
-			
-			while(resultSet.next())
+
+			while (resultSet.next())
 			{
 				linkTypes.put(resultSet.getString(1), resultSet.getString(2));
 			}
@@ -699,7 +664,7 @@ public class MetadataManager //implements MetadataManagerInterface
 
 		}
 	}
-	
+
 	/**
 	 * Returns LinkType Name for the given LinkType Id
 	 * @param linkTypeId Id of the LinkType
@@ -707,9 +672,9 @@ public class MetadataManager //implements MetadataManagerInterface
 	 */
 	public static String getLinkTypeName(String linkTypeId)
 	{
-		return (String)linkTypes.get(linkTypeId); 
+		return (String) linkTypes.get(linkTypeId);
 	}
-	
+
 	/**
 	 * Execute query and store the meta data of DATASOURCE_LINKS
 	 * @throws DAOException
@@ -719,17 +684,14 @@ public class MetadataManager //implements MetadataManagerInterface
 		try
 		{
 			dataSourcesMap = new HashMap();
-			
-			String sqlQuery = "SELECT " + GCConstants.DATASOURCE_ID + "," + GCConstants.DATASOURCE_NAME +" FROM "+GCConstants.TABLE_DATASOURCE;
-			
-//			Logger.out.debug("DataSources query-->"+sqlQuery);
-			
+
+			String sqlQuery = "SELECT " + GCConstants.DATASOURCE_ID + ","
+					+ GCConstants.DATASOURCE_NAME + " FROM " + GCConstants.TABLE_DATASOURCE;
 			ResultSet resultSet = jdbcDao.executeSQLQuery(sqlQuery);
 
 			while (resultSet.next())
 			{
 				dataSourcesMap.put(resultSet.getString(1), resultSet.getString(2));
-//				Logger.out.debug("Id->"+resultSet.getString(1)+" Name->"+resultSet.getString(2));
 			}
 		}
 		catch (SQLException e)
@@ -740,7 +702,7 @@ public class MetadataManager //implements MetadataManagerInterface
 
 		}
 	}
-	
+
 	/**
 	 * Reurns the map of DataSourcesLinks
 	 * @return map of DataSourcesLinks
@@ -749,7 +711,7 @@ public class MetadataManager //implements MetadataManagerInterface
 	{
 		return dataSourcesMap;
 	}
-	
+
 	/**
 	 * Execute query and store the meta data of PATH
 	 * @throws DAOException
@@ -759,55 +721,50 @@ public class MetadataManager //implements MetadataManagerInterface
 		try
 		{
 			paths = new ArrayList();
-			
+
 			String sqlQuery = "SELECT " + GCConstants.SOURCE_DATASOURCE_ID + ","
-			+ GCConstants.TARGET_DATASOURCE_ID+","+GCConstants.PATH +" FROM "+GCConstants.TABLE_PATH;
-			
-//			Logger.out.debug("PATH query-->"+sqlQuery);
-			
+					+ GCConstants.TARGET_DATASOURCE_ID + "," + GCConstants.PATH + " FROM "
+					+ GCConstants.TABLE_PATH;
+
+			//			Logger.out.debug("PATH query-->"+sqlQuery);
+
 			ResultSet resultSet = jdbcDao.executeSQLQuery(sqlQuery);
-			
+
 			Map pathMap = null;
 			List pathList = null;
-			 
+
 			while (resultSet.next())
 			{
-				pathMap =  new HashMap();
+				pathMap = new HashMap();
 				pathList = new ArrayList();
 				int noOfDataSources = 0;
-				
+
 				pathMap.put(GCConstants.SOURCE_DATASOURCE_ID, resultSet.getString(1));
-				
+
 				pathMap.put(GCConstants.TARGET_DATASOURCE_ID, resultSet.getString(2));
-				
-				
+
 				pathList.add(noOfDataSources, resultSet.getString(1));
 				noOfDataSources++;
-				
+
 				String pathString = resultSet.getString(3);
-				
-				if(pathString != null)
+
+				if (pathString != null)
 				{
 					StringTokenizer pathTokenized = new StringTokenizer(pathString, "_");
-					
-					while(pathTokenized.hasMoreTokens())
+
+					while (pathTokenized.hasMoreTokens())
 					{
 						pathList.add(noOfDataSources, pathTokenized.nextToken());
 						noOfDataSources++;
 					}
 				}
-				
+
 				pathList.add(noOfDataSources, resultSet.getString(2));
-				
+
 				pathMap.put(GCConstants.DATASOURCES_LIST, pathList);
-				
+
 				paths.add(pathMap);
-				
-//				for(int i=0; i<pathList.size(); i++)
-//				{
-//					Logger.out.debug((String)pathList.get(i)+"_");
-//				}
-//				Logger.out.debug();
+
 			}
 		}
 		catch (SQLException e)
@@ -818,7 +775,7 @@ public class MetadataManager //implements MetadataManagerInterface
 		}
 
 	}
-	
+
 	/**
 	 * Reurns the list of Paths
 	 * @return list of Paths
@@ -827,7 +784,7 @@ public class MetadataManager //implements MetadataManagerInterface
 	{
 		return paths;
 	}
-	
+
 	/**
 	 * Execute query and store the no. of distinct Genomic Identifier sets to display on Home page
 	 * @throws DAOException
@@ -836,15 +793,9 @@ public class MetadataManager //implements MetadataManagerInterface
 	{
 		try
 		{
-			
-			//SELECT COUNT(*) FROM GENOMIC_IDENTIFIER_SET;
-			String sqlQuery = "SELECT COUNT(*) FROM "+GCConstants.TABLE_GENOMIC_IDENTIFIER_SET;
-			
-			
-//			Logger.out.debug("PATH query-->"+sqlQuery);
-			
+			String sqlQuery = "SELECT COUNT(*) FROM " + GCConstants.TABLE_GENOMIC_IDENTIFIER_SET;
 			ResultSet resultSet = jdbcDao.executeSQLQuery(sqlQuery);
-			
+
 			while (resultSet.next())
 			{
 				distinctGISets = new Long(resultSet.getLong(1));
@@ -857,7 +808,7 @@ public class MetadataManager //implements MetadataManagerInterface
 			throw new DAOException(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * @return Returns the distinctGISets.
 	 */
@@ -865,7 +816,7 @@ public class MetadataManager //implements MetadataManagerInterface
 	{
 		return distinctGISets;
 	}
-	
+
 	/**
 	 * Execute query and store the no. of pairwise links to display on Home page
 	 * @throws DAOException
@@ -874,15 +825,8 @@ public class MetadataManager //implements MetadataManagerInterface
 	{
 		try
 		{
-			//SELECT COUNT(*) FROM DATASOURCE_LINKS
-			String sqlQuery = "SELECT COUNT(*) FROM "+GCConstants.TABLE_DATASOURCE_LINKS;
-			
-			
-//			Logger.out.debug("PATH query-->"+sqlQuery);
-			
+			String sqlQuery = "SELECT COUNT(*) FROM " + GCConstants.TABLE_DATASOURCE_LINKS;
 			ResultSet resultSet = jdbcDao.executeSQLQuery(sqlQuery);
-			
-			 
 			while (resultSet.next())
 			{
 				pairwiseLinks = new Long(resultSet.getLong(1));
@@ -895,7 +839,7 @@ public class MetadataManager //implements MetadataManagerInterface
 			throw new DAOException(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * @return Returns the pairwiseLinks.
 	 */
@@ -903,7 +847,7 @@ public class MetadataManager //implements MetadataManagerInterface
 	{
 		return pairwiseLinks;
 	}
-	
+
 	/**
 	 * Execute query and store the no. of possible paths by GeneConnect Graph to display on Home page
 	 * @throws DAOException
@@ -912,13 +856,10 @@ public class MetadataManager //implements MetadataManagerInterface
 	{
 		try
 		{
-			//SELECT COUNT(*) FROM ONT WHERE prev_path_id IS NULL;
-			String sqlQuery = "SELECT COUNT(*) FROM "+GCConstants.TABLE_ONT+" WHERE PREV_PATH_ID IS NULL";
-			
-//			Logger.out.debug("PATH query-->"+sqlQuery);
-			
+			String sqlQuery = "SELECT COUNT(*) FROM " + GCConstants.TABLE_ONT
+					+ " WHERE PREV_PATH_ID IS NULL";
 			ResultSet resultSet = jdbcDao.executeSQLQuery(sqlQuery);
-			
+
 			while (resultSet.next())
 			{
 				possibleGraphPaths = new Long(resultSet.getLong(1));
@@ -931,7 +872,7 @@ public class MetadataManager //implements MetadataManagerInterface
 			throw new DAOException(e.getMessage());
 		}
 	}
-	
+
 	/**
 	 * @return Returns the possibleGraphPaths.
 	 */

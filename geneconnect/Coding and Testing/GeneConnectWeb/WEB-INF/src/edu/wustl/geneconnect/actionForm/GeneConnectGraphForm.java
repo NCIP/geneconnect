@@ -8,7 +8,6 @@ package edu.wustl.geneconnect.actionForm;
 
 import org.apache.struts.action.ActionForm;
 
-
 /**
  * GeneConnectGraph Form will hold the data required for GeneConnectGraph
  * @author krunal_thakkar

@@ -2,12 +2,6 @@
 	Release Notes for GeneConnect Web Application
 ==============================================================================
 
-Known Issues:
-------------------------------------------------------------------------------------------------------------
-1. On Internet explorer browser, some time the result page gets scattered. It gets properly 
-   aligned if user tries to resize width of any column.
-2. On Safari browser, The input data sources list on Advanced Search page is not getting properly align. 
-
 Web Browser configuration Netscape and Firefox 
 ------------------------------------------------------------------------------------------------------------
 This configuration applies to Netscape and Firefox browsers for Paste ID functionality. 
@@ -25,3 +19,10 @@ This configuration applies to Safari browser for Paste ID functionality.
        ii.Select Edit->Paste menu.
    b. For paste functionality Safari browser requires WebKit web browser engine http://webkit.org.
    c. Install WebKit and open Safari browser through WebKit http://webkit.org/building/run.html.
+
+Issues resolved:
+------------------------------------------------------------------------------------------------------------
+1. On Internet explorer browser, some time the result page gets scattered. It gets properly 
+   aligned if user tries to resize width of any column.
+2. On Safari browser, The input data sources list on Advanced Search page is not getting properly align. 
+3. Export button on result page prepares the csv file of only those column which is visible on UI.

@@ -22,49 +22,24 @@
 	import="edu.wustl.geneconnect.bizlogic.ResultDataInterface"%>
 
 
-	
+
 <script src="jss/script.js"></script>
 <head>
 <!-- Css and Scripts -->
-<%boolean conf = false;
+<%			boolean conf = false;
 			boolean freq = false;
 			boolean val = false;
 
-			%>
+%>
 
 <script language="JavaScript" type="text/javascript"
 	src="jss/javaScript.js"></script>
+
 <script language="javascript">
 		var colZeroDir='ascending';
 		var selectedQuery="";
-		function showFreq()
-		{
-			obj.setColumnIndices([0, 2, 3, 4]);
-		}
-		function onAddToCart()
-		{
-			var isChecked = "false";
-			for (var i=0;i < document.forms[0].elements.length;i++)
-		    {
-		    	var e = document.forms[0].elements[i];
-		    	
-		        if (e.name != "checkAll" && e.type == "checkbox" && e.checked == true)
-		        {
-		        	isChecked = "true";
-		        	break;
-		        }
-		    }
-		    
-		    if(isChecked == "true")
-		    {
-				var action = "ShoppingCart.do?operation=add";
-				document.forms[0].operation.value="add";
-				document.forms[0].action = action;
-				document.forms[0].target = "myframe1";
-				document.forms[0].submit();
-			}
-		}
 		
+		// export the result as CSV		
 		function onExport()
 		{
 			var action = "SpreadsheetExport.do";
@@ -102,6 +77,7 @@
 			document.forms[0].action = action;
 			document.forms[0].submit();
 		}
+		
 		// Function for hiding freq and /or confidence columns
 		var firsttime=0;
 		function showHideFreq(checkbox)
@@ -163,13 +139,7 @@
 			mygrid.setSizes();
 		//	obj.refresh();
 		}
-		function showPath(grid)
-		{
-			var obj = document.getElementById("active_div");
-			//var value = obj.getRowProperty("value", 3);
-			//var value = obj.getSelectionProperty("value", 3);
-			//alert(obj.id);
-		}
+
 		function onQuerySelect(combo)
 		{
 			//alert(combo.value);
@@ -186,6 +156,7 @@
 			}	
 			
 		}
+		// send a request to server to display the result fo selected query
 		function doGo()
 		{
 			//if(selectedQuery.length>0)
@@ -219,7 +190,7 @@
 				document.forms[0].frequency.value = val;
 			}
 		}
-		
+		// funcrion for pagination
 		function send(pageNum,numresultsPerPage,prevPage,pageName) 
 		{
 			//alert(document.forms[0].queryKey.value);
@@ -230,95 +201,93 @@
 		
 	</script>
 
-<%String pageName = "SearchResultView.do";
-			//ResultDataInterface resultData = (ResultDataInterface)request.getAttribute(GCConstants.RESULT_DATA_LIST);
-			int queryKeyCol = 0;
-			StringBuffer noMatchFoundMessage = (StringBuffer)session.getAttribute(GCConstants.NO_MATCH_FOUND_MESSAGE);
-			int pageNum = Integer.parseInt((String) request.getAttribute(GCConstants.PAGE_NUMBER));
-			int totalResults = Integer.parseInt((String) request
-					.getAttribute(GCConstants.TOTAL_RESULTS));
-			int numResultsPerPage = Integer.parseInt((String) request
-					.getAttribute(GCConstants.RESULTS_PER_PAGE));
-			// attibutes such as confidence ,frequecy checkbox chekced by  user on previous page persisted 
-			// even after page change
-			String isConfidenceChecked = (String) request.getAttribute(GCConstants.CONFIDENCE);
-			String isFrequencyChecked = (String) request.getAttribute(GCConstants.FREQUENCY);
-			String sortedColumn = (String) request.getAttribute(GCConstants.SORTED_COLUMN);
-			String sortedColumnIndex = (String) request.getAttribute(GCConstants.SORTED_COLUMN_INDEX);
-			String sortedColumnDirection = (String) request
-					.getAttribute(GCConstants.SORTED_COLUMN_DIRECTION);
+<%			
+	String pageName = "SearchResultView.do";
+	int queryKeyCol = 0;
+	StringBuffer noMatchFoundMessage = (StringBuffer) session
+			.getAttribute(GCConstants.NO_MATCH_FOUND_MESSAGE);
+	int pageNum = Integer.parseInt((String) request.getAttribute(GCConstants.PAGE_NUMBER));
+	int totalResults = Integer.parseInt((String) request
+			.getAttribute(GCConstants.TOTAL_RESULTS));
+	int numResultsPerPage = Integer.parseInt((String) request
+			.getAttribute(GCConstants.RESULTS_PER_PAGE));
+	// attibutes such as confidence ,frequecy checkbox chekced by  user on previous page persisted 
+	// even after page change
+	String isConfidenceChecked = (String) request.getAttribute(GCConstants.CONFIDENCE);
+	String isFrequencyChecked = (String) request.getAttribute(GCConstants.FREQUENCY);
+	String sortedColumn = (String) request.getAttribute(GCConstants.SORTED_COLUMN);
+	String sortedColumnIndex = (String) request
+			.getAttribute(GCConstants.SORTED_COLUMN_INDEX);
+	String sortedColumnDirection = (String) request
+			.getAttribute(GCConstants.SORTED_COLUMN_DIRECTION);
 
-			/**Column headers to display*/
-			List columnList = (List) request.getAttribute(GCConstants.SPREADSHEET_COLUMN_LIST);
+	/**Column headers to display*/
+	List columnList = (List) request.getAttribute(GCConstants.SPREADSHEET_COLUMN_LIST);
 
-			/**Query keys to select */
-			List queryList = (List) session.getAttribute(GCConstants.QUERY_KEY_MAP);
+	/**Query keys to select */
+	List queryList = (List) session.getAttribute(GCConstants.QUERY_KEY_MAP);
 
-			/// selected query fro advanced search
-			String selectedQueryKey = (String) request.getAttribute(GCConstants.SELECTED_QUERY);
-			/**Datalist containing map where MAP contains column header as key and genoimicIde as value */
-			/**One eleemtn in data list contains map for one set*/
-			boolean disableExportButton = false;
-			List dataList = (List) request.getAttribute(GCConstants.PAGINATION_DATA_LIST);
-			if (dataList.size() == 0)
+	/// selected query fro advanced search
+	String selectedQueryKey = (String) request.getAttribute(GCConstants.SELECTED_QUERY);
+	/**Datalist containing map where MAP contains column header as key and genoimicIde as value */
+	/**One eleemtn in data list contains map for one set*/
+	boolean disableExportButton = false;
+	List dataList = (List) request.getAttribute(GCConstants.PAGINATION_DATA_LIST);
+	if (dataList.size() == 0)
+	{
+
+		disableExportButton = true;
+	}
+
+	List freqColumns = new ArrayList();
+	List genomicColumns = new ArrayList();
+	List confColumns = new ArrayList();
+	List otherColumns = new ArrayList();
+	int columnForSetId = 0;
+
+	/**Get Freq,confidence and setid column to bui;ld the css for hiding / unhiding*/
+	for (int i = 0; i < columnList.size(); i++)
+	{
+
+		String colValue = (String) columnList.get(i);
+		if (colValue.endsWith(GCConstants.QUERY_KEY))
+		{
+			queryKeyCol = i;
+		}
+		else if ((!colValue.endsWith(GCConstants.FREQUENCY_KEY_SUFFIX))
+				&& (!colValue.endsWith(GCConstants.CONF_SCORE_KEY))
+				&& (!colValue.endsWith(GCConstants.SET_ID_KEY)))
+		{
+			genomicColumns.add("" + (i));
+
+		}
+		else if (colValue.endsWith(GCConstants.FREQUENCY_KEY_SUFFIX))
+		{
+			freqColumns.add("" + (i));
+		}
+		else if (colValue.endsWith(GCConstants.CONF_SCORE_KEY))
+		{
+
+			confColumns.add("" + (i));
+		}
+		else
+		{
+			otherColumns.add("" + (i));
+			if (colValue.endsWith(GCConstants.SET_ID_KEY))
 			{
-
-				disableExportButton = true;
+				columnForSetId = i;
 			}
-
-			List freqColumns = new ArrayList();
-			List genomicColumns = new ArrayList();
-			List confColumns = new ArrayList();
-			List otherColumns = new ArrayList();
-			int columnForSetId = 0;
-
-			/**Get Freq,confidence and setid column to bui;ld the css for hiding / unhiding*/
-			for (int i = 0; i < columnList.size(); i++)
-			{
-
-				String colValue = (String) columnList.get(i);
-				if(colValue.endsWith(GCConstants.QUERY_KEY))
-				{
-					queryKeyCol = i;
-				}
-				if ((!colValue.endsWith(GCConstants.FREQUENCY_KEY_SUFFIX))
-						&& (!colValue.endsWith(GCConstants.CONF_SCORE_KEY))
-						&& (!colValue.endsWith(GCConstants.SET_ID_KEY)))
-				{
-					genomicColumns.add("" + (i));
-
-				}
-				else if (colValue.endsWith(GCConstants.FREQUENCY_KEY_SUFFIX))
-				{
-					freqColumns.add("" + (i));
-				}
-				else if (colValue.endsWith(GCConstants.CONF_SCORE_KEY))
-				{
-
-					confColumns.add("" + (i));
-				}
-				else
-				{
-					otherColumns.add("" + (i));
-					if (colValue.endsWith(GCConstants.SET_ID_KEY))
-					{
-						columnForSetId = i;
-					}
-				}
-			}
-			boolean isSpecimenData = false;
-			int IDCount = 0;
-
-//			if (dataList != null && dataList.size() != 0)
-//			{
-				
-			%>
+		}
+	}
+	boolean isSpecimenData = false;
+	int IDCount = 0;
+%>
 
 
 
 <!-- Column number to display path icon-->
 <%int imgCol = ((columnList.size() - IDCount));%>
-<%System.out.println("queryKeyCol: "+queryKeyCol); %>
+
 <style>
 	div.hdr{
 		background-color:lightgrey;
@@ -338,11 +307,12 @@ tr#hiddenCombo
 
 </style>
 </head>
-<table summary="" cellpadding="0" cellspacing="0" border="0" width="100%" height="30">
+
+<table summary="" cellpadding="0" cellspacing="0" border="0"
+	width="100%" height="30">
 	<tr>
-		<td class="formTitle" width="100%">
-			<bean:message key="simpleSearch.result.title" />
-		</td>
+		<td class="formTitle" width="100%"><bean:message
+			key="simpleSearch.result.title" /></td>
 	</tr>
 </table>
 
@@ -353,17 +323,15 @@ tr#hiddenCombo
 		<!-- && pageOf.equals(Constants.PAGEOF_QUERY_RESULTS) -->
 		<!-- If no data then display apropriate message -->
 		<%if (noMatchFoundMessage != null)
-		{
+			{
 
-		
-		%>
-			<li><font color="red"><bean:message key="result.noMatchFound.message" /><%=": "+noMatchFoundMessage%></font></li>
-		<%
-		}
-		%>	
-		
-		<%
-			if (dataList != null)
+				%>
+		<li><font color="red"><bean:message key="result.noMatchFound.message" /><%=": " + noMatchFoundMessage%></font></li>
+		<%}
+
+			%>
+
+		<%if (dataList != null)
 			{
 
 				%>
@@ -371,7 +339,7 @@ tr#hiddenCombo
 			<td width="100%"><br>
 			</td>
 		</tr>
-		
+
 		<%// if the result is for advanced search show query selection combo box 
 				if (queryList != null)
 				{
@@ -476,9 +444,8 @@ tr#hiddenCombo
 
 
 		<tr height="85%">
-			<td width="100%">
-				<%@ include file="/pages/content/common/GridPage.jsp" %>
-			</td>
+			<td width="100%"><%@ include
+				file="/pages/content/common/GridPage.jsp"%></td>
 		</tr>
 		<%}
 
@@ -495,6 +462,8 @@ tr#hiddenCombo
 
 </table>
 <script>
+		//retain the criteria on page change
+		// criteria such as checed frequency / confidence / sroted column / selected query
 		var checkbox;
 		<%
 		if(sortedColumn!=null&&sortedColumnDirection!=null&&sortedColumnIndex!=null)
@@ -508,7 +477,6 @@ tr#hiddenCombo
 		}
 		%>
 		<%
-			//System.out.println("isConfidenceChecked: "+isConfidenceChecked);
 			if(isConfidenceChecked!=null&&isConfidenceChecked.equalsIgnoreCase("true"))
 			{
 		%>

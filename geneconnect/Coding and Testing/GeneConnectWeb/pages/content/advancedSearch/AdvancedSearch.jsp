@@ -23,7 +23,7 @@
 <%
 			 
 			Map attributesMap = (HashMap) request.getAttribute(GCConstants.DATASOURCE_ATTRIBUTES);
-
+			// get data source list
 			List dataSourceList = (List) request.getAttribute(GCConstants.DATA_SOURCES_KEY);
 
 			Object obj = request.getAttribute(GCConstants.ADVANCED_SEARCH_FORM);
@@ -104,7 +104,8 @@
 				field.value = field.value.replace(/[^\d.]+/g, ''); 
 			}
 		}
-			// paste event for safari works on CTRL+V
+		
+		// paste event for safari works on CTRL+V
 		function pasteForSafari(event)
 		{
 			if(event.clipboardData!=null&&safariClipBoardData==null)
@@ -176,7 +177,6 @@
 						{
 							if(t[m].name==text)
 							{
-								//alert("j " +j);
 								prevj=j;
 								break;
 							}
@@ -202,14 +202,12 @@
 							
 							if(pastedCell[n]==t[j].name)
 							{
-								//alert("pastedRows[n] "+pastedRows[n]);
 								ispasted=true;
 							}
 						}
 						// chek if curretn data source name is same as starting one
 						if(t[j].name.indexOf(startdsName,0)>0)
 						{
-							//alert("isTopaste " +t[j].name)
 							if(ispasted==false)
 							{
 								isTopaste=true;
@@ -250,7 +248,6 @@
 						// if not then add one more row
 						if(hasNextRow(lastPastedTextbox)==false)
 						{
-							//alert("insert");
 							insertInputRow('Inputspreadsheet');
 						}
 					}
@@ -258,6 +255,7 @@
 			}	
 
 		}
+		
 		//method to check is there any more row from cuurently seleted row
 		function hasNextRow(lastPastedTextbox)
 		{
@@ -266,7 +264,6 @@
 			var ind = text.indexOf("_",0);
 			var colind = text.indexOf(":",0);
 			var temp = text.substr(colind+1,((ind-colind)-1));
-			//alert(temp);
 			var tbody = document.getElementById("Inputspreadsheet");
 			var t = tbody.getElementsByTagName("input");
 			var rowAvail = new Array();
@@ -277,10 +274,8 @@
 				if(t[j].type=="checkbox")
 				{
 					text = t[j].name;
-					//alert(t[j].name);
 					ind = text.indexOf("_",0);
 					var rownum = text.substr(ind+1,text.length); 
-					//alert("rownum: "+rownum);
 					if(rowAvailCount>0)
 					{	
 						rowAvailCount=rowAvailCount+1;
@@ -290,26 +285,20 @@
 					// if the tag row number is greter means more rows available
 					if(temp.length==rownum.length &&temp.indexOf(rownum,0)>=0)
 					{
-						//alert("rownum11"+temp+"--"+rownum);
 						rowAvailCount++;
-						//alert("rowAvailCount " +rowAvailCount);
 					}
 				}
 				
 			}
 			rowAvailCount--;
-			//alert("v "+rowAvailCount);
 			// retun true row available
 			if(rowAvailCount>=1)
 			{
-				
-				//alert("true");
 				return true;
 			}
-			//alert("v "+rowAvailCount);
-			//alert("false");
 			return false;
 		} 
+		
 		//get the data from clipboard and  split in a form of matrix.
 		function splitGenomicIds()
 		{
@@ -321,7 +310,6 @@
 			if(safariClipBoardData!=null)
 			{
 				copiedData=safariClipBoardData;
-				//alert("copiedData: "+copiedData);
 			}
 			else if(window.clipboardData)
 			{
@@ -358,13 +346,10 @@
 
 			// split data with delima as \n
 			rows = copiedData.split("\n");
-			//alert("2");
-			//alert("rows.length "+rows.length);
 			if(rows.length>=1)
 			{
 				// if the length of splitted data is 1 then 
 				// split data with delima as \t\
-				//alert("rows.length "+rows.length);
 				for(var i=0;i<rows.length;i++)
 				{
 					var innerRow;
@@ -373,8 +358,6 @@
 					{
 						innerRow=rows[i].split(",");
 					}
-					//alert(rows[i]+"---"+innerRow);
-					//alert("innerRow:" +innerRow.length);
 					returnRows[rowCount]=innerRow;
 					rowCount=rowCount+1;
 				}
@@ -397,14 +380,10 @@
 					formattedRow[formattedRowCnt]=irow;
 					formattedRowCnt++;
 				}
-//				if(irow.length-1>0)
-//				{
-//					formattedRow[formattedRowCnt]=irow;
-//					formattedRowCnt++;
-//				}
 			}
 			return formattedRow;
 		}
+		
 		function setCurrentTextBox(t)
 		{
 			currentTextbox=t;
@@ -423,32 +402,21 @@
 				var cols = new Array();
 
 				cols=document.getElementById("Inputspreadsheet").rows[i].cells;
-				
-				//alert("No. of Columns-->"+cols.length);
 
 				var totalcols = cols.length;
 				for(var j=1; j<totalcols; j++) 
 				{	
 					var textField = cols[j].firstChild;
-					//var textField = cols[j].childNodes[0];
 					
 					for(var k=0; k<cols[j].childNodes.length; k++)
 					{
 						//alert("Inner Loop-->"+cols[j].childNodes[k]);
 					}		
 
-					//alert("1"+cols[j].childNodes);
-					//alert("2-->"+cols[j].childNodes.length);
-					//alert("3"+cols[j].childNodes[1].value);
-					//alert("4"+cols[j].firstChild);
-
-
 					var val=textField.value;
-					//alert("Value%%%%%%%%-->"+trim(val));
 
 					if( (val != null) && (trim(val) != "") )
 					{
-						//alert("Value-->"+textField.value);
 						isInputAvailable = true;
 						break;
 					}
@@ -469,7 +437,6 @@
 				if(checkBox.checked & isOutputAvailable == false)
 				{
 					isOutputAvailable = true;
-					//alert(checkBox.id);								
 				}
 			<%		
 				}
@@ -482,8 +449,6 @@
 			{
 				selectButton[0].disabled = false;
 				searchButton[0].disabled = false;
-
-				//alert("One input and One output is available...");
 			}
 			else
 			{

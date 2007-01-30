@@ -80,7 +80,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 		SimpleSearchForm simpleSearchForm = (SimpleSearchForm) data.get("Form");
 		inputDsList = simpleSearchForm.getInputDsList();
 		outputDsList = simpleSearchForm.getOutputDsList();
-//		if (readAndValidateInputs(inputData))
+		//		if (readAndValidateInputs(inputData))
 		{
 			/**
 			 * Prepare GenomicIdentifierSet object from the input query given by user 
@@ -130,7 +130,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 			for (int i = 0; i < columnList.size(); i++)
 			{
 				String colName = (String) columnList.get(i);
-					
+
 				if (colName.endsWith(GCConstants.SET_ID_KEY))
 				{
 					setID = (String) setMap.get(columnList.get(i));
@@ -225,7 +225,6 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 				Logger.out.debug("Genomic Identifer\tFrequency");
 				for (Iterator iter1 = coll.iterator(); iter1.hasNext();)
 				{
-					//OrderOfNodeTraversal ont = (OrderOfNodeTraversal)iter1.next();
 					ConsensusIdentifierData freqData = (ConsensusIdentifierData) iter1.next();
 					GenomicIdentifier g = freqData.getGenomicIdentifier();
 					if (g != null)
@@ -278,7 +277,6 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 					 */
 					String className = MetadataManager.getDataSourceAttribute(
 							GCConstants.DATASOURCE_NAME, column, GCConstants.CLASS);
-					//Logger.out.debug("className : " + className);
 
 					temp.append(MetadataManager.getRoleName("GenomicIdentifierSet", className));
 
@@ -300,7 +298,6 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 							+ classAttribute.substring(0, 1).toUpperCase()
 							+ classAttribute.substring(1, classAttribute.length());
 
-					//Logger.out.debug("methodForClassAttribute: " + methodForClassAttribute);
 					Logger.out.info("methodForClassAttribute: " + methodForClassAttribute);
 					Class genomicClass = Class.forName("edu.wustl.geneconnect.domain." + className);
 
@@ -319,12 +316,9 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 					method = genomicClass.getDeclaredMethod(methodForClassAttribute, null);
 					Object value = method.invoke(genomicObject, null);
 
-					//Logger.out.debug("Resutl : " + methodForClassAttribute + "------" + value);
-					//Logger.out.debug("Freq : " + value.toString());
 					/**
 					 * Add entry in Map to strore data w.r.t column
 					 */
-					//Logger.out.debug("value1: "+ value);
 					String key = "";
 					/**
 					 * If genoimicIdentifier is null the set key = GenomicIdentifier class + '_NULL'
@@ -332,7 +326,6 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 					 */
 					if (value == null || value.equals("NULL"))
 					{
-						//Logger.out.debug("value: " + value);
 						value = new String(GCConstants.NO_MATCH_FOUND);
 						StringBuffer genomicIDClass = new StringBuffer(
 								"edu.wustl.geneconnect.domain.");
@@ -347,7 +340,6 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 					{
 						key = value.toString();
 					}
-					//Logger.out.debug(column+"===="+value.toString());
 					setMap.put(column, value.toString());
 					Float freq = (Float) frequency.get(key);
 					String freqValue = "";
@@ -365,8 +357,6 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 
 				result.add(setMap);
 			}
-			//			resultData.setColumnHeader(columnHeader);
-			//			resultData.setResult(result);
 			Map data = new HashMap();
 			data.put(GCConstants.COLUMN_HEADERS, columnHeader);
 			data.put(GCConstants.RESULT_LIST, result);
@@ -399,7 +389,6 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 
 		outputDsList = new ArrayList();
 		inputDsList = new ArrayList();
-		//metadataManager = MetadataManager.getInstance();
 		Map data = inputData.getData();
 		Map inputMap = new HashMap();
 		List testList = new ArrayList();
@@ -427,11 +416,9 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 		for (Iterator iter = s.iterator(); iter.hasNext();)
 		{
 			String str = (String) iter.next();
-			//Logger.out.debug("KEys: " + str);
 			if (str.endsWith("_systemIdentifier"))
 			{
 				//noOfInputs++;
-				//Logger.out.debug("noOfInputs: " + noOfInputs);
 			}
 			else if (str.startsWith("Input:"))
 			{
@@ -453,8 +440,6 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 					inputMap.put(str, map.get(str));
 				Logger.out.info("Input Key  " + str);
 				Logger.out.info("Input Value : " + map.get(str));
-				//Logger.out.debug("Input Key  " + str);
-				//Logger.out.debug("Input Value : " + map.get(str));
 			}
 			else if (str.startsWith("Output:"))
 			{
@@ -482,7 +467,6 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 		String temp = null;
 		List dsName = new ArrayList();
 		Logger.out.info("noOfInputs: " + noOfInputs);
-		//Logger.out.debug("noOfInputs: " + noOfInputs);
 
 		/**
 		 * Loop over Input map 
@@ -496,7 +480,6 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 			if (key.startsWith("Input:") && key.endsWith("DataSource_Id"))
 			{
 				temp = key.substring(key.indexOf("Input:") + "Input:".length(), key.indexOf("_"));
-				//Logger.out.debug("temp " +temp+"---"+temp.length());
 				if (!inputCounter.contains(temp))
 				{
 					inputCounter.add(temp);
@@ -507,9 +490,7 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 		{
 			NameValueBean bean = new NameValueBean();
 			String key = (String) it.next();
-			//Logger.out.debug("KEEYY " +key);
 			temp = "Input:" + key + "_DataSource_Id";
-			//"Input:" + i + "_DataSource_Id";
 			String dataSourceID = (String) inputMap.get(temp);
 			Logger.out.debug("dataSourceID " + dataSourceID);
 			String dataSourceName = MetadataManager.getDataSourceName(dataSourceID);
@@ -520,14 +501,11 @@ public class SimpleSearchBizLogic implements BizLogicInterface
 			 */
 			for (int j = 0; j < dsName.size(); j++)
 			{
-				//Logger.out.debug("dataSourceName :"+dataSourceName);
-				//Logger.out.debug("dsName : "+dsName.get(j).toString());
 				if (dataSourceName.equalsIgnoreCase(dsName.get(j).toString()))
 				{
 					String arg[] = new String[]{dataSourceName};
 					String errmsg = new DefaultExceptionFormatter().getErrorMessage(
 							"errors.duplicate.datasource", arg);
-					//Logger.out.debug("errmsg : "+errmsg);
 					Logger.out.info(errmsg);
 					throw new BizLogicException(errmsg);
 				}

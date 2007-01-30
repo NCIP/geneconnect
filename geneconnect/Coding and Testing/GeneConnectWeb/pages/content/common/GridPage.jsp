@@ -1,12 +1,9 @@
 <!-- dataList and columnList are to be set in the main JSP file -->
-	<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXGrid.css"/>
+<link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXGrid.css"/>
 	<script  src="dhtml_comp/js/dhtmlXCommon.js"></script>
 	<script  src="dhtml_comp/js/dhtmlXGrid.js"></script>		
 	<script  src="dhtml_comp/js/dhtmlXGridCell.js"></script>	
-	<script  src="dhtml_comp/js/dhtmlXGrid_pgn.js"></script>	
-	
-
-
+	<script  src="dhtml_comp/js/dhtmlXGrid_mcol.js"></script>	
 <script>
 var myData={};
 <%if(dataList != null && dataList.size() != 0)
@@ -38,6 +35,9 @@ for(int k=0;k<columnList.size();k++)
 %>
 <%="\""%><%for (j=0;j < (row.size()-1);j++){%><%=row.get(j)%>,<%}%><%=row.get(j)%><%=",<a href='javascript:"%><%="disp("%>\"<%=row.get(setI)+"#"+row.get(queryKeyCol)%>\"<%=");'><img src='images/mag1.GIF'border='0'/></a>\""%>,<%}%>
 <%
+	// prepare the column heasder and data to display
+	// the column name is string where each column is seperated by ','
+	// dats list is a array of string where each field is separeated by ','.
 	HashMap setMap = (HashMap)dataList.get(i);
 	List row =new ArrayList();	
 	int setI=0;
@@ -66,25 +66,25 @@ for(int k=0;k<columnList.size();k++)
 <%
 }
 %>
+// function to show the graph widow
 function disp(q)
 {
 	var tokens = q.split("#");
 	var id=tokens[0];
 	var queryKey=tokens[1];
 	var url = ".."+"<%=request.getContextPath()%>"+"/GeneConnectGraph.do?setid="+id+"&queryKey="+queryKey;
-//	alert(url);
-//	newwindow=window.open(url,'name','height=600,width=540');
 	newwindow=window.open(url,'name','height=750,width=545,left=20, top=0, screenX=20, screenY=0' );
 	if (window.focus) {newwindow.focus()}
 }
+// column names
 var columns = <%="\""%><%int col;%><%for(col=0;col<(columnList.size()-1);col++){%><%=columnList.get(col)%>,<%}%><%=columnList.get(col)%><%=",Paths\""%>;
-
+// width of each column
 var colWidth = <%="\""%><%for(col=0;col<(columnList.size()-1);col++){String colValue = (String)columnList.get(col);%><%=Utility.getGridColumnWidht(colValue,isConfidenceChecked,isFrequencyChecked)%>,<%}%><%=Utility.getGridColumnWidht((String)columnList.get(col),isConfidenceChecked,isFrequencyChecked)%><%=",100\""%>;
-
+// data stype fo each column
 var colTypes = <%="\""%><%for(col=0;col<(columnList.size()-1);col++){String colValue = (String)columnList.get(col);%><%=Utility.getGridColumnType(colValue)%>,<%}%><%=Utility.getGridColumnType((String)columnList.get(col))%><%=",link\""%>;
-
+// column index containong frequency values.
 var freqcol = [<%for(col=0;col<(freqColumns.size()-1);col++){%><%="\""%><%=freqColumns.get(col)%><%="\""%>,<%}if(freqColumns.size()>0){%><%="\""%><%=freqColumns.get(col)%><%="\""%><%}%>];
-
+// column index containg confidence values
 var confcol = [<%for(col=0;col<(confColumns.size()-1);col++){%><%="\""%><%=confColumns.get(col)%><%="\""%>,<%}%><%="\""%><%=confColumns.get(col)%><%="\""%>];
 </script>
 
@@ -99,6 +99,7 @@ var confcol = [<%for(col=0;col<(confColumns.size()-1);col++){%><%="\""%><%=confC
 </table>
 <script>
 	
+	// on sort send a reqest to server column_index,column_name and order
 	function on_before_sort(column_index,type,order,art)
 	{
 		if(column_index==<%=columnList.size()%>)
@@ -110,78 +111,46 @@ var confcol = [<%for(col=0;col<(confColumns.size()-1);col++){%><%="\""%><%=confC
 			document.forms[0].sortedColumnIndex.value=column_index;
 			document.forms[0].sortedColumn.value=colname;	
 			document.forms[0].sortedColumnDirection.value=order;	
-			//alert(document.forms[0].sortedColumnDirection.value);
-			//alert(mygrid.getHeaderCol(document.forms[0].sortedColumn.value));
 			var action = "SearchResultView.do?pageOf=advancedSearch&isPaging=true&isSorting=true";
 			document.forms[0].action = action;
 			document.forms[0].submit();
 			return true;
 	}
 	
-	
-	mygrid = new dhtmlXGridObject('gridbox');
-	mygrid.setImagePath("dhtml_comp/imgs/");
-	mygrid.setHeader(columns);
-	mygrid.setEditable("FALSE");
-	//mygrid.enableAutoHeigth(false);
-	mygrid.setSkin("xp");
-
-
-	mygrid.setInitWidths(colWidth);
-
-	//mygrid.setColAlign("left,left")
-	//mygrid.setColAlign("right,left,left,right,center,left,center");
-	//mygrid.setColTypes("ro,ro,ro,ro,ro,ro,ro");
-	mygrid.setColSorting(colTypes);
-	
-	//mygrid.enableMultiselect(true)
-	//mygrid.enablePaging(true,1,3,"pagingArea",true,"recinfoArea");
-	
-	
-	mygrid.init();
-
-/*	
-	mygrid.loadXML("dhtml_comp/grid.xml");
-
-		clears the dummy data and refreshes the grid.
-		fix for grid display on IE for first time.
-			
-
-	*/
-	//mygrid.clearAll();
-	/*
-	for(ind=0;ind<freqcol.length;ind++)
+	function init_grid()
 	{
-		var colind = parseInt(freqcol[ind]);
-	//	mygrid.setColWidth(colind,0);
-		mygrid.setHeaderCol(colind,"");
-		mygrid.setColumnHidden(colind ,true);
-	}
-	*/	
-	mygrid.setOnColumnSort(on_before_sort);
+		mygrid = new dhtmlXGridObject('gridbox');
+		mygrid.setImagePath("dhtml_comp/imgs/");
+		mygrid.setHeader(columns);
+		mygrid.setEditable("FALSE");
+		mygrid.setSkin("xp");
+		mygrid.setInitWidths(colWidth);
+		mygrid.setColSorting(colTypes);
+		mygrid.init();
 	
-	function f1()
-	{
+		mygrid.setOnColumnSort(on_before_sort);
+		
+		function f1()
+		{
+			mygrid.setSizes();
+		}
+		mygrid.setOnResize(f1);
+	
+		// set sorting order image on column
+	<%
+		if(sortedColumn!=null&&sortedColumnDirection!=null&&sortedColumnIndex!=null)
+		{
+	%>
+		mygrid.setSortImgState(true,"<%=sortedColumnIndex%>","<%=sortedColumnDirection.toUpperCase()%>")
+	<%		
+		}
+	%>
+		// add data row in grid
+		for(var row=0;row<myData.length;row++)
+		{
+			mygrid.addRow(row+1,myData[row],row+1);
+		}
 		mygrid.setSizes();
 	}
-	mygrid.setOnResize(f1);
-
-	//mygrid.setColHidden("false,false,true,false,false,false,false");
-//	mygrid.setColumnHidden(2 ,true);
-<%
-	if(sortedColumn!=null&&sortedColumnDirection!=null&&sortedColumnIndex!=null)
-	{
-	//System.out.println("sortedColumnDirection: " +sortedColumnDirection);	
-%>
-	mygrid.setSortImgState(true,"<%=sortedColumnIndex%>","<%=sortedColumnDirection.toUpperCase()%>")
-
-<%		
-	}
-%>
-		for(var row=0;row<myData.length;row++)
-	{
-		mygrid.addRow(row+1,myData[row],row+1);
-	}
-//	alert("1");
-	mygrid.setSizes();
+	window.onload=init_grid;
 </script>

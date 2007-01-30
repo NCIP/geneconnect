@@ -37,4 +37,11 @@
 	<definition name=".geneConnect.Graph" path="/pages/content/graph/GeneConnectGraph.jsp">
 		<put name="content" value="/pages/content/graph/GeneConnectGraph.jsp" />
 	</definition>
+	<definition name=".geneConnect.errorPageDef" extends=".geneConnect.homePageDef">
+		<put name="content" value="/pages/content/home/Error.jsp" />
+	</definition>
+	
+	<definition name=".geneConnect.error.details" extends=".geneConnect.homePageDef">
+		<put name="content" value="/pages/content/home/ErrorDetails.jsp" />
+	</definition>
 </tiles-definitions>

@@ -59,8 +59,6 @@ public class AdvancedSearchAction extends Action
 		super();
 	}
 
-	//TODO : Logging needs to be added.
-
 	/**
 	 * Execute method which will be invoked by struts framework.
 	 * @param mapping -
@@ -80,40 +78,44 @@ public class AdvancedSearchAction extends Action
 	{
 		//Initializing map of Attributes to search 
 		Map searchAttributes = new HashMap();
-		
+
 		//typecasting formbean object to AdvanceSearchFrom instance
 		AdvancedSearchForm advancedSearchActionForm = (AdvancedSearchForm) form;
-		
+
 		//setting formbean instance into request object  
 		request.setAttribute("advancedSearchForm", advancedSearchActionForm);
 		//logging attributes if this request is called by clicking "Back To Query" from AdvancedSearchSelectPath page
-		Logger.out.debug("@@@@@@@@@@@@@@@@@@@@@@@ Back from SelectPath-->"+advancedSearchActionForm.isBackFromSelectPath());
-		if(advancedSearchActionForm.isBackFromSelectPath())
+		Logger.out.debug("@@@@@@@@@@@@@@@@@@@@@@@ Back from SelectPath-->"
+				+ advancedSearchActionForm.isBackFromSelectPath());
+		if (advancedSearchActionForm.isBackFromSelectPath())
 		{
-			Logger.out.debug("InputDataSources size-->"+advancedSearchActionForm.getInputDataSources().size());
-			Logger.out.debug("OutputDataSources size-->"+advancedSearchActionForm.getInputDataSources().size());
-			Logger.out.debug("AlreadySelectedPaths-->"+advancedSearchActionForm.getSelectedPaths());
-			Logger.out.debug("Initial IO-->"+advancedSearchActionForm.getInitialInputOutput());
+			Logger.out.debug("InputDataSources size-->"
+					+ advancedSearchActionForm.getInputDataSources().size());
+			Logger.out.debug("OutputDataSources size-->"
+					+ advancedSearchActionForm.getInputDataSources().size());
+			Logger.out.debug("AlreadySelectedPaths-->"
+					+ advancedSearchActionForm.getSelectedPaths());
+			Logger.out.debug("Initial IO-->" + advancedSearchActionForm.getInitialInputOutput());
 		}
-		
+
 		//initializing string of target action to be performed
 		String targetAction = advancedSearchActionForm.getTargetAction();
-		
+
 		try
 		{
 			//Obtain target action which needs to be performed
 			Logger.out.debug("targetAction is :" + targetAction);
-			
+
 			if (targetAction.equals("search"))
 			{
 				//Search operation.
 				return executeDisplayResults(mapping, form, request, response);
 			}
-			
+
 			String targetActionParameter = request.getParameter("targetAction");
-			Logger.out.debug("TargetActionParameter on Action-->"+targetActionParameter);
-			
-			if(targetActionParameter != null && targetActionParameter.equals("updateMap"))
+			Logger.out.debug("TargetActionParameter on Action-->" + targetActionParameter);
+
+			if (targetActionParameter != null && targetActionParameter.equals("updateMap"))
 			{
 				updateMap(advancedSearchActionForm, request);
 			}
@@ -134,7 +136,7 @@ public class AdvancedSearchAction extends Action
 			errors.add(ActionErrors.GLOBAL_ERROR, error);
 			saveErrors(request, errors);
 		}
-		
+
 		/**
 		 * Get datasource attributes such as datasource name , id. 
 		 */
@@ -160,15 +162,15 @@ public class AdvancedSearchAction extends Action
 		request.setAttribute(GCConstants.DATA_SOURCES_KEY, dataSources);
 
 		// do action when validation fails
-		if(targetAction.equals("failure"))
+		if (targetAction.equals("failure"))
 		{
 			// set the ouput data source selected by user in form and forward teh resuest to advanced search query page.
 			advancedSearchActionForm.setOutputDataSources(createOutputDataSources(request));
-			
+
 			return mapping.findForward("failure");
 		}
 		// do action when user clicks on back to advanced search page from select path
-		if(targetAction.equals("nothing"))
+		if (targetAction.equals("nothing"))
 		{
 			//nothing required to perform for this target action
 		}
@@ -202,18 +204,18 @@ public class AdvancedSearchAction extends Action
 		//Get the instance of required business logic 
 		BizLogicInterface advancedSearchBizLogic = geneConnectBizLogicFactory
 				.getBizLogic(GCConstants.ADVANCED_SEARCH_BIZLOGIC);
-		
+
 		//Form the input data which needs to be passed to the business logic
 		InputDataInterface inputData = new InputData();
 		Map data = new HashMap();
-		
+
 		AdvancedSearchForm advancedSearchActionForm = (AdvancedSearchForm) form;
-		
-		Map outputDataSources = (HashMap)advancedSearchActionForm.getOutputDataSources();
+
+		Map outputDataSources = (HashMap) advancedSearchActionForm.getOutputDataSources();
 		/**
 		 * Prepare Frequency Map where KEY = datasource name and value = predicate  
 		 */
-		if(outputDataSources.size() == 0)
+		if (outputDataSources.size() == 0)
 		{
 			List dataSources = MetadataManager.getDataSourcesToDisplay();
 			Map frequencyMap = new HashMap();
@@ -226,15 +228,15 @@ public class AdvancedSearchAction extends Action
 					{
 						Logger.out.info("Frequency Value==>"
 								+ request.getParameter(bean.getName() + "_FrequenceValue"));
-	
-						String freqValue = request.getParameter(bean.getName() + "_FrequenceValue");
-						if(freqValue==null||freqValue.length()==0)
-						{	
-							freqValue="0";
-						}	
 
-						Float freq =  new Float(freqValue);
-						frequencyMap.put(bean.getName(),freq);
+						String freqValue = request.getParameter(bean.getName() + "_FrequenceValue");
+						if (freqValue == null || freqValue.length() == 0)
+						{
+							freqValue = "0";
+						}
+
+						Float freq = new Float(freqValue);
+						frequencyMap.put(bean.getName(), freq);
 					}
 				}
 				catch (NumberFormatException e)
@@ -247,43 +249,43 @@ public class AdvancedSearchAction extends Action
 					throw new BizLogicException(errmsg);
 				}
 			}
-			
+
 			advancedSearchActionForm.setOutputDataSources(frequencyMap);
 		}
-		
+
 		//setting selected ONTs into formbean in case of User selected some ONTs 
 		//on ONT page and calling search action from AdvancedSearch page 
-		String selectedPaths ="";
-		String selectedONTs=advancedSearchActionForm.getSelectedPaths();
-		
-		if(selectedONTs != null)
+		String selectedPaths = "";
+		String selectedONTs = advancedSearchActionForm.getSelectedPaths();
+
+		if (selectedONTs != null)
 		{
-			if(selectedONTs.length() > 0 & (!selectedONTs.endsWith("$")))
+			if (selectedONTs.length() > 0 & (!selectedONTs.endsWith("$")))
 			{
 				StringTokenizer ontTokenized = new StringTokenizer(selectedONTs, "#");
-				
-				while(ontTokenized.hasMoreTokens())
+
+				while (ontTokenized.hasMoreTokens())
 				{
 					String ont = ontTokenized.nextToken();
-					
-					selectedPaths += ont.substring(ont.indexOf("=")+1, ont.length())+"$";
-					Logger.out.debug("ONT Token--> "+ont.substring(ont.indexOf("=")+1, ont.length()));
+
+					selectedPaths += ont.substring(ont.indexOf("=") + 1, ont.length()) + "$";
+					Logger.out.debug("ONT Token--> "
+							+ ont.substring(ont.indexOf("=") + 1, ont.length()));
 				}
-				
-				Logger.out.debug("selectedONTs-->"+selectedPaths);
+
+				Logger.out.debug("selectedONTs-->" + selectedPaths);
 				advancedSearchActionForm.setSelectedPaths(selectedPaths);
 			}
 		}
-		
-		
+
 		data.put(GCConstants.FORM, advancedSearchActionForm);
-		
+
 		inputData.setData(data);
 		/**
 		 * call bizliogc method to build domain objects and query the system
 		 */
 		ResultDataInterface resultData = advancedSearchBizLogic.getResult(inputData);
-		
+
 		/**
 		 * Prepare Query list that os to be listed on search page in view display result combo box.
 		 */
@@ -291,25 +293,26 @@ public class AdvancedSearchAction extends Action
 		List queryKeyList = new ArrayList();
 		Set keySet = allresultMap.keySet();
 		List keyList = new ArrayList(keySet);
-		//Collections.sort(keyList);
+
+		// sort the keys as per input order 
 		Utility.sortInputQueryKeys(keyList);
-		NameValueBean  allbean = new NameValueBean();
+		NameValueBean allbean = new NameValueBean();
 		allbean.setName(GCConstants.QUERY_KEY_ALL);
 		allbean.setValue(GCConstants.QUERY_KEY_ALL);
 		queryKeyList.add(allbean);
-		for(Iterator iter=keyList.iterator();iter.hasNext();)
+		for (Iterator iter = keyList.iterator(); iter.hasNext();)
 		{
-			String k = (String)iter.next();
-			Logger.out.debug("Key :" +k);
+			String k = (String) iter.next();
+			Logger.out.debug("Key :" + k);
 			int ind = k.indexOf("_");
-			if(ind>0)
+			if (ind > 0)
 			{
-				String displayKey = k.substring(ind+1);
-				NameValueBean  bean = new NameValueBean();
+				String displayKey = k.substring(ind + 1);
+				NameValueBean bean = new NameValueBean();
 				bean.setName(displayKey);
 				bean.setValue(k);
 				queryKeyList.add(bean);
-				
+
 			}
 		}
 		/**
@@ -318,42 +321,10 @@ public class AdvancedSearchAction extends Action
 		session.setAttribute(GCConstants.RESULT_DATA_LIST, resultData);
 		session.setAttribute(GCConstants.QUERY_KEY_MAP, queryKeyList);
 		request.setAttribute(Constants.PAGEOF, GCConstants.ADVANCED_SEARCH);
-		
+
 		return (mapping.findForward(GCConstants.FORWARD_TO_RESULT_PAGE));
 	}
-	
-	public static void main(String a[])
-	{
-		List l = new ArrayList();
-		for(int i=0;i<=21;i++)
-		{
-			l.add("Input:"+i+"_");
-		}
-		Utility.sortInputQueryKeys(l);
-//		for(int i=0;i<l.size();i++)
-//		{
-//			for(int j=0;j<l.size()-1;j++)
-//			{
-//				String k1 = (String)l.get(j);
-//				int k = j;
-//				k++;
-//				String k2 = (String)l.get(k);
-//				String i1 = k1.substring(k1.indexOf(":")+1,k1.indexOf("_"));
-//				String i2 = k2.substring(k2.indexOf(":")+1,k2.indexOf("_"));
-//				if(Integer.decode(i1).intValue()>Integer.decode(i2).intValue())
-//				{
-//					l.remove(j);
-//					l.remove(k);
-//					l.add(j,k2);
-//					l.add(k,k1);
-//					
-//				}
-//			}
-//		}
-		//Collections.sort(l);
-		System.out.println(l);
-	}
-	
+
 	/**
 	 * this method populates map of Output Datasources selected by user on AdvancedSearch page
 	 * The map contains data source name as key and frequency as value 
@@ -362,10 +333,10 @@ public class AdvancedSearchAction extends Action
 	{
 		//initializing list of datasources
 		List dataSources = MetadataManager.getDataSourcesToDisplay();
-		
+
 		//initializing map for Output Datasources
 		Map frequencyMap = new HashMap();
-		
+
 		//populating map of Output Datasources
 		for (int i = 0; i < dataSources.size(); i++)
 		{
@@ -378,13 +349,13 @@ public class AdvancedSearchAction extends Action
 							+ request.getParameter(bean.getName() + "_FrequenceValue"));
 
 					String freqValue = request.getParameter(bean.getName() + "_FrequenceValue");
-					if(freqValue==null||freqValue.length()==0)
-					{	
-						freqValue="0";
-					}	
+					if (freqValue == null || freqValue.length() == 0)
+					{
+						freqValue = "0";
+					}
 
-					Float freq =  new Float(freqValue);
-					frequencyMap.put(bean.getName(),freq);
+					Float freq = new Float(freqValue);
+					frequencyMap.put(bean.getName(), freq);
 				}
 			}
 			catch (NumberFormatException e)
@@ -397,7 +368,7 @@ public class AdvancedSearchAction extends Action
 				throw new BizLogicException(errmsg);
 			}
 		}
-		
+
 		//returning map of Output Datasources
 		return frequencyMap;
 	}
@@ -408,70 +379,69 @@ public class AdvancedSearchAction extends Action
 	 * @param request - request object associated with action
 	 * @throws Exception
 	 */
-	private void updateMap(AdvancedSearchForm advancedSearchActionForm, HttpServletRequest request) throws Exception
+	private void updateMap(AdvancedSearchForm advancedSearchActionForm, HttpServletRequest request)
+			throws Exception
 	{
-//		Logger.out.debug("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&  Update Map &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
-//		Logger.out.debug("Rows To Delete-->"+request.getParameter("rowsToDelete"));
-		
+
 		//initializing list of datasources
 		List dataSources = MetadataManager.getDataSourcesToDisplay();
-		
+
 		//initializing map of InputDatasources
 		Map inputs = advancedSearchActionForm.getInputDataSources();
-		
+
 		Set inputKeys = inputs.keySet();
-		
+
 		List inputKeyList = new ArrayList(inputKeys);
-		
+
 		TreeMap sortedKeys = new TreeMap();
-		
+
 		//sorting InputDatasources
-		for(int i=0; i<inputKeys.size(); i++)
+		for (int i = 0; i < inputKeys.size(); i++)
 		{
-			String inputKey = (String)inputKeyList.get(i);
-			
+			String inputKey = (String) inputKeyList.get(i);
+
 			StringTokenizer inputKeyTokenized = new StringTokenizer(inputKey, "_");
-			
+
 			sortedKeys.put(inputKeyTokenized.nextToken(), inputKeyTokenized.nextToken());
 		}
-		
+
 		Set sortedKeySet = sortedKeys.keySet();
-		
+
 		List sortedKeyList = new ArrayList(sortedKeySet);
-		
+
 		String rowsToDelete = request.getParameter("rowsToDelete");
-		
+
 		StringTokenizer rowsTokened = new StringTokenizer(rowsToDelete, ",");
-		
+
 		//traversing through sorted InputDatasources to delete Inputs selected by user to delete
-		while(rowsTokened.hasMoreTokens())
+		while (rowsTokened.hasMoreTokens())
 		{
 			String rowId = rowsTokened.nextToken();
-			
-			if( (sortedKeyList.size()) > new Integer(rowId).intValue() )
+
+			if ((sortedKeyList.size()) > new Integer(rowId).intValue())
 			{
-				String inputHeader = (String)sortedKeyList.get(new Integer(rowId).intValue());
-				
-				for(int i=0; i<dataSources.size(); i++)
+				String inputHeader = (String) sortedKeyList.get(new Integer(rowId).intValue());
+
+				for (int i = 0; i < dataSources.size(); i++)
 				{
-					NameValueBean dataSource = (NameValueBean)dataSources.get(i);
-					
-					inputs.remove(inputHeader+"_"+dataSource.getName());
-					
-					Logger.out.debug("To Delete-->"+(inputHeader+dataSource.getName()));
+					NameValueBean dataSource = (NameValueBean) dataSources.get(i);
+
+					inputs.remove(inputHeader + "_" + dataSource.getName());
+
+					Logger.out.debug("To Delete-->" + (inputHeader + dataSource.getName()));
 				}
 			}
 		}
-		
+
 		//setting InputDatasources of formbean with updated Inputs
 		advancedSearchActionForm.setInputDataSources(inputs);
-		
+
 		//setting updated formbean into request object
 		request.setAttribute("advancedSearchForm", advancedSearchActionForm);
-		
+
 		//storing new instance of formbean into session as formbean values are changed
 		HttpSession session = request.getSession();
 		session.setAttribute("advancedSearchForm", new AdvancedSearchForm());
-		
+
 	}
 }

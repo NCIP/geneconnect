@@ -10,6 +10,7 @@ import java.sql.Statement;
 import edu.wustl.common.util.dbManager.DAOException;
 import edu.wustl.common.util.global.ApplicationProperties;
 import edu.wustl.common.util.logger.Logger;
+
 /**
  * Singlton class fro JDBC conenction and executing SQL query 
  * @author sachin_lale
@@ -28,11 +29,12 @@ public class JDBCDAO
 	{
 
 	}
-/**
- * return the JDBCDAO instance
- * @return
- * @throws DAOException
- */
+
+	/**
+	 * return the JDBCDAO instance
+	 * @return
+	 * @throws DAOException
+	 */
 	public static JDBCDAO getInstance() throws DAOException
 	{
 		if (jdbcDaoObject == null)
@@ -56,10 +58,11 @@ public class JDBCDAO
 	{
 		return (connection != null);
 	}
-/**
- * opens jdbc connection to given database
- * @throws DAOException
- */
+
+	/**
+	 * opens jdbc connection to given database
+	 * @throws DAOException
+	 */
 	private void connect() throws DAOException
 	{
 		String driverName = ApplicationProperties.getValue("db.driver");

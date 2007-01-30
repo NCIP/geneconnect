@@ -80,16 +80,16 @@ public class GeneConnectBizLogicFactory extends AbstractBizLogicFactory
 		BizLogicInterface bizLogic = null;
 		try
 		{
-			String bizLogicClass = (String)moduleMap.get(businessAction);
+			String bizLogicClass = (String) moduleMap.get(businessAction);
 			//bizLogic = ((BizLogicInterface) moduleMap.get(businessAction));
 			bizLogic = (BizLogicInterface) Class.forName(bizLogicClass).newInstance();
 			Logger.out.info("Return bizLogic : " + bizLogic);
 		}
-		catch(Exception e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
-			Logger.out.error(e.getMessage(),e);
-			throw new BizLogicException(e.getMessage(),e);
+			Logger.out.error(e.getMessage(), e);
+			throw new BizLogicException(e.getMessage(), e);
 		}
 		return bizLogic;
 	}

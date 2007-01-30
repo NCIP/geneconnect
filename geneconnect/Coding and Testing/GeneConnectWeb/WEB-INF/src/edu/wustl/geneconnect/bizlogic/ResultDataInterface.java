@@ -17,39 +17,36 @@ import java.util.Map;
 public interface ResultDataInterface
 {
 
-	
 	/**
 	 * Getter method for Data.
 	 * @return java.util.Map  
 	 */
-	
+
 	Map getData();
-	
-	void  setData(Map data);
-	
+
+	void setData(Map data);
+
 	Object getValue(Object key);
-	
-//	List getResult();
-//
-//	/**
-//	 * Setter method for Data.
-//	 * @param data - This map will contain Domain Element ,Action Form and other
-//	 * data which is to be passed to the BusinessLogic.  
-//	 */
-//	void setResult(List result);
-//
-//	/**
-//	 * Getter method for columnHeader.
-//	 * @return java.util.List  
-//	 */
-//	List getColumnHeader();
-//
-//	/**
-//	 * Setter method for columnHeader.
-//	 * @param columnHeader - This list will contain column names
-//	 */
-//	void setColumnHeader(List columnHeader);
 
-
+	//	List getResult();
+	//
+	//	/**
+	//	 * Setter method for Data.
+	//	 * @param data - This map will contain Domain Element ,Action Form and other
+	//	 * data which is to be passed to the BusinessLogic.  
+	//	 */
+	//	void setResult(List result);
+	//
+	//	/**
+	//	 * Getter method for columnHeader.
+	//	 * @return java.util.List  
+	//	 */
+	//	List getColumnHeader();
+	//
+	//	/**
+	//	 * Setter method for columnHeader.
+	//	 * @param columnHeader - This list will contain column names
+	//	 */
+	//	void setColumnHeader(List columnHeader);
 
 }
