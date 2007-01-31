@@ -55,7 +55,7 @@
   
   <tr>
   	<td class="subMenuSecondaryTitle" onmouseover="changeMenuStyle(this,'subMenuSecondaryTitleOver'),showCursor()" onmouseout="changeMenuStyle(this,'subMenuSecondaryTitle'),hideCursor()" height="20" onclick="document.location.href='#'">
-  		<a class="subMenuSecondary" href="#">
+  		<a class="subMenuSecondary" href="http://bioinformatics.wustl.edu">
   			<bean:message key="app.siteHome" />
   		</a>
   	</td>

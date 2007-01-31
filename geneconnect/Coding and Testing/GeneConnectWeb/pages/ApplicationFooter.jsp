@@ -6,9 +6,9 @@
 	<td>
       	<img src="images/ftrMenuSeparator.gif" width="1" height="16" alt="" />
       </td> 
-      <td height="20" class="footerMenuItem" onmouseover="changeMenuStyle(this,'footerMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'footerMenuItem'),hideCursor()" onclick="document.location.href='#'">
+      <td height="20" class="footerMenuItem" onmouseover="changeMenuStyle(this,'footerMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'footerMenuItem'),hideCursor()" onclick="document.location.href='ContactUs.do'">
         &nbsp;&nbsp;
-		<a class="footerMenuLink" href="#">
+		<a class="footerMenuLink" href="ContactUs.do">
 			<bean:message key="app.contactUs" />
 		</a>&nbsp;&nbsp;
       </td>
@@ -50,9 +50,9 @@
       	<img src="images/ftrMenuSeparator.gif" width="1" height="16" alt="" />
       </td>
       
-      <td height="20" class="footerMenuItem" onmouseover="changeMenuStyle(this,'footerMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'footerMenuItem'),hideCursor()" onclick="'Home.do'">
+      <td height="20" class="footerMenuItem" onmouseover="changeMenuStyle(this,'footerMenuItemOver'),showCursor()" onmouseout="changeMenuStyle(this,'footerMenuItem'),hideCursor()" onclick="'ContactUs.do'">
         &nbsp;&nbsp;
-        <a class="footerMenuLink" href="Home.do">
+        <a class="footerMenuLink" href="ContactUs.do">
         	<bean:message key="app.reportProblem" />
         </a>&nbsp;&nbsp;
       </td>

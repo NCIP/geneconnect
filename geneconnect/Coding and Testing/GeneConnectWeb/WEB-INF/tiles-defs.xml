@@ -44,4 +44,12 @@
 	<definition name=".geneConnect.error.details" extends=".geneConnect.homePageDef">
 		<put name="content" value="/pages/content/home/ErrorDetails.jsp" />
 	</definition>
+	<definition name=".geneConnect.help" extends=".geneConnect.homePageDef">
+		<put name="content" value="/pages/content/help/Home.jsp" />
+	</definition>
+	<definition name=".geneconnect.appFooter" extends=".geneConnect.homePageDef">
+		<put name="content" value="/pages/content/common/ApplicationFooterTab.jsp" />
+	</definition>
+	
+	
 </tiles-definitions>

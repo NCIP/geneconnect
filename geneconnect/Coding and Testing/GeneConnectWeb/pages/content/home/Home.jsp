@@ -100,7 +100,7 @@
 												<table summary="" cellpadding="3" cellspacing="0" border="0" width="100%">
 													<tr>
 														<td colspan="2" align="center" class="formTitle">
-															Genomic Identifiers Version
+															Database Version Information
 														</td>
 													</tr>
 													<tr>
@@ -113,15 +113,15 @@
 													</tr>
 													<tr>
 														<td class="formSerialNumberField">EntrezGene</td>
-														<td class="formField">N/A</td>	
+														<td class="formField">HomoSapiens Build (1-August-2005)</td>	
 													</tr>
 													<tr>
-														<td class="formSerialNumberField">GeneBank Nucleotide</td>
-														<td class="formField">Release 155</td>	
+														<td class="formSerialNumberField">GenBank Nucleotide</td>
+														<td class="formField">Data currently not available</td>	
 													</tr>
 													<tr>
-														<td class="formSerialNumberField">GeneBank Protein</td>
-														<td class="formField">Release 154</td>	
+														<td class="formSerialNumberField">GenBank Protein</td>
+														<td class="formField">Data currently not available</td>	
 													</tr>
 													<tr>
 														<td class="formSerialNumberField">UniprotKB</td>

@@ -35,7 +35,9 @@ PUBLIC
 	<action path="/RedirectHome"
 			type="org.apache.struts.actions.ForwardAction"
 			parameter=".geneConnect.homePageDef" />
-	
+	<action path="/Help"
+			type="org.apache.struts.actions.ForwardAction"
+			parameter=".geneConnect.help" />
 	<action path="/SimpleSearch"
 		type="edu.wustl.geneconnect.action.SimpleSearchAction"
 		name="simpleSearchForm"
@@ -124,6 +126,8 @@ PUBLIC
 			<forward name="advancedSearchresults" path=".geneConnect.AdvancedSearchResult"/>
 		</action>
 		<!--Spreadshet Export Actions Ends -->
+		<action path="/ContactUs" type="org.apache.struts.actions.ForwardAction" parameter=".geneconnect.appFooter"/>
+
 	
 	</action-mappings>
 	

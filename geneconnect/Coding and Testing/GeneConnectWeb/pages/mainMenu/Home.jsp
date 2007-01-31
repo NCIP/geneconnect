@@ -21,10 +21,11 @@
 			 
 			  <td height="20" class="mainMenuItem" onmouseover="changeMenuStyle(this,'mainMenuItemOver'),showCursor()"
 				onmouseout="changeMenuStyle(this,'mainMenuItem'),hideCursor()" onclick="document.location.href='Home.do'">
-				<html:link styleClass="mainMenuLink" page="/Home.do">
+				<html:link styleClass="mainMenuLink" page="/Help.do">
 					<bean:message key="app.help" />
 				</html:link>
 			  </td>
+			  
 			  <td><img src="images/mainMenuSeparator.gif" width="1" height="16" alt="" /></td>
 			  
 			</tr>
