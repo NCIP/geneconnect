@@ -182,10 +182,6 @@ sub config_control_file_col_separator
 	return $_[0]->{CONFIG}{controlFileColumnSeparator};
 }
 
-sub maxTimeAllowedForSubJob
-{
-	return $_[0]->{CONFIG}{maxTimeAllowedForSubJob};
-}
 #**********************************************************************************************
 
 1;

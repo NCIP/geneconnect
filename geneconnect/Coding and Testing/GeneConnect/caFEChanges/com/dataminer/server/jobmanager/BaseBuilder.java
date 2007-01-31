@@ -737,7 +737,7 @@ public abstract class BaseBuilder
 			
 			
 			
-			Logger.log("Loaded Properties from Properties File"+Variables.subject,Logger.INFO);
+			Logger.log("Loaded Properties from Properties File " + fileName, Logger.INFO);
 		}
 		catch(NonFatalException nfe)
 		{

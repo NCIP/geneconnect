@@ -114,7 +114,7 @@ public class UniGeneParser
 		m_UnigeneRecordWriter.write("LOAD DATA INFILE * APPEND INTO TABLE UNIGENE FIELDS TERMINATED BY '###' (geneid,title,gene,org,taxid)"+"\n"+"BEGINDATA"+"\n");
 		m_UnigeneRecordWriter.flush();
 		m_UnigeneEntrezRecordWriter=new FileWriter(m_basedir+FILESEP+UNIGENE_ENTREZ_TABLE+ "." + m_fileToParse);
-		m_UnigeneEntrezRecordWriter.write("LOAD DATA INFILE * APPEND INTO TABLE unigene_entrez FIELDS TERMINATED BY '###' (UEN_UNIGENEID,UEN_ENTREZGENEID,UEN_LINKTYPE)"+"\n"+"BEGINDATA"+"\n");
+		m_UnigeneEntrezRecordWriter.write("LOAD DATA INFILE * APPEND INTO TABLE unigene_entrez_U FIELDS TERMINATED BY '###' (UEN_UNIGENEID,UEN_ENTREZGENEID,UEN_LINKTYPE)"+"\n"+"BEGINDATA"+"\n");
 		m_UnigeneEntrezRecordWriter.flush();
 	}
 	
@@ -591,7 +591,7 @@ public class UniGeneParser
 			ugp.open();
 			ugp.parse();		
 			FileWriter outputWriter = new FileWriter(basedir+FILESEP+outputFile);
-			outputWriter.write(UNIGENE_TABLE+ "."+fileToParse+"\n");
+			//outputWriter.write(UNIGENE_TABLE+ "."+fileToParse+"\n");
 			outputWriter.write(UNIGENE_ENTREZ_TABLE+ "."+fileToParse+"\n");
 			outputWriter.flush();
 			outputWriter.close();

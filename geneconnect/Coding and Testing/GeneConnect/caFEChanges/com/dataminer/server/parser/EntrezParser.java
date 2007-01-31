@@ -35,35 +35,35 @@ public class EntrezParser extends Parser
     /** Id for Map terms */
     protected static long m_maptermID = 1;
     /** records for ENTREZGENE tables */;
-    protected Record m_baseRecord;
+  //  protected Record m_baseRecord;
     /** record for ENTREZ_UniGene table */ 
     protected Record m_ugRecord;
     /** Record for ENTREZ_OMIM table */
-    protected Record m_omimRecord;
-    /** Record for ENTREZ_PMID table */
-    protected Record m_pmidRecord;
-    /** Record for ENTREZ_GOID table */
-    protected Record m_goRecord;
-    /** Record for ENTREZ_PHENOTYPE table */
-    protected Record m_phenotypeRecord;
-    /** Record for ENTREZ_GENENAMES table */
-    protected Record m_genenamesRecord;
-    /** Record for ENTREZ_MAP table */
-    protected Record m_mapRecord;
-    /** Record for SYSTEM_TERMDATA table */
-    protected Record m_termRecord;
-    /** Record for SYSTEM_TERMTREE table */
-    protected Record m_treeRecord;
-    /** MAP Record for SYSTEM_TERMDATA table */
-    protected Record m_maptermRecord;
-    /** MAP Record for SYSTEM_TERMTREE table */
-    protected Record m_maptreeRecord;
-    /** Record for ENTREZ_STS table */
-    protected Record m_stsRecord;
-    /** Record for ENTREZ_FLY table */
-    protected Record m_dmRecord;
-    /** Record for GENE_HISTORY table */
-    protected Record m_geneHistoryRecord;
+//    protected Record m_omimRecord;
+//    /** Record for ENTREZ_PMID table */
+//    protected Record m_pmidRecord;
+//    /** Record for ENTREZ_GOID table */
+//    protected Record m_goRecord;
+//    /** Record for ENTREZ_PHENOTYPE table */
+//    protected Record m_phenotypeRecord;
+//    /** Record for ENTREZ_GENENAMES table */
+//    protected Record m_genenamesRecord;
+//    /** Record for ENTREZ_MAP table */
+//    protected Record m_mapRecord;
+//    /** Record for SYSTEM_TERMDATA table */
+//    protected Record m_termRecord;
+//    /** Record for SYSTEM_TERMTREE table */
+//    protected Record m_treeRecord;
+//    /** MAP Record for SYSTEM_TERMDATA table */
+//    protected Record m_maptermRecord;
+//    /** MAP Record for SYSTEM_TERMTREE table */
+//    protected Record m_maptreeRecord;
+//    /** Record for ENTREZ_STS table */
+//    protected Record m_stsRecord;
+//    /** Record for ENTREZ_FLY table */
+//    protected Record m_dmRecord;
+//    /** Record for GENE_HISTORY table */
+//    protected Record m_geneHistoryRecord;
     
 
 	/**
@@ -80,6 +80,8 @@ public class EntrezParser extends Parser
 		m_fileName = (String)fileName.getFiles().firstElement();
 		try
 		{
+			Variables.llUgTableName=Variables.llUgTableName+"_U";
+			Logger.log("tabkle:" + Variables.llUgTableName, Logger.DEBUG);
 			this.initializeTables(history);
 			Logger.log("Initialise Tables over",Logger.INFO);
 			this.createRecords(history);
@@ -89,6 +91,7 @@ public class EntrezParser extends Parser
 			writeMETADATA();
 			Logger.log("Writer metadata over",Logger.INFO);
 			this.resetRecords(history);
+			Logger.log("debug 22",Logger.INFO);
 		}
 		catch (FatalException excp)
 		{
@@ -116,25 +119,25 @@ public class EntrezParser extends Parser
          * Initialize the Locuslink base and dimension tables. The tables
          * should be initialized before inserting data into them.
          */
-        if (history == false)
-        {
-        	m_dbManager.initTable(Variables.locusBaseTableName);
-        	m_dbManager.initTable(Variables.llGoidTableName);
-        	m_dbManager.initTable(Variables.llOmimTableName);
-        	m_dbManager.initTable(Variables.llPhenotypeTableName);
-        	m_dbManager.initTable(Variables.llPmidTableName);
+//        if (history == false)
+//        {
+//        	m_dbManager.initTable(Variables.locusBaseTableName);
+//        	m_dbManager.initTable(Variables.llGoidTableName);
+//        	m_dbManager.initTable(Variables.llOmimTableName);
+//        	m_dbManager.initTable(Variables.llPhenotypeTableName);
+//        	m_dbManager.initTable(Variables.llPmidTableName);
         	m_dbManager.initTable(Variables.llUgTableName);
-        	m_dbManager.initTable(Variables.llGeneNamesTableName);
-        	m_dbManager.initTable(Variables.termTableName);
-        	m_dbManager.initTable(Variables.treeTableName);
-        	m_dbManager.initTable(Variables.llMapTableName);
-        	m_dbManager.initTable(Variables.locusStsTableName);
-        	m_dbManager.initTable(Variables.locusFlyTableName);
-        }
-        else 
-        {
-        	m_dbManager.initTable(Variables.llHistoryTableName);
-        }
+//        	m_dbManager.initTable(Variables.llGeneNamesTableName);
+//        	m_dbManager.initTable(Variables.termTableName);
+//        	m_dbManager.initTable(Variables.treeTableName);
+//        	m_dbManager.initTable(Variables.llMapTableName);
+//        	m_dbManager.initTable(Variables.locusStsTableName);
+//        	m_dbManager.initTable(Variables.locusFlyTableName);
+//        }
+//        else 
+//        {
+//        	m_dbManager.initTable(Variables.llHistoryTableName);
+//        }
     }
 
     /**
@@ -147,39 +150,41 @@ public class EntrezParser extends Parser
     	 the tables have been initialized. */
     	if (history == false)
     	{
-    		m_baseRecord = new Record(m_dbManager.noOfColumns(Variables.locusBaseTableName),
-    				m_dbManager.getPrecision(Variables.locusBaseTableName));
+//    		m_baseRecord = new Record(m_dbManager.noOfColumns(Variables.locusBaseTableName),
+//    				m_dbManager.getPrecision(Variables.locusBaseTableName));
+    		
     		m_ugRecord = new Record(m_dbManager.noOfColumns(Variables.llUgTableName),
     				m_dbManager.getPrecision(Variables.llUgTableName));
-    		m_omimRecord = new Record(m_dbManager.noOfColumns(Variables.llOmimTableName),
-    				m_dbManager.getPrecision(Variables.llOmimTableName));
-    		m_stsRecord = new Record(m_dbManager.noOfColumns(Variables.locusStsTableName),
-    				m_dbManager.getPrecision(Variables.locusStsTableName));
-    		m_pmidRecord = new Record(m_dbManager.noOfColumns(Variables.llPmidTableName),
-    				m_dbManager.getPrecision(Variables.llPmidTableName));
-    		m_goRecord = new Record(m_dbManager.noOfColumns(Variables.llGoidTableName),
-    				m_dbManager.getPrecision(Variables.llGoidTableName));
-    		m_phenotypeRecord = new Record(m_dbManager.noOfColumns(Variables.llPhenotypeTableName),
-    				m_dbManager.getPrecision(Variables.llPhenotypeTableName));
-    		m_genenamesRecord = new Record(m_dbManager.noOfColumns(Variables.llGeneNamesTableName),
-    				m_dbManager.getPrecision(Variables.llGeneNamesTableName));
-    		m_termRecord = new Record(m_dbManager.noOfColumns(Variables.termTableName),
-    				m_dbManager.getPrecision(Variables.termTableName));
-    		m_treeRecord = new Record(m_dbManager.noOfColumns(Variables.treeTableName),
-    				m_dbManager.getPrecision(Variables.treeTableName));
-    		m_maptermRecord = new Record(m_dbManager.noOfColumns(Variables.termTableName),
-    				m_dbManager.getPrecision(Variables.termTableName));
-    		m_maptreeRecord = new Record(m_dbManager.noOfColumns(Variables.treeTableName),
-    				m_dbManager.getPrecision(Variables.treeTableName));
-    		m_mapRecord = new Record(m_dbManager.noOfColumns(Variables.llMapTableName),
-    				m_dbManager.getPrecision(Variables.llMapTableName));
-    		m_dmRecord =  new Record(m_dbManager.noOfColumns(Variables.locusFlyTableName),
-    				m_dbManager.getPrecision(Variables.locusFlyTableName));
+    		
+//    		m_omimRecord = new Record(m_dbManager.noOfColumns(Variables.llOmimTableName),
+//    				m_dbManager.getPrecision(Variables.llOmimTableName));
+//    		m_stsRecord = new Record(m_dbManager.noOfColumns(Variables.locusStsTableName),
+//    				m_dbManager.getPrecision(Variables.locusStsTableName));
+//    		m_pmidRecord = new Record(m_dbManager.noOfColumns(Variables.llPmidTableName),
+//    				m_dbManager.getPrecision(Variables.llPmidTableName));
+//    		m_goRecord = new Record(m_dbManager.noOfColumns(Variables.llGoidTableName),
+//    				m_dbManager.getPrecision(Variables.llGoidTableName));
+//    		m_phenotypeRecord = new Record(m_dbManager.noOfColumns(Variables.llPhenotypeTableName),
+//    				m_dbManager.getPrecision(Variables.llPhenotypeTableName));
+//    		m_genenamesRecord = new Record(m_dbManager.noOfColumns(Variables.llGeneNamesTableName),
+//    				m_dbManager.getPrecision(Variables.llGeneNamesTableName));
+//    		m_termRecord = new Record(m_dbManager.noOfColumns(Variables.termTableName),
+//    				m_dbManager.getPrecision(Variables.termTableName));
+//    		m_treeRecord = new Record(m_dbManager.noOfColumns(Variables.treeTableName),
+//    				m_dbManager.getPrecision(Variables.treeTableName));
+//    		m_maptermRecord = new Record(m_dbManager.noOfColumns(Variables.termTableName),
+//    				m_dbManager.getPrecision(Variables.termTableName));
+//    		m_maptreeRecord = new Record(m_dbManager.noOfColumns(Variables.treeTableName),
+//    				m_dbManager.getPrecision(Variables.treeTableName));
+//    		m_mapRecord = new Record(m_dbManager.noOfColumns(Variables.llMapTableName),
+//    				m_dbManager.getPrecision(Variables.llMapTableName));
+//    		m_dmRecord =  new Record(m_dbManager.noOfColumns(Variables.locusFlyTableName),
+//    				m_dbManager.getPrecision(Variables.locusFlyTableName));
     	}
     	else
     	{
-    		m_geneHistoryRecord = new Record(m_dbManager.noOfColumns(Variables.llHistoryTableName),
-    				m_dbManager.getPrecision(Variables.llHistoryTableName));
+//    		m_geneHistoryRecord = new Record(m_dbManager.noOfColumns(Variables.llHistoryTableName),
+//    				m_dbManager.getPrecision(Variables.llHistoryTableName));
     	}
     }
     
@@ -194,23 +199,23 @@ public class EntrezParser extends Parser
     	 */
     	if (history == false)
     	{
-    		m_baseRecord.resetAllFields();
+    		//m_baseRecord.resetAllFields();
     		m_ugRecord.resetAllFields();
-    		m_omimRecord.resetAllFields();
-    		m_pmidRecord.resetAllFields();
-    		m_goRecord.resetAllFields();
-    		m_phenotypeRecord.resetAllFields();
-    		m_genenamesRecord.resetAllFields();
-    		m_mapRecord.resetAllFields();
-    		m_stsRecord.resetAllFields();
-    		m_dmRecord.resetAllFields();
-    		m_termRecord.resetAllFields();
-    		m_treeRecord.resetAllFields();
+//    		m_omimRecord.resetAllFields();
+//    		m_pmidRecord.resetAllFields();
+//    		m_goRecord.resetAllFields();
+//    		m_phenotypeRecord.resetAllFields();
+//    		m_genenamesRecord.resetAllFields();
+//    		m_mapRecord.resetAllFields();
+//    		m_stsRecord.resetAllFields();
+//    		m_dmRecord.resetAllFields();
+//    		m_termRecord.resetAllFields();
+//    		m_treeRecord.resetAllFields();
     	}
     	else
     	{
     		//reset record not required for gene_history data
-    		m_geneHistoryRecord.resetAllFields();
+    //		m_geneHistoryRecord.resetAllFields();
     	}
     }
      
@@ -227,22 +232,23 @@ public class EntrezParser extends Parser
     	{
     		if (history == false)
     		{
-    			m_fileWriterHashTable.put(Variables.locusBaseTableName,new FileWriter(Variables.locusBaseTableName+"."+m_fileName));
-    			m_fileWriterHashTable.put(Variables.llGoidTableName,new FileWriter(Variables.llGoidTableName+"."+m_fileName));
-    			m_fileWriterHashTable.put(Variables.llOmimTableName,new FileWriter(Variables.llOmimTableName+"."+m_fileName));
-    			m_fileWriterHashTable.put(Variables.llPhenotypeTableName,new FileWriter(Variables.llPhenotypeTableName+"."+m_fileName));
-    			m_fileWriterHashTable.put(Variables.llPmidTableName,new FileWriter(Variables.llPmidTableName+"."+m_fileName));
     			m_fileWriterHashTable.put(Variables.llUgTableName,new FileWriter(Variables.llUgTableName+"."+m_fileName));
-    			m_fileWriterHashTable.put(Variables.llGeneNamesTableName,new FileWriter(Variables.llGeneNamesTableName+"."+m_fileName));
-    			m_fileWriterHashTable.put(Variables.termTableName,new FileWriter(Variables.termTableName+"."+m_fileName));
-    			m_fileWriterHashTable.put(Variables.treeTableName,new FileWriter(Variables.treeTableName+"."+m_fileName));
-    			m_fileWriterHashTable.put(Variables.llMapTableName,new FileWriter(Variables.llMapTableName+"."+m_fileName));
-    			m_fileWriterHashTable.put(Variables.locusStsTableName,new FileWriter(Variables.locusStsTableName+"."+m_fileName));
-    			m_fileWriterHashTable.put(Variables.locusFlyTableName,new FileWriter(Variables.locusFlyTableName+"."+m_fileName));
+//    			m_fileWriterHashTable.put(Variables.locusBaseTableName,new FileWriter(Variables.locusBaseTableName+"."+m_fileName));
+//    			m_fileWriterHashTable.put(Variables.llGoidTableName,new FileWriter(Variables.llGoidTableName+"."+m_fileName));
+//    			m_fileWriterHashTable.put(Variables.llOmimTableName,new FileWriter(Variables.llOmimTableName+"."+m_fileName));
+//    			m_fileWriterHashTable.put(Variables.llPhenotypeTableName,new FileWriter(Variables.llPhenotypeTableName+"."+m_fileName));
+//    			m_fileWriterHashTable.put(Variables.llPmidTableName,new FileWriter(Variables.llPmidTableName+"."+m_fileName));
+
+//    			m_fileWriterHashTable.put(Variables.llGeneNamesTableName,new FileWriter(Variables.llGeneNamesTableName+"."+m_fileName));
+//    			m_fileWriterHashTable.put(Variables.termTableName,new FileWriter(Variables.termTableName+"."+m_fileName));
+//    			m_fileWriterHashTable.put(Variables.treeTableName,new FileWriter(Variables.treeTableName+"."+m_fileName));
+//    			m_fileWriterHashTable.put(Variables.llMapTableName,new FileWriter(Variables.llMapTableName+"."+m_fileName));
+//    			m_fileWriterHashTable.put(Variables.locusStsTableName,new FileWriter(Variables.locusStsTableName+"."+m_fileName));
+//    			m_fileWriterHashTable.put(Variables.locusFlyTableName,new FileWriter(Variables.locusFlyTableName+"."+m_fileName));
     		}
     		else
     		{
-    			m_fileWriterHashTable.put(Variables.llHistoryTableName,new FileWriter(Variables.llHistoryTableName+"."+m_fileToParse));
+//   			m_fileWriterHashTable.put(Variables.llHistoryTableName,new FileWriter(Variables.llHistoryTableName+"."+m_fileToParse));
     		}
     	}
     	catch(IOException ioEx)      
@@ -267,24 +273,24 @@ public class EntrezParser extends Parser
 		if(field1.equals("-"))
 				field1 = Variables.dbSpecificNullCharacter;
 		
-		m_geneHistoryRecord.fields[1].append(field1);
-		m_geneHistoryRecord.fields[0].append(field0);
+//		m_geneHistoryRecord.fields[1].append(field1);
+//		m_geneHistoryRecord.fields[0].append(field0);
 		while (sTok.hasMoreTokens()) 
     	{
     		sTok.nextToken();
     	}
-		try
-		{
-			writeRecordToDb(Variables.llHistoryTableName, m_geneHistoryRecord);
-		}
-		catch(InsertException ie)
-		{
-			Logger.log("FatalException has occured: " + ie.getMessage(), Logger.WARNING);
-		}
-		catch (FatalException e) 
-		{
-			Logger.log("FatalException has occured: " + e.getMessage(), Logger.WARNING);
-		}
+//		try
+//		{
+//			//writeRecordToDb(Variables.llHistoryTableName, m_geneHistoryRecord);
+//		}
+//		catch(InsertException ie)
+//		{
+//			Logger.log("FatalException has occured: " + ie.getMessage(), Logger.WARNING);
+//		}
+//		catch (FatalException e) 
+//		{
+//			Logger.log("FatalException has occured: " + e.getMessage(), Logger.WARNING);
+//		}
 
     }    
 }

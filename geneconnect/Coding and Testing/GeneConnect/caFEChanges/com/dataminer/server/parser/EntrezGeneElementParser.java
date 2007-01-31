@@ -66,7 +66,8 @@ public class EntrezGeneElementParser extends XMLElementParser
 	/** An instance of EntrezParser class which is to used to access fileWriters to write records */
 	public EntrezParser m_entrezParser = null;
 	
-
+	private static String DIRECT_ANNOTATION="1";
+	
 	/**
 	 * Cosntructor method
 	 * @param dbType Type of the database (mySQL / Oracle)
@@ -86,7 +87,6 @@ public class EntrezGeneElementParser extends XMLElementParser
 		try
 		{
 			/** reset all the records. */
-			
 			m_entrezParser.resetRecords(false);
 			m_geneId = getGeneId(elementToBeParsed);
 			
@@ -102,42 +102,40 @@ public class EntrezGeneElementParser extends XMLElementParser
 			if (m_geneCurrentId != null)
 				if ((m_geneCurrentId.equalsIgnoreCase(m_geneId) == false))
 					return;	/** the current gene is retired, so do not parse this element. */
-			m_entrezParser.m_mapRecord.fields[0].append(m_geneId);
-			m_geneTaxId = getTaxId(elementToBeParsed);
+		//	m_entrezParser.m_mapRecord.fields[0].append(m_geneId);
+			m_geneTaxId = "1"; //getTaxId(elementToBeParsed);
 			/**	return to process next record if we dont have the taxid */
 			if (m_geneTaxId == null) 
 				return;
-			m_entrezParser.m_mapRecord.fields[1].append(m_geneTaxId);
+		//	m_entrezParser.m_mapRecord.fields[1].append(m_geneTaxId);
 			
-			m_geneProduct = getGeneProduct(elementToBeParsed);
-			
-			m_geneName = getOfficialName(elementToBeParsed);
-			
-			m_geneSymbol = getOfficialSymbol(elementToBeParsed);
-			
-			m_geneMapLoc = getMapLocation(elementToBeParsed);
-			
-			m_geneMapType = getMapType(elementToBeParsed);
-			
-			m_geneChromosome =  getChromosome(elementToBeParsed);
-			
-			m_geneSummary = getGeneSummary(elementToBeParsed);
-			
-			m_genePMIDSVector = getGenePMIDS(elementToBeParsed);
-			
-			m_geneSynVector = getGeneSynonyms(elementToBeParsed);
-			
-			m_geneMIMVector = getMIMID(elementToBeParsed);
-			
-			m_geneGOIDSVector = getGOID(elementToBeParsed);
-			
-			m_geneFlyIdVector = getFlyId(elementToBeParsed);
-			
+//			m_geneProduct = getGeneProduct(elementToBeParsed);
+//			
+//			m_geneName = getOfficialName(elementToBeParsed);
+//			
+//			m_geneSymbol = getOfficialSymbol(elementToBeParsed);
+//			
+//			m_geneMapLoc = getMapLocation(elementToBeParsed);
+//			
+//			m_geneMapType = getMapType(elementToBeParsed);
+//			
+//			m_geneChromosome =  getChromosome(elementToBeParsed);
+//			
+//			m_geneSummary = getGeneSummary(elementToBeParsed);
+//			
+//			m_genePMIDSVector = getGenePMIDS(elementToBeParsed);
+//			
+//			m_geneSynVector = getGeneSynonyms(elementToBeParsed);
+//			
+//			m_geneMIMVector = getMIMID(elementToBeParsed);
+//			
+//			m_geneGOIDSVector = getGOID(elementToBeParsed);
+//			
+//			m_geneFlyIdVector = getFlyId(elementToBeParsed);
 			m_geneUnigeneVector = getUniGeneId(elementToBeParsed);
-			
-			m_genePhenotypeVector = getGenePhenotype(elementToBeParsed);
-			
-			m_geneSTSIDVector = getUniSTSID(elementToBeParsed);
+//			m_genePhenotypeVector = getGenePhenotype(elementToBeParsed);
+//			
+//			m_geneSTSIDVector = getUniSTSID(elementToBeParsed);
 			/** preProcess the GOIDS */
 			preProcessGOIDS(m_geneGOIDSVector);
 			String hsLocalTaxid = (String) Variables.hmOrganismLocalId.get("Homo sapiens");
@@ -152,14 +150,14 @@ public class EntrezGeneElementParser extends XMLElementParser
 			{
 				/** generate MAP tree for chromosome map location. */
 				Vector mapTree = generateMapTree(m_geneMapLoc);
-				try
-				{
-					writeMapInformation(mapTree);
-				}
-				catch (FatalException fexcp)
-				{
-					Logger.log("Fatal Exception (Entrez Gene): " + fexcp.getMessage(), Logger.WARNING);
-				}
+//				try
+//				{
+//					writeMapInformation(mapTree);
+//				}
+//				catch (FatalException fexcp)
+//				{
+//					Logger.log("Fatal Exception (Entrez Gene): " + fexcp.getMessage(), Logger.WARNING);
+//				}
 			}
 		}
 		catch(NullPointerException nullexcp)
@@ -249,7 +247,8 @@ public class EntrezGeneElementParser extends XMLElementParser
 			geneTaxId =  geneTaxIdElement.getTextTrim();
 			geneOrganism = (String)Variables.hmTaxidLocalId.get(geneTaxId);
 		}
-		Variables.entrezGeneRevisionHistory.put(geneOrganism,m_entrezParser.getFileRevisionHistory(m_entrezParser.m_fileName));
+//		Variables.entrezGeneRevisionHistory.put(geneOrganism,m_entrezParser.getFileRevisionHistory(m_entrezParser.m_fileName));
+
 		return geneOrganism;
 	}
 	/**
@@ -988,90 +987,90 @@ public class EntrezGeneElementParser extends XMLElementParser
 	 * @param termTree List of system term tree
 	 * @throws FatalException Throws exception if error during writing
 	 */
-	private void writeMapInformation(Vector termTree) throws FatalException 
-	{
-		int numTreeElements = termTree.size();
-		String parentid = m_entrezParser.m_maptermIDPrefix + "0";
-		/** isParent is always = 1 in this case*/
-		m_entrezParser.m_maptreeRecord.fields[2].append("1");
-		String lastTerm = null;
-		String lastTermId = null;
-		String oldParent = null;
-		boolean insertMap=true;
-		for (int i=0; i<numTreeElements; i++) 
-		{
-			insertMap=true;
-			String term = (String) termTree.elementAt(i);
-			if(true==EntrezParser.m_mapHTable.containsKey(term))
-			{
-				insertMap = false;
-			}
-			String termid = getMapID(term);
-			if(true==insertMap)
-			{
-				
-			}
-			m_entrezParser.m_mapRecord.fields[2].append(termid);
-			
-			try
-			{
-				m_entrezParser.writeRecordToDb(Variables.llMapTableName, m_entrezParser.m_mapRecord );
-			}
-			catch(InsertException ie)
-			{
-				Logger.log("Exception (Entrez Gene) : " + ie.getMessage(), Logger.WARNING);
-			}
-			if ((i > 0) && (i <= 2))
-			{
-				if (term.indexOf(lastTerm) != -1) 
-				{
-					parentid = lastTermId;
-				}
-			}
-			else if (i > 3)
-			{
-				parentid = oldParent;
-			}
-			if(true==insertMap)
-			{
-				/** write the mapterm Record*/
-				m_entrezParser.m_maptermRecord.fields[0].append(termid);
-				m_entrezParser.m_maptermRecord.fields[1].append(term);
-
-				/** write the maptermtree Record*/
-				m_entrezParser.m_maptreeRecord.fields[0].append(termid);
-				m_entrezParser.m_maptreeRecord.fields[1].append(parentid);
-				try
-				{
-					m_entrezParser.writeRecordToDb(Variables.termTableName, m_entrezParser.m_maptermRecord );
-					m_entrezParser.writeRecordToDb(Variables.treeTableName, m_entrezParser.m_maptreeRecord );
-				}
-				catch(InsertException ie)
-				{
-					Logger.log("Exception (Entrez Gene):" + ie.getMessage(), Logger.WARNING);
-				}
-			}
-			/** restore the earlier parent */
-			parentid = oldParent;
-			
-			/** child becomes the parent for the next record in vector
-			* only for the first 2 terms*/
-			if (i < 3)
-			{
-				parentid = termid;
-				oldParent = parentid;
-			}
-			lastTerm = term;
-			lastTermId = termid;
-			
-			/**reset Fields*/
-			m_entrezParser.m_maptermRecord.fields[0].setLength(0);
-			m_entrezParser.m_maptermRecord.fields[1].setLength(0);
-			m_entrezParser.m_mapRecord.fields[2].setLength(0);
-			m_entrezParser.m_maptreeRecord.fields[0].setLength(0);
-			m_entrezParser.m_maptreeRecord.fields[1].setLength(0);
-		}
-	}
+//	private void writeMapInformation(Vector termTree) throws FatalException 
+//	{
+//		int numTreeElements = termTree.size();
+//		String parentid = m_entrezParser.m_maptermIDPrefix + "0";
+//		/** isParent is always = 1 in this case*/
+//		m_entrezParser.m_maptreeRecord.fields[2].append("1");
+//		String lastTerm = null;
+//		String lastTermId = null;
+//		String oldParent = null;
+//		boolean insertMap=true;
+//		for (int i=0; i<numTreeElements; i++) 
+//		{
+//			insertMap=true;
+//			String term = (String) termTree.elementAt(i);
+//			if(true==EntrezParser.m_mapHTable.containsKey(term))
+//			{
+//				insertMap = false;
+//			}
+//			String termid = getMapID(term);
+//			if(true==insertMap)
+//			{
+//				
+//			}
+//			m_entrezParser.m_mapRecord.fields[2].append(termid);
+//			
+//			try
+//			{
+//				m_entrezParser.writeRecordToDb(Variables.llMapTableName, m_entrezParser.m_mapRecord );
+//			}
+//			catch(InsertException ie)
+//			{
+//				Logger.log("Exception (Entrez Gene) : " + ie.getMessage(), Logger.WARNING);
+//			}
+//			if ((i > 0) && (i <= 2))
+//			{
+//				if (term.indexOf(lastTerm) != -1) 
+//				{
+//					parentid = lastTermId;
+//				}
+//			}
+//			else if (i > 3)
+//			{
+//				parentid = oldParent;
+//			}
+//			if(true==insertMap)
+//			{
+//				/** write the mapterm Record*/
+//				m_entrezParser.m_maptermRecord.fields[0].append(termid);
+//				m_entrezParser.m_maptermRecord.fields[1].append(term);
+//
+//				/** write the maptermtree Record*/
+//				m_entrezParser.m_maptreeRecord.fields[0].append(termid);
+//				m_entrezParser.m_maptreeRecord.fields[1].append(parentid);
+//				try
+//				{
+//					m_entrezParser.writeRecordToDb(Variables.termTableName, m_entrezParser.m_maptermRecord );
+//					m_entrezParser.writeRecordToDb(Variables.treeTableName, m_entrezParser.m_maptreeRecord );
+//				}
+//				catch(InsertException ie)
+//				{
+//					Logger.log("Exception (Entrez Gene):" + ie.getMessage(), Logger.WARNING);
+//				}
+//			}
+//			/** restore the earlier parent */
+//			parentid = oldParent;
+//			
+//			/** child becomes the parent for the next record in vector
+//			* only for the first 2 terms*/
+//			if (i < 3)
+//			{
+//				parentid = termid;
+//				oldParent = parentid;
+//			}
+//			lastTerm = term;
+//			lastTermId = termid;
+//			
+//			/**reset Fields*/
+//			m_entrezParser.m_maptermRecord.fields[0].setLength(0);
+//			m_entrezParser.m_maptermRecord.fields[1].setLength(0);
+//			m_entrezParser.m_mapRecord.fields[2].setLength(0);
+//			m_entrezParser.m_maptreeRecord.fields[0].setLength(0);
+//			m_entrezParser.m_maptreeRecord.fields[1].setLength(0);
+//		}
+//	}
 	/**
 	 * Returns an ID for the chromosome map
 	 * @param mapterm the chrosome map term for which to get ID
@@ -1096,46 +1095,46 @@ public class EntrezGeneElementParser extends XMLElementParser
 		
 		try
 		{
-			populateEntrezBaseFile();
-			String fbLocalTaxid = (String) Variables.hmOrganismLocalId.get("Drosophila melanogaster");
-			if (m_geneTaxId.equalsIgnoreCase(fbLocalTaxid) && m_geneFlyIdVector != null)
-			{
-				populateEntrezFlyFile();
-			}
-			
-			if (m_geneMIMVector != null)
-			{
-				populateEntrezMIMFile();
-			}
-			
-			if ( m_genePhenotypeVector != null )
-			{
-				populateEntrezPhenotypeFile();
-			}
+//			populateEntrezBaseFile();
+//			String fbLocalTaxid = (String) Variables.hmOrganismLocalId.get("Drosophila melanogaster");
+//			if (m_geneTaxId.equalsIgnoreCase(fbLocalTaxid) && m_geneFlyIdVector != null)
+//			{
+//				populateEntrezFlyFile();
+//			}
+//			
+//			if (m_geneMIMVector != null)
+//			{
+//				populateEntrezMIMFile();
+//			}
+//			
+//			if ( m_genePhenotypeVector != null )
+//			{
+//				populateEntrezPhenotypeFile();
+//			}
 			if (m_geneUnigeneVector != null)
 			{
 				populateEntrezUnigeneFile();
 			}
 			
-			if ( m_geneSTSIDVector != null )
-			{
-				populateEntrezSTSFile();
-			}
-			
-			if (m_genePMIDSVector != null)
-			{
-				populateEntrezPMIDSFile();
-			}
-			
-			if ((m_geneSynVector != null) || (m_geneProduct != null) || (m_geneSymbol != null) || (m_geneSymbol != null))
-			{
-				populateGeneNamesFile();
-			}
-			
-			if(m_geneGOIDSVector != null)
-			{
-				populateEntrezGOIDFile();
-			}
+//			if ( m_geneSTSIDVector != null )
+//			{
+//				populateEntrezSTSFile();
+//			}
+//			
+//			if (m_genePMIDSVector != null)
+//			{
+//				populateEntrezPMIDSFile();
+//			}
+//			
+//			if ((m_geneSynVector != null) || (m_geneProduct != null) || (m_geneSymbol != null) || (m_geneSymbol != null))
+//			{
+//				populateGeneNamesFile();
+//			}
+//			
+//			if(m_geneGOIDSVector != null)
+//			{
+//				populateEntrezGOIDFile();
+//			}
 		}
 		catch (FatalException fexcp)
 		{
@@ -1152,47 +1151,47 @@ public class EntrezGeneElementParser extends XMLElementParser
 	 * @throws FatalException Throws exception if error during populating entrez base file
 	 * @throws InsertException Throws exception if error during populating entrez base file
 	 */
-	private void populateEntrezBaseFile() throws FatalException,InsertException
-	{
-		
-		m_entrezParser.m_baseRecord.fields[0].append(m_geneId);
-		if (m_geneTaxId != null)
-			m_entrezParser.m_baseRecord.fields[1].append(m_geneTaxId);
-		if (m_geneSymbol != null)
-			m_entrezParser.m_baseRecord.fields[2].append(m_geneSymbol);
-		
-		if (m_geneName != null)
-			m_entrezParser.m_baseRecord.fields[3].append(m_geneName);
-		
-		if (m_geneSummary != null)
-			m_entrezParser.m_baseRecord.fields[4].append(m_geneSummary);
-		
-		/** write the map location only for non-Fly genes */
-		if ((m_geneTaxId.equalsIgnoreCase("Dm") == false) && (m_geneMapLoc != null))
-			m_entrezParser.m_baseRecord.fields[5].append(m_geneMapLoc);
-		
-		if(m_geneChromosome != null)
-			m_entrezParser.m_baseRecord.fields[6].append(m_geneChromosome);
-		
-		m_entrezParser.writeRecordToDb(Variables.locusBaseTableName,m_entrezParser.m_baseRecord);
-	}
-	/**
-	 * This function populates the file for Entrez_Fly table
-	 * @throws FatalException Throws exception if error during populating entrez flybase file
-	 * @throws InsertException Throws exception if error during populating entrez flybase file
-	 */
-	private void populateEntrezFlyFile() throws FatalException,InsertException
-	{
-		for (int iCount = 0 ; iCount < m_geneFlyIdVector.size() ; iCount++)
-		{
-			m_entrezParser.m_dmRecord.fields[0].append(m_geneId);
-			m_entrezParser.m_dmRecord.fields[1].append(m_geneTaxId);
-			m_entrezParser.m_dmRecord.fields[2].append(m_geneFlyIdVector.get(iCount));
-			m_entrezParser.writeRecordToDb(Variables.locusFlyTableName, m_entrezParser.m_dmRecord);
-			/** reset the record fields to store next value of fly-id. */
-			m_entrezParser.m_dmRecord.resetAllFields();
-		}
-	}
+//	private void populateEntrezBaseFile() throws FatalException,InsertException
+//	{
+//		
+//		m_entrezParser.m_baseRecord.fields[0].append(m_geneId);
+//		if (m_geneTaxId != null)
+//			m_entrezParser.m_baseRecord.fields[1].append(m_geneTaxId);
+//		if (m_geneSymbol != null)
+//			m_entrezParser.m_baseRecord.fields[2].append(m_geneSymbol);
+//		
+//		if (m_geneName != null)
+//			m_entrezParser.m_baseRecord.fields[3].append(m_geneName);
+//		
+//		if (m_geneSummary != null)
+//			m_entrezParser.m_baseRecord.fields[4].append(m_geneSummary);
+//		
+//		/** write the map location only for non-Fly genes */
+//		if ((m_geneTaxId.equalsIgnoreCase("Dm") == false) && (m_geneMapLoc != null))
+//			m_entrezParser.m_baseRecord.fields[5].append(m_geneMapLoc);
+//		
+//		if(m_geneChromosome != null)
+//			m_entrezParser.m_baseRecord.fields[6].append(m_geneChromosome);
+//		
+//		m_entrezParser.writeRecordToDb(Variables.locusBaseTableName,m_entrezParser.m_baseRecord);
+//	}
+//	/**
+//	 * This function populates the file for Entrez_Fly table
+//	 * @throws FatalException Throws exception if error during populating entrez flybase file
+//	 * @throws InsertException Throws exception if error during populating entrez flybase file
+//	 */
+//	private void populateEntrezFlyFile() throws FatalException,InsertException
+//	{
+//		for (int iCount = 0 ; iCount < m_geneFlyIdVector.size() ; iCount++)
+//		{
+//			m_entrezParser.m_dmRecord.fields[0].append(m_geneId);
+//			m_entrezParser.m_dmRecord.fields[1].append(m_geneTaxId);
+//			m_entrezParser.m_dmRecord.fields[2].append(m_geneFlyIdVector.get(iCount));
+//			m_entrezParser.writeRecordToDb(Variables.locusFlyTableName, m_entrezParser.m_dmRecord);
+//			/** reset the record fields to store next value of fly-id. */
+//			m_entrezParser.m_dmRecord.resetAllFields();
+//		}
+//	}
 	
 	/**
 	 * This function populates the file for Entrez_Unigene table.
@@ -1206,9 +1205,8 @@ public class EntrezGeneElementParser extends XMLElementParser
 			m_entrezParser.m_ugRecord.fields[0].append(m_geneId);
 			m_entrezParser.m_ugRecord.fields[1].append(m_geneTaxId);
 			m_entrezParser.m_ugRecord.fields[2].append(m_geneUnigeneVector.get(iCount));
-			m_entrezParser.m_ugRecord.fields[3].append("direct_annotation");
+			m_entrezParser.m_ugRecord.fields[3].append(DIRECT_ANNOTATION);
 			m_entrezParser.writeRecordToDb(Variables.llUgTableName, m_entrezParser.m_ugRecord);
-			
 			/** reset the record fields to store next value of Unigene. */
 			m_entrezParser.m_ugRecord.resetAllFields();
 		}
@@ -1219,141 +1217,141 @@ public class EntrezGeneElementParser extends XMLElementParser
 	 * @throws FatalException Throws exception if error during populating entrez OMIM file
 	 * @throws InsertException Throws exception if error during populating entrez OMIM file
 	 */
-	private void populateEntrezMIMFile() throws FatalException,InsertException
-	{
-		for (int iCount = 0 ; iCount < m_geneMIMVector.size() ; iCount++)
-		{
-			m_entrezParser.m_omimRecord.fields[0].append(m_geneId);
-			m_entrezParser.m_omimRecord.fields[1].append(m_geneTaxId);
-			m_entrezParser.m_omimRecord.fields[2].append(m_geneMIMVector.get(iCount));
-			
-			m_entrezParser.writeRecordToDb(Variables.llOmimTableName, m_entrezParser.m_omimRecord);
-			
-			/** reset the record fields to store next value of MIM-ID.*/
-			m_entrezParser.m_omimRecord.resetAllFields();
-		}
-	}
-	
-	/**
-	 * This function populates the file for Entrez_Phenotype table.
-	 * @throws FatalException Throws exception if error during populating entrez phynotype file
-	 * @throws InsertException Throws exception if error during populating entrez phynotype file
-	 */
-	private void populateEntrezPhenotypeFile() throws FatalException,InsertException
-	{
-		for (int iCount = 0 ; iCount < m_genePhenotypeVector.size() ; iCount++)
-		{
-			m_entrezParser.m_phenotypeRecord.fields[0].append(m_geneId);
-			m_entrezParser.m_phenotypeRecord.fields[1].append(m_geneTaxId);
-			m_entrezParser.m_phenotypeRecord.fields[2].append(m_genePhenotypeVector.get(iCount));
-			
-			m_entrezParser.writeRecordToDb(Variables.llPhenotypeTableName, m_entrezParser.m_phenotypeRecord);
-			
-			/** reset the record fields to store next value of Phenotype.*/
-			m_entrezParser.m_phenotypeRecord.resetAllFields();
-		}
-	}
-	/**
-	 * This function populates the file for Entrez_STS table.
-	 * @throws FatalException Throws exception if error during populating entrez STS file
-	 * @throws InsertException Throws exception if error during populating entrez flybase file
-	 */
-	private void populateEntrezSTSFile() throws FatalException,InsertException
-	{
-		for (int iCount = 0 ; iCount < m_geneSTSIDVector.size() ; iCount++)
-		{
-			m_entrezParser.m_stsRecord.fields[0].append(m_geneId);
-			m_entrezParser.m_stsRecord.fields[1].append(m_geneTaxId);
-			/** check whether to add the marker name into this table or not.Since it
-			* is present in unists table and hence can be mapped.*/
-			m_entrezParser.m_stsRecord.fields[2].append(m_geneSTSIDVector.get(iCount));
-			
-			m_entrezParser.writeRecordToDb(Variables.locusStsTableName, m_entrezParser.m_stsRecord);
-			
-			/** reset the record fields to store next value of STS ID.*/
-			m_entrezParser.m_stsRecord.resetAllFields();
-		}
-	}
-	
-	/**
-	 * This function populates the file for Entrez_PMIDS table.
-	 * @throws FatalException Throws exception if error during populating entrez pmid file
-	 * @throws InsertException Throws exception if error during populating entrez pmid file
-	 */
-	private void populateEntrezPMIDSFile() throws FatalException,InsertException
-	{
-		for (int iCount = 0 ; iCount < m_genePMIDSVector.size() ; iCount++)
-		{
-			m_entrezParser.m_pmidRecord.fields[0].append(m_geneId);
-			m_entrezParser.m_pmidRecord.fields[1].append(m_geneTaxId);
-			m_entrezParser.m_pmidRecord.fields[2].append(m_genePMIDSVector.get(iCount));
-			
-			m_entrezParser.writeRecordToDb(Variables.llPmidTableName, m_entrezParser.m_pmidRecord);
-			
-			/** reset the record fields to store next value of PMID.*/
-			m_entrezParser.m_pmidRecord.resetAllFields();
-		}
-	}
-	
-	/**
-	 * This function populates the file for Entrez_GOID table.
-	 * @throws FatalException Throws exception if error during populating entrez GOID file
-	 * @throws InsertException Throws exception if error during populating entrez GOID file
-	 */
-	private void populateEntrezGOIDFile() throws FatalException,InsertException
-	{
-		for (int iCount = 0 ; iCount < m_geneGOIDSVector.size() ; iCount++)
-		{
-			m_entrezParser.m_goRecord.fields[0].append(m_geneId);
-			m_entrezParser.m_goRecord.fields[1].append(m_geneTaxId);
-			m_entrezParser.m_goRecord.fields[2].append(m_geneGOIDSVector.get(iCount));
-			
-			m_entrezParser.writeRecordToDb(Variables.llGoidTableName, m_entrezParser.m_goRecord);
-			
-			/** reset the record fields to store next value of GOID. */
-			m_entrezParser.m_goRecord.resetAllFields();
-		}
-	}
-	/**
-	 * This function populates the file for Entrez_Genenames table.
-	 * @throws FatalException Throws exception if error during populating entrez genenames file
-	 * @throws InsertException Throws exception if error during populating entrez genenames file
-	 */
-	private void populateGeneNamesFile() throws FatalException,InsertException
-	{
-		if (m_geneSynVector == null)
-			m_geneSynVector = new Vector ();
-		
-		if (m_geneProduct != null)
-		{
-			if (m_geneSynVector.contains(m_geneProduct) == false)
-				m_geneSynVector.addElement(m_geneProduct);
-		}
-		
-		if (m_geneSymbol != null)
-		{
-			if (m_geneSynVector.contains(m_geneSymbol) == false)
-				m_geneSynVector.addElement(m_geneSymbol);
-		}
-		if (m_geneName != null)
-		{
-			if (m_geneSynVector.contains(m_geneName) == false)
-				m_geneSynVector.addElement(m_geneName);
-		}
-		
-		if (m_geneSynVector  != null)
-		{
-			for (int iCount = 0 ; iCount < m_geneSynVector.size() ; iCount++)
-			{
-				m_entrezParser.m_genenamesRecord.fields[0].append(m_geneId);
-				m_entrezParser.m_genenamesRecord.fields[1].append(m_geneTaxId);
-				m_entrezParser.m_genenamesRecord.fields[2].append(m_geneSynVector.get(iCount));
-				
-				m_entrezParser.writeRecordToDb(Variables.llGeneNamesTableName, m_entrezParser.m_genenamesRecord);
-				
-				/** reset the record fields to store next genename */
-				m_entrezParser.m_genenamesRecord.resetAllFields();
-			}
-		}
-	}
+//	private void populateEntrezMIMFile() throws FatalException,InsertException
+//	{
+//		for (int iCount = 0 ; iCount < m_geneMIMVector.size() ; iCount++)
+//		{
+//			m_entrezParser.m_omimRecord.fields[0].append(m_geneId);
+//			m_entrezParser.m_omimRecord.fields[1].append(m_geneTaxId);
+//			m_entrezParser.m_omimRecord.fields[2].append(m_geneMIMVector.get(iCount));
+//			
+//			m_entrezParser.writeRecordToDb(Variables.llOmimTableName, m_entrezParser.m_omimRecord);
+//			
+//			/** reset the record fields to store next value of MIM-ID.*/
+//			m_entrezParser.m_omimRecord.resetAllFields();
+//		}
+//	}
+//	
+//	/**
+//	 * This function populates the file for Entrez_Phenotype table.
+//	 * @throws FatalException Throws exception if error during populating entrez phynotype file
+//	 * @throws InsertException Throws exception if error during populating entrez phynotype file
+//	 */
+//	private void populateEntrezPhenotypeFile() throws FatalException,InsertException
+//	{
+//		for (int iCount = 0 ; iCount < m_genePhenotypeVector.size() ; iCount++)
+//		{
+//			m_entrezParser.m_phenotypeRecord.fields[0].append(m_geneId);
+//			m_entrezParser.m_phenotypeRecord.fields[1].append(m_geneTaxId);
+//			m_entrezParser.m_phenotypeRecord.fields[2].append(m_genePhenotypeVector.get(iCount));
+//			
+//			m_entrezParser.writeRecordToDb(Variables.llPhenotypeTableName, m_entrezParser.m_phenotypeRecord);
+//			
+//			/** reset the record fields to store next value of Phenotype.*/
+//			m_entrezParser.m_phenotypeRecord.resetAllFields();
+//		}
+//	}
+//	/**
+//	 * This function populates the file for Entrez_STS table.
+//	 * @throws FatalException Throws exception if error during populating entrez STS file
+//	 * @throws InsertException Throws exception if error during populating entrez flybase file
+//	 */
+//	private void populateEntrezSTSFile() throws FatalException,InsertException
+//	{
+//		for (int iCount = 0 ; iCount < m_geneSTSIDVector.size() ; iCount++)
+//		{
+//			m_entrezParser.m_stsRecord.fields[0].append(m_geneId);
+//			m_entrezParser.m_stsRecord.fields[1].append(m_geneTaxId);
+//			/** check whether to add the marker name into this table or not.Since it
+//			* is present in unists table and hence can be mapped.*/
+//			m_entrezParser.m_stsRecord.fields[2].append(m_geneSTSIDVector.get(iCount));
+//			
+//			m_entrezParser.writeRecordToDb(Variables.locusStsTableName, m_entrezParser.m_stsRecord);
+//			
+//			/** reset the record fields to store next value of STS ID.*/
+//			m_entrezParser.m_stsRecord.resetAllFields();
+//		}
+//	}
+//	
+//	/**
+//	 * This function populates the file for Entrez_PMIDS table.
+//	 * @throws FatalException Throws exception if error during populating entrez pmid file
+//	 * @throws InsertException Throws exception if error during populating entrez pmid file
+//	 */
+//	private void populateEntrezPMIDSFile() throws FatalException,InsertException
+//	{
+//		for (int iCount = 0 ; iCount < m_genePMIDSVector.size() ; iCount++)
+//		{
+//			m_entrezParser.m_pmidRecord.fields[0].append(m_geneId);
+//			m_entrezParser.m_pmidRecord.fields[1].append(m_geneTaxId);
+//			m_entrezParser.m_pmidRecord.fields[2].append(m_genePMIDSVector.get(iCount));
+//			
+//			m_entrezParser.writeRecordToDb(Variables.llPmidTableName, m_entrezParser.m_pmidRecord);
+//			
+//			/** reset the record fields to store next value of PMID.*/
+//			m_entrezParser.m_pmidRecord.resetAllFields();
+//		}
+//	}
+//	
+//	/**
+//	 * This function populates the file for Entrez_GOID table.
+//	 * @throws FatalException Throws exception if error during populating entrez GOID file
+//	 * @throws InsertException Throws exception if error during populating entrez GOID file
+//	 */
+//	private void populateEntrezGOIDFile() throws FatalException,InsertException
+//	{
+//		for (int iCount = 0 ; iCount < m_geneGOIDSVector.size() ; iCount++)
+//		{
+//			m_entrezParser.m_goRecord.fields[0].append(m_geneId);
+//			m_entrezParser.m_goRecord.fields[1].append(m_geneTaxId);
+//			m_entrezParser.m_goRecord.fields[2].append(m_geneGOIDSVector.get(iCount));
+//			
+//			m_entrezParser.writeRecordToDb(Variables.llGoidTableName, m_entrezParser.m_goRecord);
+//			
+//			/** reset the record fields to store next value of GOID. */
+//			m_entrezParser.m_goRecord.resetAllFields();
+//		}
+//	}
+//	/**
+//	 * This function populates the file for Entrez_Genenames table.
+//	 * @throws FatalException Throws exception if error during populating entrez genenames file
+//	 * @throws InsertException Throws exception if error during populating entrez genenames file
+//	 */
+//	private void populateGeneNamesFile() throws FatalException,InsertException
+//	{
+//		if (m_geneSynVector == null)
+//			m_geneSynVector = new Vector ();
+//		
+//		if (m_geneProduct != null)
+//		{
+//			if (m_geneSynVector.contains(m_geneProduct) == false)
+//				m_geneSynVector.addElement(m_geneProduct);
+//		}
+//		
+//		if (m_geneSymbol != null)
+//		{
+//			if (m_geneSynVector.contains(m_geneSymbol) == false)
+//				m_geneSynVector.addElement(m_geneSymbol);
+//		}
+//		if (m_geneName != null)
+//		{
+//			if (m_geneSynVector.contains(m_geneName) == false)
+//				m_geneSynVector.addElement(m_geneName);
+//		}
+//		
+//		if (m_geneSynVector  != null)
+//		{
+//			for (int iCount = 0 ; iCount < m_geneSynVector.size() ; iCount++)
+//			{
+//				m_entrezParser.m_genenamesRecord.fields[0].append(m_geneId);
+//				m_entrezParser.m_genenamesRecord.fields[1].append(m_geneTaxId);
+//				m_entrezParser.m_genenamesRecord.fields[2].append(m_geneSynVector.get(iCount));
+//				
+//				m_entrezParser.writeRecordToDb(Variables.llGeneNamesTableName, m_entrezParser.m_genenamesRecord);
+//				
+//				/** reset the record fields to store next genename */
+//				m_entrezParser.m_genenamesRecord.resetAllFields();
+//			}
+//		}
+//	}
 }

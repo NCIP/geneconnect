@@ -10,9 +10,11 @@ import com.dataminer.server.exception.ApplicationException;
 import com.dataminer.server.globals.Constants;
 import com.dataminer.server.globals.Utility;
 import com.dataminer.server.globals.Variables;
+import com.dataminer.server.io.PropertiesFileHandeler;
 import com.dataminer.server.jobmanager.BaseBuilder;
 import com.dataminer.server.log.Logger;
 
+import edu.wustl.geneconnect.GeneConnectServerConstants;
 import edu.wustl.geneconnect.postwork.SummaryCalculator;
 
 /**
@@ -46,6 +48,14 @@ public  class GCBuilder extends BaseBuilder
 		//Invoke Summary table calculator to calculate all-to-all genomic links 
 		if (Variables.calculateSummary)
 		{
+			// rename the base _U tables
+			dbInterface.executeScriptFile("." + Variables.fileSep + GeneConnectServerConstants.SCRIPTS_FOLDER_NAME + Variables.fileSep
+					+ GeneConnectServerConstants.BASE_U_TABLES_RENAME_SCRIPT_FILENAME );
+			Logger.log("Base _U tables dropped successfully.", Logger.INFO);
+			// create again _U tables
+			dbInterface.executeScriptFile("." + Variables.fileSep + GeneConnectServerConstants.SCRIPTS_FOLDER_NAME + Variables.fileSep
+					+ GeneConnectServerConstants.BASE_U_TABLES_CREATION_SCRIPT_FILENAME );
+			Logger.log("Base _U tables dropped successfully.", Logger.INFO);
 			SummaryCalculator summaryCalculator = new SummaryCalculator();
 			summaryCalculator.calculateSummary();
 		}
@@ -137,7 +147,10 @@ public  class GCBuilder extends BaseBuilder
 		try
 		{
 			/**Load actual properties now*/
-
+			String fileSep = System.getProperty("file.separator");
+			String fileName = Variables.currentDir + fileSep + "Config" + fileSep + Constants.serverPropertiesFile;
+			PropertiesFileHandeler pfh = new PropertiesFileHandeler(fileName);
+			
 			/** set the mode of operation for server as update mode**/
 			Variables.updateMode = true;
 

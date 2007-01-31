@@ -1,0 +1,16 @@
+# This is the config file for the GeneConnect XML RPC system
+
+[server]
+#IP = "128.252.161.213"
+IP = "192.168.3.2"
+URL = "http://im-vishnu.wustl.edu"
+port = 4301
+machine_name = "im-vishnu"
+max_num_jobs = 1
+path_to_split_fasta_file ="/home/clususer/geneconnect/XML_RPC_system/persistent"
+
+[compute_nodes]
+machines_file_name = "machines_persistent.txt"
+machines_file_path = "/home/clususer/geneconnect/XML_RPC_system/persistent"
+path_to_gc_seq_align_pipeline = "/state/partition1/geneconnect"
+working_directory = "/state/partition1/geneconnect"

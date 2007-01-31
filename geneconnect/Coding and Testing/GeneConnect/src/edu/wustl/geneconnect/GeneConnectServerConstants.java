@@ -49,6 +49,8 @@ public interface GeneConnectServerConstants
 	public String METADATA_INDEXES_REBUILD_SCRIPT_FILENAME = "GCMetadataIndexesRebuild.sql";
 	public String SUMMARY_TABLES_RENAME_SCRIPT_FILENAME = "GCSummary_U_TablesRename.sql";
 	public String SUMMARY_U_TABLES_CREATION_SCRIPT_FILENAME  = "GCSummary_U_TablesCreation.sql";
+	public String BASE_U_TABLES_RENAME_SCRIPT_FILENAME = "GCSchema_U_TablesRename.sql";
+	public String BASE_U_TABLES_CREATION_SCRIPT_FILENAME = "GCSchemaCreation_U.sql";
 	
 	public String GENE_DATA_FILENAME = "Gene_direct.dat";
 	public String MRNA_DATA_FILENAME = "mRNA_direct.dat";

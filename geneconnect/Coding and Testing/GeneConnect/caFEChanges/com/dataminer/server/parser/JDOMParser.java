@@ -107,6 +107,7 @@ public class JDOMParser extends Parser
 				Logger.log(xmlScanner.toString(), Logger.INFO);
 				Logger.log("input to xmlscanner " + fileName,Logger.INFO);
 				/** scan the input file and call elementMatched function whenever the required node is found in the input file*/
+				
 				xmlScanner.parse(new InputSource(fileName));  
 				/** close all the open fileWriter streams. */
 				m_parserDataObject.closeFileWriters();
@@ -270,18 +271,18 @@ public class JDOMParser extends Parser
 	 */
 	private void startSystemTreeDataFiles()
 	{
-		FileWriter fwriteSystemTree  = (FileWriter)m_parserDataObject.m_fileWriterHashTable.get(Variables.treeTableName);
-		Logger.log("fwriteSystemTree:" + fwriteSystemTree, Logger.INFO);
-		FileWriter fwriteSystemTerm  = (FileWriter)m_parserDataObject.m_fileWriterHashTable.get(Variables.termTableName);
-		Logger.log("fwriteSystemTerm:" + fwriteSystemTerm, Logger.INFO);
-		try
-		{
-			fwriteSystemTerm.write(m_termDataInitRecord);
-			fwriteSystemTree.write(m_termTreeInitRecord);
-		}
-		catch (IOException ioexcp)
-		{
-			Logger.log("IOException has occured (JDOMParser): " + ioexcp.getMessage(), Logger.DEBUG);
-		}			
+//		FileWriter fwriteSystemTree  = (FileWriter)m_parserDataObject.m_fileWriterHashTable.get(Variables.treeTableName);
+//		Logger.log("fwriteSystemTree:" + fwriteSystemTree, Logger.INFO);
+//		FileWriter fwriteSystemTerm  = (FileWriter)m_parserDataObject.m_fileWriterHashTable.get(Variables.termTableName);
+//		Logger.log("fwriteSystemTerm:" + fwriteSystemTerm, Logger.INFO);
+//		try
+//		{
+//			fwriteSystemTerm.write(m_termDataInitRecord);
+//			fwriteSystemTree.write(m_termTreeInitRecord);
+//		}
+//		catch (IOException ioexcp)
+//		{
+//			Logger.log("IOException has occured (JDOMParser): " + ioexcp.getMessage(), Logger.DEBUG);
+//		}			
 	}
 }

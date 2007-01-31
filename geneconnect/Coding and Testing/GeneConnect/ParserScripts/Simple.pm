@@ -1,6 +1,6 @@
 package Config::Simple;
 
-# $Id: Simple.pm,v 1.1 2006-08-06 14:23:41 nagarajr Exp $
+# $Id: Simple.pm,v 1.2 2007-01-31 13:35:50 nagarajr Exp $
 
 use strict;
 # uncomment the following line while debugging. Otherwise,

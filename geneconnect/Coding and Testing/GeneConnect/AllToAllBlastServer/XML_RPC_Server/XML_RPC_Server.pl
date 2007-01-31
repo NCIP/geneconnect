@@ -190,14 +190,14 @@ sub do_alignments
 {
 	my ( $href ) = @_;
 
-	print "\nEntering do_alignments\n";
+#	print "\nEntering do_alignments\n";
 
 	# $href = { job_id => $job_id, seqfile => $filename }
 
 	my $pipe_job_id = $pipe_Q_mgr->get_new_job_id;
-	print "Completed Step : 1";
+	#print "Completed Step : 1";
 	$DB->{ $href->{job_id} }{split_source_files}{ $href->{seqfile} }{pipe_job_id} = $pipe_job_id;
-	print " 2 ";
+	#print " 2 ";
 	# ADDED PATH TO PROGRAM NAME FOR TESTING
 	# the machine id will be appended to the end of the cmd line
 	# config file is on the compute nodes
@@ -210,14 +210,14 @@ sub do_alignments
 						 '--qmgr', $pipe_Q_mgr->get_name,
 						 $config_pathfile_compute ? "--config_file_compute $config_pathfile_compute" : '',
 						 '--mach_id' );
-	print " 3 ";
+	#print " 3 ";
     # REMOVE SSH FOR TESTING
 	my $job_obj = Cluster::Job->new( { cmd_line => $cmd,
 									   pass_machine_id => 1,
 									   no_ssh => 0 } );
-	print " 4 ";
+	#print " 4 ";
 	$pipe_Q_mgr->queue_job( $job_obj );
-	print " 5 \n";
+	#print " 5 \n";
 	#$pipe_Q_mgr->spawn_jobs();
 
     #ADD LOCAL TIME TO THE HASH STRUCTURE

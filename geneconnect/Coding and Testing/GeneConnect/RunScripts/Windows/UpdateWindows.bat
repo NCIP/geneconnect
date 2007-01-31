@@ -24,7 +24,7 @@ set PATH=%JAVA_HOME%/bin;%ORACLE_HOME%/bin;%PERL_HOME%/bin;%BLAST_HOME%/bin;%PAT
 
 set OLD_CLASSPATH=%CLASSPATH%
 
-set CLASSPATH=%GC_HOME%/lib/FEServer.jar;%GC_HOME%/Lib/caBIO.jar;%GC_HOME%/Lib/commons-collections-3.1.jar;%GC_HOME%/Lib/commons-pool-1.2.jar;%GC_HOME%/Lib/tar.jar;%GC_HOME%/Lib/ftp.jar;%GC_HOME%/Lib/jakarta-regexp-1.3.jar;%GC_HOME%/Lib/jaxen-1.1-beta-7-SNAPSHOT.jar;%GC_HOME%/Lib/jdom.jar;%GC_HOME%/Lib/jdom-contrib.jar;%GC_HOME%/Lib/mail.jar;%GC_HOME%/Lib/activation.jar;%GC_HOME%/Lib/mysql-connector-java-3.1.10-bin.jar;%GC_HOME%/Lib/smtp.jar;%GC_HOME%/Lib/aspectjrt.jar;%GC_HOME%/Lib/caarray-client.jar;%GC_HOME%/Lib/log4j-1.2.5.jar;%GC_HOME%/Lib/mageom-client.jar;%GC_HOME%/Lib/nciData.jar;%GC_HOME%/Lib/netcdfAll.jar;%GC_HOME%/Lib/xercesImpl.jar;%GC_HOME%/Lib/xml-apis.jar;%ORACLE_HOME%/jdbc/Lib/classes12.zip
+set CLASSPATH=%GC_HOME%/lib/GeneConnectServer.jar;%GC_HOME%/Lib/caBIO.jar;%GC_HOME%/Lib/commons-collections-3.1.jar;%GC_HOME%/Lib/commons-pool-1.2.jar;%GC_HOME%/Lib/tar.jar;%GC_HOME%/Lib/ftp.jar;%GC_HOME%/Lib/jakarta-regexp-1.3.jar;%GC_HOME%/Lib/jaxen-1.1-beta-7-SNAPSHOT.jar;%GC_HOME%/Lib/jdom.jar;%GC_HOME%/Lib/jdom-contrib.jar;%GC_HOME%/Lib/mail.jar;%GC_HOME%/Lib/activation.jar;%GC_HOME%/Lib/mysql-connector-java-3.1.10-bin.jar;%GC_HOME%/Lib/smtp.jar;%GC_HOME%/Lib/aspectjrt.jar;%GC_HOME%/Lib/caarray-client.jar;%GC_HOME%/Lib/log4j-1.2.5.jar;%GC_HOME%/Lib/mageom-client.jar;%GC_HOME%/Lib/nciData.jar;%GC_HOME%/Lib/netcdfAll.jar;%GC_HOME%/Lib/xercesImpl.jar;%GC_HOME%/Lib/xml-apis.jar;%ORACLE_HOME%/jdbc/Lib/classes12.zip
 
 rem ***** Copy .op files from the config folder to the root folder of the project ****
 rem *** this is for test data and can be removed once file deletion problem has been solved ******
