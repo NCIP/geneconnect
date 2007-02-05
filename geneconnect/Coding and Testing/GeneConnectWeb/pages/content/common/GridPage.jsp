@@ -31,7 +31,7 @@ for(int k=0;k<columnList.size();k++)
 		row.add(colValue);
 	}	
 }
-  	int j;
+int j;
 %>
 <%="\""%><%for (j=0;j < (row.size()-1);j++){%><%=row.get(j)%>,<%}%><%=row.get(j)%><%=",<a href='javascript:"%><%="disp("%>\"<%=row.get(setI)+"#"+row.get(queryKeyCol)%>\"<%=");'><img src='images/mag1.GIF'border='0'/></a>\""%>,<%}%>
 <%
@@ -72,7 +72,10 @@ function disp(q)
 	var tokens = q.split("#");
 	var id=tokens[0];
 	var queryKey=tokens[1];
-	var url = ".."+"<%=request.getContextPath()%>"+"/GeneConnectGraph.do?setid="+id+"&queryKey="+queryKey;
+	// has to modified the key because for display purpose the delimenters of input identifier is changed to '|' instaead of ','.
+	// the actual key is input1=AAA=aaa,BBB=bbb
+	var modifiedqueryKey=queryKey.replace("|",",");
+	var url = ".."+"<%=request.getContextPath()%>"+"/GeneConnectGraph.do?setid="+id+"&queryKey="+modifiedqueryKey;
 	newwindow=window.open(url,'name','height=750,width=545,left=20, top=0, screenX=20, screenY=0' );
 	if (window.focus) {newwindow.focus()}
 }

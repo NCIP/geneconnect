@@ -552,7 +552,13 @@ public class AdvancedSearchBizLogic implements BizLogicInterface
 				counter++;
 				setMap.put(GCConstants.SET_ID_KEY, setId.toString());
 				setMap.put(GCConstants.CONF_SCORE_KEY, confScore.toString());
-				setMap.put(GCConstants.QUERY_KEY, setMapkey);
+				/**
+				 * As the DHTMLx grid takes the data seperated ',', the ',' in querkey is repalced by '|'.
+				 * When user clicks on path on result page the queryKey is modified by replacing '|' to ','
+				 * The efect of modifying this doesnot affect on query selection combo box
+				 */
+				String modifiedsetMapkey = setMapkey.replaceAll(",","|");
+				setMap.put(GCConstants.QUERY_KEY, modifiedsetMapkey);
 
 				result.add(setMap);
 			}
