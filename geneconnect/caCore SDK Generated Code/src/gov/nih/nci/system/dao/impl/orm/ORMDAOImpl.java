@@ -179,8 +179,8 @@ public class ORMDAOImpl
 				if (rp.isCreateNewCriteria() == true)
 				{
 					DetachedCriteria newCriteria = rp.createNewCriteria();
-
 					hCriteria = newCriteria.getExecutableCriteria(session);
+					processResult=true;
 				}
 
 				/**

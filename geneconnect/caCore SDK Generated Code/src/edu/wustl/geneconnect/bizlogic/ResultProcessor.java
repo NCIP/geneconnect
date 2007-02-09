@@ -70,6 +70,11 @@ public class ResultProcessor
 		String intValue = "0";
 		String strValue = "0";
 		log.info("CIRT: --" + impl);
+		log.info("entity: --" + impl.getEntityOrClassName());
+		if(impl.getEntityOrClassName().equalsIgnoreCase(GenomicIdentifierSet.class.getName()))
+		{
+			createNewCriteria = true;
+		}
 		Iterator iter = impl.iterateExpressionEntries();
 		Iterator iter1 = impl.iterateSubcriteria();
 		/**
