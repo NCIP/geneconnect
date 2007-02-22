@@ -169,6 +169,7 @@
 		{			
 			var checkbox2=element;
 			var checkBox;
+			var c=0;
 			<%
 				for(int i=0;i<dataSourceList.size();i++)
 				{
@@ -179,15 +180,24 @@
 				if(checkbox2.checked==true)
 				{
 					if(checkBox.disabled==false)
+					{
 						checkBox.checked=true;
+						c=c+1;
+					}	
 				}
 				else
 				{
 					checkBox.checked=false;
+					c=c+1;
 				}	
 			<%		
 				}
 			%>		
+			if(c==0)
+			{
+				alert("No DataSource is enabled. Please select Input Data Source");
+				checkbox2.checked=false;
+			}
 		
 		}
 		

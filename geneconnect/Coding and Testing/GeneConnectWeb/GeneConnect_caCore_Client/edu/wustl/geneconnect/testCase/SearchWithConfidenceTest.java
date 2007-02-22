@@ -74,6 +74,9 @@ public class SearchWithConfidenceTest extends TestCase
 		{
 			System.out.println("\n\n-------------------------------------------------");
 			System.out.println("Executing Search with Confidence Score criteria Test case");
+			System.out.println("Query: Unigene,EnsemblPeptide and EnsemblTranscript as output\ngiven EnsemblGene = 'ENSG00000120738' and Path score >=0.3\n");
+			 
+			 
 			/**
 			 * Create GenomicIdentifierSet object and set its asscoication with genomic identifer and 
 			 * expected output data source values.
@@ -112,7 +115,7 @@ public class SearchWithConfidenceTest extends TestCase
 			 * Iterate over result set and compare the values with expected list
 			 */		
 			System.out.println("Set ID \tEnsembl Gene"+ "\t" + "UniGene" + "\t" + "Ensembl Transcript"+ "\t"
-					+ "Ensembl Protein" + "\t" + "Confidence Score");			
+					+ "Ensembl Protein" + "\t" + "Path Score");			
 			for (int i = 0; i < resultList.size(); i++)
 			{
 				GenomicIdentifierSet returnedSet = (GenomicIdentifierSet) resultList.get(i);
@@ -128,43 +131,43 @@ public class SearchWithConfidenceTest extends TestCase
 				Float confidence = returnedSet.getConfidenceScore();
 				System.out.println(returnedSet.getId()+"\t"+ensemblGeneId + "\t" + unigeneId + "\t" + ensemblTransId + "\t"
 						+ ensemblPeptideId + "\t" + confidence);
-				Collection ontCollection = returnedSet.getOrderOfNodeTraversalCollection();
-				System.out.println("Associated Order of Node traversal with Set: " +returnedSet.getId());
-				int k=1;
-				for (Iterator iter1 = ontCollection.iterator(); iter1.hasNext();)
-				{
-					
-					OrderOfNodeTraversal ont = (OrderOfNodeTraversal) iter1.next();
-					List ontList = new ArrayList();
-					OrderOfNodeTraversal tempont = ont;
-					while (tempont != null)
-					{
-						LinkType ltype = tempont.getLinkType();
-						String linkType = null;
-						ontList.add(tempont.getSourceDataSource().getName());
-						if (ltype != null)
-						{
-							ontList.add(ltype.getType());
-						}	
-						
-						OrderOfNodeTraversal nextont = tempont.getChildOrderOfNodeTraversal();
-						tempont = nextont;
-					}
-					int j=0;
-					if(ontList.size()>0)
-					{
-						System.out.print("\t"+k+": ");
-						k++;
-					}	
-					for(j=0;j<ontList.size()-1;j++)
-					{
-						System.out.print(ontList.get(j)+"--");
-					}
-					if(j>0)
-					{
-						System.out.println(ontList.get(j));
-					}
-				}
+//				Collection ontCollection = returnedSet.getOrderOfNodeTraversalCollection();
+//				System.out.println("Associated Order of Node traversal with Set: " +returnedSet.getId());
+//				int k=1;
+//				for (Iterator iter1 = ontCollection.iterator(); iter1.hasNext();)
+//				{
+//					
+//					OrderOfNodeTraversal ont = (OrderOfNodeTraversal) iter1.next();
+//					List ontList = new ArrayList();
+//					OrderOfNodeTraversal tempont = ont;
+//					while (tempont != null)
+//					{
+//						LinkType ltype = tempont.getLinkType();
+//						String linkType = null;
+//						ontList.add(tempont.getSourceDataSource().getName());
+//						if (ltype != null)
+//						{
+//							ontList.add(ltype.getType());
+//						}	
+//						
+//						OrderOfNodeTraversal nextont = tempont.getChildOrderOfNodeTraversal();
+//						tempont = nextont;
+//					}
+//					int j=0;
+//					if(ontList.size()>0)
+//					{
+//						System.out.print("\t"+k+": ");
+//						k++;
+//					}	
+//					for(j=0;j<ontList.size()-1;j++)
+//					{
+//						System.out.print(ontList.get(j)+"--");
+//					}
+//					if(j>0)
+//					{
+//						System.out.println(ontList.get(j));
+//					}
+//				}
 
 				
 				boolean equalAll = false;

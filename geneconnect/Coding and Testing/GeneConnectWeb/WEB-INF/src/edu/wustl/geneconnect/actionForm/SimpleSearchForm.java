@@ -251,6 +251,7 @@ public class SimpleSearchForm extends ActionForm
 				{
 					errors.add(ActionErrors.GLOBAL_ERROR,
 							new ActionError("errors.valid.datasource"));
+					return errors;
 				}
 				if (str.endsWith("DataSource_Id"))
 					noOfInputs++;
@@ -315,6 +316,11 @@ public class SimpleSearchForm extends ActionForm
 			String dataSourceID = (String) inputMap.get(temp);
 			Logger.out.debug("dataSourceID " + dataSourceID);
 			String dataSourceName = MetadataManager.getDataSourceName(dataSourceID);
+			if(dataSourceName==null)
+			{
+				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("errors.input.datasource"));
+				return errors;
+			}
 			Logger.out.debug("dataSourceName " + dataSourceName);
 			Logger.out.info("size: " + dsName.size());
 			/**
@@ -350,9 +356,11 @@ public class SimpleSearchForm extends ActionForm
 				Logger.out.info(errmsg);
 				errors.add(ActionErrors.GLOBAL_ERROR, new ActionError("error.null.genomicid", arg));
 			}
+			
 			bean.setName(dataSourceName);
 			bean.setValue(genomicID);
 			inputDsList.add(bean);
+			
 			Logger.out.info("Input Ds selected : " + bean.getName() + "---" + bean.getValue());
 			testList.add(dataSourceName);
 

@@ -16,6 +16,7 @@ public class GeneConnectTestSuite
 	{
 		TestSuite suite = new TestSuite("All Test Case");
 		suite.addTestSuite(SimpleSearchTest.class);
+		suite.addTestSuite(AdvancedSearchTest.class);
 		suite.addTestSuite(SearchWithConfidenceTest.class);
 		suite.addTestSuite(SearchWithFrequencyTest.class);
 		suite.addTestSuite(SearchWithOntTest.class);
