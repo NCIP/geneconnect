@@ -299,7 +299,10 @@
 					</then>
 					<else>
 						<if>
-							<equals arg1="${os.name}" arg2="Solaris" />
+							<or>
+								<equals arg1="${os.name}" arg2="Solaris" />
+								<equals arg1="${os.name}" arg2="SunOS" />
+							</or>
 							<then>
 								<!-- Solaris OS -->
 								<antcall target="copyRunScriptsForSolaris" />
@@ -315,6 +318,7 @@
 	</target>
 
 	<target name="copyRunScriptsForLinux">
+		<chmod file="${base.dir}/RunScripts/Linux/UpdateLinux.sh" perm="u+x"/>
 		<copy file="${base.dir}/RunScripts/Linux/UpdateLinux.sh" todir="${base.dir}"/>
 		<copy file="${base.dir}/RunScripts/Linux/gene2xml" todir="${base.dir}"/>
 		<chmod perm="777" type="file">
@@ -322,10 +326,12 @@
 		    <include name="**/*.sh"/>
 		  </fileset>
 		  <fileset dir="${base.dir}/ParserScripts">
+		    <include name="**/*.sh"/>
+		  </fileset>
+ 		  <fileset dir="${base.dir}/Lib">
 		    <include name="**/*.*"/>
 		  </fileset>
 		</chmod>
-
 	</target>
 
 	<target name="copyRunScriptsForWindows">
@@ -334,8 +340,20 @@
 	</target>
 
 	<target name="copyRunScriptsForSolaris">
+		<chmod file="${base.dir}/RunScripts/Solaris/UpdateSolaris.sh" perm="u+x"/>
 		<copy file="${base.dir}/RunScripts/Solaris/UpdateSolaris.sh" todir="${base.dir}"/>
 		<copy file="${base.dir}/RunScripts/Solaris/gene2xml" todir="${base.dir}"/>
+		<chmod perm="777" type="file">
+			<fileset dir="${base.dir}">
+				<include name="**/*.sh"/>
+			</fileset>
+			<fileset dir="${base.dir}/ParserScripts">
+				<include name="**/*.sh"/>
+		    </fileset>
+			<fileset dir="${base.dir}/Lib">
+				<include name="**/*.*"/>
+			</fileset>
+		</chmod>
 	</target>
 	<!-- END OF copyRunScripts-->
 
@@ -361,7 +379,10 @@
 					</then>
 					<else>
 						<if>
-							<equals arg1="${os.name}" arg2="Solaris" />
+							<or>
+								<equals arg1="${os.name}" arg2="Solaris" />
+								<equals arg1="${os.name}" arg2="SunOS" />
+							</or>
 							<then>
 								<!-- Solaris OS -->
 								<antcall target="runForSolaris" />
@@ -422,7 +443,7 @@
 	<!-- Executes SummaryCalculator -->
 	<target name="calculateSummary">
 		<!-- Run Summary Calculator program first -->
-		<java classname="edu.wustl.geneconnect.postwork.SummaryCalculator" fork="true" maxmemory="1024m">
+		<java classname="edu.wustl.geneconnect.postwork.SummaryCalculator" fork="true" maxmemory="1800m">
 			<classpath>
 				<fileset dir="${lib.dir}">
 					<include name="**/*.jar" />
