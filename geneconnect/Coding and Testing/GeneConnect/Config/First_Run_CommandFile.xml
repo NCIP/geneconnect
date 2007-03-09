@@ -3,7 +3,7 @@
 <CommandFile>
 	<DataSource name="ENSEMBL" type="FTP" siteurl="ftp.ensembl.org" 
  		username="anonymous" password="phataka@pathbox.wustl.edu">
- 		<ExternalParser writeToDB="false" commandfile="ParserScripts/ensembl.sh"/>
+ 		<ExternalParser writeToDB="false" commandfile="ParserScripts/Ensembl_Parser.sh"/>
  		<BaseDirectory dir="/pub/release-40/homo_sapiens_40_36b/data/mysql/homo_sapiens_core_40_36b/" islocal="false">
  			<File name="CHECKSUMS.gz" />
  			<File name="alt_allele.txt.table.gz" />
@@ -91,7 +91,7 @@
  	</DataSource>
 	<DataSource name="ENTREZGENE" type="FTP" siteurl="ftp.ncbi.nih.gov" 
  		username="anonymous" password="phataka@pathbox.wustl.edu">
- 			<BaseDirectory dir="/gene/DATA/ASN_BINARY/Mammalia/" islocal="false">
+ 		<BaseDirectory dir="/gene/DATA/ASN_BINARY/Mammalia/" islocal="false">
  			<File name="Homo_sapiens.ags.gz"/>
  		</BaseDirectory>		
  	</DataSource>
@@ -104,21 +104,21 @@
  	</DataSource>
  	<DataSource name="ENTREZ_TO_REFSEQ" type="FTP" siteurl="ftp.ncbi.nih.gov" 
 	 	username="anonymous" password="phataka@pathbox.wustl.edu">
-	 	<ExternalParser writeToDB="false" commandfile="ParserScripts/entreztorefseq.sh"/>
+	 	<ExternalParser writeToDB="false" commandfile="ParserScripts/Entrez_Refseq.sh"/>
 		<BaseDirectory dir="/gene/DATA/" islocal="false">
 	 		<File name="gene2refseq.gz"/>
 	 	</BaseDirectory>		
  	</DataSource>
 	<DataSource name="UNIPROT_GENEBANK" type="HTTP" siteurl="http://pir.georgetown.edu/GeneConnect/uniprotkb2genebank.gz" 
 	 	username="anonymous" password="phataka@pathbox.wustl.edu" proxyhost="ptproxy.persistent.co.in" proxyport="8080">
-	 	<ExternalParser writeToDB="false" commandfile="ParserScripts/uniprot2genbank.sh"/>
+	 	<ExternalParser writeToDB="false" commandfile="ParserScripts/Uniprot_Genbank.sh"/>
 		<BaseDirectory dir="/GeneConnect/" islocal="false">
 	 		<File name="uniprotkb2genebank.gz"/>
 	 	</BaseDirectory>		
  	</DataSource>
 	<DataSource name="UNIPROT_REFSEQ" type="HTTP" siteurl="http://pir.georgetown.edu/GeneConnect/uniprotkb2refseq.gz" 
 	 	username="anonymous" password="phataka@pathbox.wustl.edu" proxyhost="ptproxy.persistent.co.in" proxyport="8080">
-	 	<ExternalParser writeToDB="false" commandfile="ParserScripts/uniprot2refseq.sh"/>
+	 	<ExternalParser writeToDB="false" commandfile="ParserScripts/Uniprot_Refseq.sh"/>
 		<BaseDirectory dir="/GeneConnect/" islocal="false">
 	 		<File name="uniprotkb2refseq.gz"/>
 	 	</BaseDirectory>		

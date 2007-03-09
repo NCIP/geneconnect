@@ -56,7 +56,7 @@ public class JobManager
 	public static void main(String args[]) 
 	{
 	    System.out.println("Job Manager Started...");
-	    
+	    System.out.println("See ./Logs/ErroLog.txt for details.");
 	    /** Set the job start time in global variables */
 		Variables.startJobTime = System.currentTimeMillis();
 		String fileSep = System.getProperty("file.separator");

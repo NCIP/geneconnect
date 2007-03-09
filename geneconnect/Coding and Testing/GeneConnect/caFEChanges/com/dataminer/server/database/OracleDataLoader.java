@@ -102,7 +102,7 @@ public class OracleDataLoader extends DataLoader
 		Logger.log("Executing : " + cmd.toString(),Logger.INFO);
 		Process sqlldr =  run.exec(cmd.toString());
 		
-		System.out.println("cmd " + cmd.toString());
+		System.out.println("Executing command : " + cmd.toString());
 		/** Close the Stream of The Process.If the Stream is not closed 
 		 * then it will not allow next process to create new Stream.*/
 		sqlldr.getInputStream().close();

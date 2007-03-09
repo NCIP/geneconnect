@@ -1,2 +1,2 @@
-cd ParserScripts
-perl Entrez_Refseq.pl $1 $2
+cd  ./ParserScripts
+perl entrez_refseq.pl $1 $2

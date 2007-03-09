@@ -41,7 +41,7 @@ my $dbname=($properties{DBName});
 
 #formatdb the fasta input file with dbname and type
 
-system("formatdb -i $inputfilewthpath -p $isdbtypeprotein -n $dbname ");
+system("formatdb -i $inputfilewthpath -p $isdbtypeprotein -n $dbname -o T");
 
 print ($configParams{BASEDIR});
 

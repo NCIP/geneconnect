@@ -282,6 +282,7 @@ public class SummaryCalculator implements GeneConnectServerConstants
 					.println("Run ant task calculateMetaData to create this file and run the calculateSummary "
 							+ "task again. Refer readme file for the same or write to 'help@mga.wustl.edu'.");
 			e.printStackTrace();
+			System.exit(1);
 		}
 		catch (IOException e)
 		{

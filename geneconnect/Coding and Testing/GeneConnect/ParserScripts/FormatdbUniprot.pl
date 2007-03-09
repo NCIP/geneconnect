@@ -129,7 +129,7 @@ foreach my $fasta (@arrayoffastafiles)
 
 	#formatdb the fasta input files
 
-	system("formatdb -i $fasta -p $isdbtypeprotein");
+	system("formatdb -i $fasta -p $isdbtypeprotein -o T");
 	move("$fasta\.pin","$configParams{BASEDIR}");
 	move("$fasta\.phr","$configParams{BASEDIR}");
 	move("$fasta\.psq","$configParams{BASEDIR}");

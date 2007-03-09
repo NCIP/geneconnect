@@ -1,2 +1,2 @@
-cd ParserScripts
+cd  ./ParserScripts
 perl FormatSinglefile.pl $1 $2

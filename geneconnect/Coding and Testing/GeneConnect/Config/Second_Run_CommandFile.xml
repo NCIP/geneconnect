@@ -50,7 +50,6 @@
 	 	<ExternalParser writeToDB="false" commandfile="ParserScripts/GenbankmRNAParser.bat"/>
 		<BaseDirectory dir="\WashU\code\UniGeneParser" islocal="true">
 	 		<File name="gbankmrnaTestFile.dat"/>
-			<File name="gbankmrnaTestFile.dat"/>
 	 	</BaseDirectory>		
  	</DataSource>
 </CommandFile>

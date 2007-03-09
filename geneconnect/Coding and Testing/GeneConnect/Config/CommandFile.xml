@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE CommandFile SYSTEM "CommandFile.dtd">
+<!DOCTYPE CommandFile SYSTEM "CommandFile.dtd"> 
 <CommandFile>
 	<DataSource name="ENSEMBL" type="" siteurl="D:" 
  		username="anonymous" password="phataka@pathbox.wustl.edu">

@@ -368,7 +368,7 @@ public abstract class BaseBuilder
 				if(fileInfo.getType().equalsIgnoreCase(Constants.FTP))
 				{
 					checkVal = FTP.checkDate(fileInfo);
-					System.out.println(checkVal + "--" + fileInfo.getBaseDir());
+					//System.out.println(checkVal + "--" + fileInfo.getBaseDir());
 				}
 				/** For HTTPed file call method on HTTP to check date. It will return true if file needs
 				 * to be downloaded in current run
@@ -395,7 +395,7 @@ public abstract class BaseBuilder
 		for(int i =0;i<files.size();i++)
 		{
 			FileInfo fi = (FileInfo)files.get(i);
-			System.out.println(fi.getBaseDir());
+			//System.out.println(fi.getBaseDir());
 		}
 		
 	}

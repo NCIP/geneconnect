@@ -39,6 +39,7 @@ public class SummaryExceptionHandler
 		System.out.println("Calculation of all-to-all genomic links can not be continued further.");
 		System.out.println("Please report this problem to 'help@mga.wustl.edu' and "
 				+ "attach the log file Errorlog.txt (located ./Logs folder) to the mail.");
+		System.exit(1);
 	}
 
 }

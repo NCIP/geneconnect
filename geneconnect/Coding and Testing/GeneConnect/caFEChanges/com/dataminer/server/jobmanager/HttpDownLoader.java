@@ -67,7 +67,7 @@ public class HttpDownLoader extends DownLoader
 				HttpURLConnection con = (HttpURLConnection) url.openConnection();
 	            Logger.log("Connected To Site " + m_httpInfo.getSite() + ".",Logger.DEBUG);
 
-				m_httpInfo.addFile(url.getFile().substring(url.getFile().lastIndexOf('/') + 1));
+				//m_httpInfo.addFile(url.getFile().substring(url.getFile().lastIndexOf('/') + 1));
 				
 				Logger.log("content length " + con.getContentLength(),Logger.DEBUG);
 				

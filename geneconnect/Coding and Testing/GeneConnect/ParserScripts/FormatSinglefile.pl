@@ -28,4 +28,4 @@ my $dbname=($properties{DBName});
 
 #formatdb the fasta input file 
 
-system("formatdb -i $inputFile -p $isdbtypeprotein -n $dbname ");
+system("formatdb -i $inputFile -p $isdbtypeprotein -n $dbname -o T");

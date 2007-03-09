@@ -40,5 +40,5 @@
 		<BaseDirectory dir="\WashU\code\UniGeneParser" islocal="true">
 			<File name="genbank_mRNA_Homo_sapiens.fasta"/>
 	 	</BaseDirectory>		
- 	</DataSource>
+ 	</DataSource> 
 </CommandFile>
