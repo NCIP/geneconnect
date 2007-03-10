@@ -1,3 +1,3 @@
 cd ParserScripts
-perl ensembl_parser.pl %1 %2
+perl Ensembl_Parser.pl %1 %2
 cd..

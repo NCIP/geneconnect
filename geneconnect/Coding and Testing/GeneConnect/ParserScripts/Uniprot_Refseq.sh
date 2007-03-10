@@ -1,2 +1,2 @@
 cd  ./ParserScripts
-perl uniprot_refseq.pl $1 $2
+perl Uniprot_Refseq.bat $1 $2

@@ -1,2 +1,2 @@
 cd  ./ParserScripts
-perl uniprot_genbank.pl $1 $2
+perl Uniprot_Genbank.pl $1 $2
