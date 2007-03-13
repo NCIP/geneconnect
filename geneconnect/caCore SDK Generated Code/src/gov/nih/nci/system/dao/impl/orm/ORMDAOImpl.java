@@ -18,8 +18,11 @@ import org.hibernate.impl.CriteriaImpl;
 
 import edu.wustl.geneconnect.bizlogic.HQLProcessor;
 import edu.wustl.geneconnect.bizlogic.ResultProcessor;
+import edu.wustl.geneconnect.domain.Gene;
 import edu.wustl.geneconnect.domain.GenomicIdentifierSet;
+import edu.wustl.geneconnect.domain.MessengerRNA;
 import edu.wustl.geneconnect.domain.OrderOfNodeTraversal;
+import edu.wustl.geneconnect.domain.Protein;
 import edu.wustl.geneconnect.utility.Constants;
 import edu.wustl.geneconnect.utility.MetadataManager;
 import gov.nih.nci.common.net.Request;
@@ -245,6 +248,30 @@ public class ORMDAOImpl
 						processResult=true;
 						
 					}
+					else if (o instanceof Gene && isGenomicIdSet)
+					{
+						GenomicIdentifierSet set = new GenomicIdentifierSet();
+						set.setGene((Gene)o);
+						rp.interpretCriteria(set);
+						processResult=true;
+						
+					}
+					else if (o instanceof MessengerRNA && isGenomicIdSet)
+					{
+						GenomicIdentifierSet set = new GenomicIdentifierSet();
+						set.setMessengerRNA((MessengerRNA)o);
+						rp.interpretCriteria(set);
+						processResult=true;
+						
+					}
+					else if (o instanceof Protein && isGenomicIdSet)
+					{
+						GenomicIdentifierSet set = new GenomicIdentifierSet();
+						set.setProtein((Protein)o);
+						rp.interpretCriteria(set);
+						processResult=true;
+						
+					}
 				}
 				//System.out.println("ORMDAOImpl.query: it is a NestedCriteria Object ....");		
 				NestedCriteria2HQL converter = new NestedCriteria2HQL((NestedCriteria) obj, ormConn
@@ -303,20 +330,23 @@ public class ORMDAOImpl
 				GenomicIdentifierSet gset =null;
 				if(isGenomicIdSet)
 				{
+					log.info("sac1" );
 					if(hqlQuery.getQueryString().indexOf("From " +Constants.DOMAIN_CLASSNAME_PREFIX+".GenomicIdentifierSet")==0)
 					{
+						log.info("got GSEt in From query" );
 						HQLProcessor hqlProcessor = new HQLProcessor();
 						gset = hqlProcessor.interpretHQL(hqlQuery.getQueryString());
 						if(gset!=null)
 						{
+							log.info("isToprocessGC=true" );
 							isToprocessGC=true;
 						}
 						else
 						{
 							processResult=false;
 							isGenomicIdSet=false;
+							log.info("processResult=false" );
 						}
-
 					}
 				}
 				if (isCount != null && isCount.booleanValue())
@@ -360,7 +390,9 @@ public class ORMDAOImpl
 					}
 					else
 					{	
+						log.info("Querin HQL from CQL" );
 						rs = hqlQuery.list();
+						log.info("Querin HQL from CQL: rs size: "+rs.size());
 					}	
 				}
 			}
