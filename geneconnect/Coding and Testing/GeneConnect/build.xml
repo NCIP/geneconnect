@@ -320,7 +320,10 @@
 	<target name="copyRunScriptsForLinux">
 		<chmod file="${base.dir}/RunScripts/Linux/UpdateLinux.sh" perm="u+x"/>
 		<copy file="${base.dir}/RunScripts/Linux/UpdateLinux.sh" todir="${base.dir}"/>
+		
+		<chmod file="${base.dir}/RunScripts/Linux/gene2xml" perm="u+x"/>		
 		<copy file="${base.dir}/RunScripts/Linux/gene2xml" todir="${base.dir}"/>
+
 		<chmod perm="777" type="file">
 		  <fileset dir="${base.dir}">
 		    <include name="**/*.sh"/>
@@ -342,7 +345,10 @@
 	<target name="copyRunScriptsForSolaris">
 		<chmod file="${base.dir}/RunScripts/Solaris/UpdateSolaris.sh" perm="u+x"/>
 		<copy file="${base.dir}/RunScripts/Solaris/UpdateSolaris.sh" todir="${base.dir}"/>
+		
+		<chmod file="${base.dir}/RunScripts/Solaris/gene2xml" perm="u+x"/>		
 		<copy file="${base.dir}/RunScripts/Solaris/gene2xml" todir="${base.dir}"/>
+		
 		<chmod perm="777" type="file">
 			<fileset dir="${base.dir}">
 				<include name="**/*.sh"/>
