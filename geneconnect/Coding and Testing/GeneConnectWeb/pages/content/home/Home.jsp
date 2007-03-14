@@ -125,7 +125,7 @@
 													</tr>
 													<tr>
 														<td class="formSerialNumberField">UniprotKB</td>
-														<td class="formField">Version 50.0</td>	
+														<td class="formField">Version 8.0 Release(30-May-2006)</td>	
 													</tr>	
 													<tr>
 														<td class="formSerialNumberField">RefSeq</td>
