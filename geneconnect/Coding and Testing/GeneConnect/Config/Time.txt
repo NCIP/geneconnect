@@ -1,1 +1,0 @@
-Unigene Parser: Time(in ms.):19875

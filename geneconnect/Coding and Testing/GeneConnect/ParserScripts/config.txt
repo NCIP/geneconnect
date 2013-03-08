@@ -1,3 +1,0 @@
-BASEDIR=/home/rakesh/geneconnect/
-INPUTFILE=fastarefmrna100.fasta
-OUTPUTFILE=fastarefmrna100.fasta.op

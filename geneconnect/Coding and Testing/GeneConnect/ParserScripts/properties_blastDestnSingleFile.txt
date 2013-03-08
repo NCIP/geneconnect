@@ -1,2 +1,0 @@
-IsDBTypeProtein=F
-DBName=Human_Refseqmrna

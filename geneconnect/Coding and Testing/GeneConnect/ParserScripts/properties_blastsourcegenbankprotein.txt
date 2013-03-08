@@ -1,2 +1,0 @@
-Organism=Mus musculus,Homo sapiens,Rattus norvegicus
-

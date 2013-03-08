@@ -1,8 +1,0 @@
-TYPE    	 FTP
-SITE_URL     ftp.ncbi.nih.gov
-USER_ID 	 anonymous
-PASSWD  	 phataka@pathbox.wustl.edu
-BASE_DIR     /pub/taxonomy/
-FILE		 taxdmp.zip
-DATABASE     TAXONOMY
-####

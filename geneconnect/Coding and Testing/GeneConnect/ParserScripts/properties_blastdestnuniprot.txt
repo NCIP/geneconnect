@@ -1,2 +1,0 @@
-IsDBTypeProtein=T
-Organism=HUMAN,MOUSE,RAT
