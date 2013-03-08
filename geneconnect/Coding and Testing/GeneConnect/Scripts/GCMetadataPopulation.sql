@@ -1,3 +1,10 @@
+/*L
+  Copyright Washington University at St. Louis
+
+  Distributed under the OSI-approved BSD 3-Clause License.
+  See http://ncip.github.com/geneconnect/LICENSE.txt for details.
+L*/
+
 INSERT INTO BASETABLE_METADATA VALUES(0,'ENSEMBLGENE_ENTREZGENE',0,1);
 INSERT INTO BASETABLE_METADATA VALUES(1,'ENSEMBLGENE_UNIGENE',0,2);
 INSERT INTO BASETABLE_METADATA VALUES(2,'ENSEMBLGENE_ENSEMBLTRANS',0,4);

@@ -1,3 +1,10 @@
+<%--L
+  Copyright Washington University at St. Louis
+
+  Distributed under the OSI-approved BSD 3-Clause License.
+  See http://ncip.github.com/geneconnect/LICENSE.txt for details.
+L--%>
+
 <!-- dataList and columnList are to be set in the main JSP file -->
 <link rel="STYLESHEET" type="text/css" href="dhtml_comp/css/dhtmlXGrid.css"/>
 	<script  src="dhtml_comp/js/dhtmlXCommon.js"></script>

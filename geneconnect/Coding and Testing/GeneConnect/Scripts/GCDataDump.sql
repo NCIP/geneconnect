@@ -1,3 +1,10 @@
+/*L
+  Copyright Washington University at St. Louis
+
+  Distributed under the OSI-approved BSD 3-Clause License.
+  See http://ncip.github.com/geneconnect/LICENSE.txt for details.
+L*/
+
 /*
 SQLyog - Free MySQL GUI v4.1
 Host - 4.1.10-nt : Database - geneconnect

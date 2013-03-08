@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+
+<!--L
+  Copyright Washington University at St. Louis
+
+  Distributed under the OSI-approved BSD 3-Clause License.
+  See http://ncip.github.com/geneconnect/LICENSE.txt for details.
+L-->
+
 <testsuite errors="0" failures="0" name="edu.wustl.geneconnect.testCase.GeneConnectTestSuite" tests="4" time="41.51">
   <testcase classname="edu.wustl.geneconnect.testCase.SimpleSearchTest" name="testSimpleUseCase" time="12.068"></testcase>
   <testcase classname="edu.wustl.geneconnect.testCase.SearchWithConfidenceTest" name="testSimpleUseCase" time="10.016"></testcase>

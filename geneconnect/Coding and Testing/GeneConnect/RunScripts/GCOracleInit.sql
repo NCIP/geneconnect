@@ -1,3 +1,10 @@
+/*L
+  Copyright Washington University at St. Louis
+
+  Distributed under the OSI-approved BSD 3-Clause License.
+  See http://ncip.github.com/geneconnect/LICENSE.txt for details.
+L*/
+
 CREATE TABLESPACE "GENECONNECTDATA" LOGGING 
 DATAFILE '$ORACLE_HOME/GENECONNECTDATA01.ora' SIZE 16384M 
 EXTENT MANAGEMENT LOCAL SEGMENT SPACE MANAGEMENT AUTO MAXSIZE UNLIMITED ;

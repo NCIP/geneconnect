@@ -1,3 +1,10 @@
+/*L
+  Copyright Washington University at St. Louis
+
+  Distributed under the OSI-approved BSD 3-Clause License.
+  See http://ncip.github.com/geneconnect/LICENSE.txt for details.
+L*/
+
 CREATE TABLE ENSEMBLGENE_ENTREZGENE
 (
 	ESE_ENSEMBLGENEID VARCHAR2(30),

@@ -1,3 +1,10 @@
+/*L
+  Copyright Washington University at St. Louis
+
+  Distributed under the OSI-approved BSD 3-Clause License.
+  See http://ncip.github.com/geneconnect/LICENSE.txt for details.
+L*/
+
 CREATE TABLESPACE "{TABLESPACE_NAME}" LOGGING DATAFILE 
 '{TABLESPACE_PATH}' SIZE 100M EXTENT MANAGEMENT LOCAL SEGMENT SPACE MANAGEMENT AUTO;
 

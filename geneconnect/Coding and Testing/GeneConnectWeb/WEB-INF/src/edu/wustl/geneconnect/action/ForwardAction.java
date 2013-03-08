@@ -1,3 +1,10 @@
+/*L
+ * Copyright Washington University at St. Louis
+ *
+ * Distributed under the OSI-approved BSD 3-Clause License.
+ * See http://ncip.github.com/geneconnect/LICENSE.txt for details.
+ */
+
 /*
  * Created on Sep 1, 2005
  * This class is used to redirect the user to the Home / SignIn Page after session is timedOut.
