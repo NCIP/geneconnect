@@ -8,4 +8,5 @@ You will find more details about GeneConnect in the following links:
 
  * Code Repository: https://github.com/NCIP/geneconnect
  * Documentation: http://cbmi.wustl.edu/?q=project/geneconnect
+                  https://cabig-stage.nci.nih.gov/community/tools/GeneConnect
  
