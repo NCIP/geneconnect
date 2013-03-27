@@ -9,9 +9,5 @@ You will find more details about GeneConnect in the following links:
  * Code Repository: https://github.com/NCIP/geneconnect
  * Documentation: http://cbmi.wustl.edu/?q=project/geneconnect
  * Release Notes: https://gforge.nci.nih.gov/frs/download.php/1689/Release_Notes.txt
- * GeneConnect Server: https://gforge.nci.nih.gov/frs/download.php/1688/GeneConnectServerRelease_20070310.zip
- * Web Application: https://gforge.nci.nih.gov/frs/download.php/1687/GeneConnect_Web_Installable.zip
- * Tutorial: https://gforge.nci.nih.gov/frs/download.php/1724/GeneConnect_Movies.zip
-
                   
  
