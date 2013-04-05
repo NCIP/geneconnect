@@ -6,8 +6,8 @@ GeneConnect is distributed under the BSD 3-Clause License. Please see the NOTICE
 
 You will find more details about GeneConnect in the following links:
 
- * Code Repository: https://github.com/NCIP/geneconnect
- * Documentation: http://cbmi.wustl.edu/?q=project/geneconnect
- * Release Notes: https://gforge.nci.nih.gov/frs/download.php/1689/Release_Notes.txt
+ * [Code Repository](https://github.com/NCIP/geneconnect)
+ * [Documentation](http://cbmi.wustl.edu/?q=project/geneconnect)
+ * [Release Notes](https://gforge.nci.nih.gov/frs/download.php/1689/Release_Notes.txt)
                   
  
