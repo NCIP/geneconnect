@@ -6,8 +6,6 @@
  */
 
 /**
- *<p>Copyright: (c) Washington University, School of Medicine 2005.</p>
- *<p>Company: Washington University, School of Medicine, St. Louis.</p>
  *<p>ClassName: java edu.wustl.geneconnect.postwork.SummaryExceptionHandler</p> 
  */
 package edu.wustl.geneconnect.postwork;

@@ -8,8 +8,6 @@
 /**
  * <p>Title: SpreadsheetExportAction Class>
  * <p>Description:	This class exports the data of a spreadsheet to a file.</p>
- * Copyright:    Copyright (c) year
- * Company: Washington University, School of Medicine, St. Louis.
  * @author Aniruddha Phadnis
  * @version 1.00
  * Created on Oct 24, 2005
